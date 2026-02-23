@@ -2,7 +2,6 @@
 
 import { GlassCard } from "./glass-card";
 import { Badge } from "./badge";
-import { DeviceMockup } from "./device-mockup";
 import { Button } from "./button";
 import type { Project } from "@/components/data/projects-data";
 
@@ -13,9 +12,6 @@ interface ProjectCardProps {
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <GlassCard className="flex flex-col h-full">
-      {/* Device Mockup */}
-      <DeviceMockup screenshots={project.screenshots} title={project.title} />
-
       {/* Category Badge */}
       <Badge variant="default" className="self-start mb-3">
         {project.category}

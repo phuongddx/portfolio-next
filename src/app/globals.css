@@ -4,6 +4,12 @@
 
 @layer base {
   :root {
+    /* Theme colors - Light mode */
+    --primary: #18181B;
+    --secondary: #3F3F46;
+    --background: #FAFAFA;
+    --text: #09090B;
+
     /* Glass morphism - Light mode */
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(255, 255, 255, 0.2);
@@ -15,6 +21,12 @@
   }
 
   .dark {
+    /* Theme colors - Dark mode */
+    --primary: #FAFAFA;
+    --secondary: #A1A1AA;
+    --background: #09090B;
+    --text: #FAFAFA;
+
     /* Glass morphism - Dark mode */
     --glass-bg: rgba(24, 24, 27, 0.8);
     --glass-border: rgba(255, 255, 255, 0.1);

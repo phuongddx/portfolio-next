@@ -11,11 +11,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#18181B",
-        secondary: "#3F3F46",
+        primary: "var(--primary)",
+        secondary: "var(--secondary)",
         cta: "#2563EB",
-        background: "#FAFAFA",
-        text: "#09090B",
+        background: "var(--background)",
+        text: "var(--text)",
       },
       fontFamily: {
         heading: ["var(--font-heading)", "sans-serif"],

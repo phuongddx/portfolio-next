@@ -1,6 +1,6 @@
 "use client";
 
-import { GlassCard } from "./glass-card";
+import { Card } from "./card";
 import type { SideProject } from "@/components/data/side-projects-data";
 
 interface SideProjectCardProps {
@@ -48,24 +48,24 @@ export function SideProjectCard({ project }: SideProjectCardProps) {
       rel="noopener noreferrer"
       className="block h-full"
     >
-      <GlassCard className="flex flex-col h-full cursor-pointer">
+      <Card className="flex flex-col h-full cursor-pointer">
         {/* Header: GitHub Icon + Status */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-secondary dark:text-gray-400">
+          <div className="flex items-center gap-2 text-secondary">
             <GitHubIcon className="w-5 h-5" />
             <span className="font-mono text-sm">phuongddx/{project.title.toLowerCase().replace(/\s+/g, "-")}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className={`w-2 h-2 rounded-full ${status.color}`} />
-            <span className="text-xs text-secondary dark:text-gray-500">{status.label}</span>
+            <span className="text-xs text-secondary">{status.label}</span>
           </div>
         </div>
 
         {/* Title & Description */}
-        <h3 className="font-heading font-bold text-xl text-primary dark:text-white mb-2">
+        <h3 className="font-heading font-bold text-xl text-primary mb-2">
           {project.title}
         </h3>
-        <p className="text-secondary dark:text-gray-400 mb-4 flex-grow text-sm leading-relaxed">
+        <p className="text-secondary mb-4 flex-grow text-sm leading-relaxed">
           {project.description}
         </p>
 
@@ -74,7 +74,7 @@ export function SideProjectCard({ project }: SideProjectCardProps) {
           {project.topics.slice(0, 4).map((topic) => (
             <span
               key={topic}
-              className="inline-block px-2.5 py-0.5 bg-primary/5 dark:bg-white/5 text-secondary dark:text-gray-400 text-xs font-medium rounded-full border border-primary/10 dark:border-white/10"
+              className="inline-block px-2.5 py-0.5 bg-primary/5 text-secondary text-xs font-medium rounded-full border border-primary/10"
             >
               {topic}
             </span>
@@ -82,7 +82,7 @@ export function SideProjectCard({ project }: SideProjectCardProps) {
         </div>
 
         {/* Footer: Language + Stats */}
-        <div className="flex items-center justify-between pt-4 border-t border-white/20 dark:border-white/10">
+        <div className="flex items-center justify-between pt-4 border-t border-white/20">
           <div className="flex items-center gap-4">
             {/* Language */}
             <div className="flex items-center gap-1.5">
@@ -90,27 +90,27 @@ export function SideProjectCard({ project }: SideProjectCardProps) {
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: project.languageColor }}
               />
-              <span className="text-xs text-secondary dark:text-gray-400">
+              <span className="text-xs text-secondary">
                 {project.language}
               </span>
             </div>
             {/* Stars */}
-            <div className="flex items-center gap-1 text-secondary dark:text-gray-400">
+            <div className="flex items-center gap-1 text-secondary">
               <StarIcon />
               <span className="text-xs">{project.stars}</span>
             </div>
             {/* Forks */}
-            <div className="flex items-center gap-1 text-secondary dark:text-gray-400">
+            <div className="flex items-center gap-1 text-secondary">
               <ForkIcon />
               <span className="text-xs">{project.forks}</span>
             </div>
           </div>
           {/* View on GitHub */}
-          <span className="text-xs text-cta dark:text-blue-400 font-medium hover:underline">
+          <span className="text-xs text-cta font-medium hover:underline">
             View on GitHub
           </span>
         </div>
-      </GlassCard>
+      </Card>
     </a>
   );
 }

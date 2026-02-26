@@ -2,10 +2,11 @@
 
 ## Design Philosophy
 
-- **Flat Design** with subtle depth through glassmorphism
+- **Neo-Brutalist** aesthetic with bold, flat colors and strong borders
 - **Minimalist** approach - content-focused, not decoration-focused
 - **Accessible** - high contrast, clear typography, keyboard-friendly
 - **Responsive** - mobile-first, progressive enhancement
+- **No Dark Mode** - single light theme for consistency
 
 ## Color Palette
 
@@ -13,43 +14,34 @@
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| primary | `#18181B` | Headings, primary text, dark backgrounds |
-| secondary | `#3F3F46` | Body text, descriptions, less prominent elements |
-| cta | `#2563EB` | Call-to-action buttons, links, highlights, accents |
-| background | `#FAFAFA` | Page background (light mode) |
-| text | `#09090B` | Primary text color |
+| primary | `#22c55e` (green-500) | CTAs, highlights, primary accents |
+| secondary | `#6b7280` (gray-500) | Body text, descriptions |
+| background | `#f8f9fa` | Page background |
+| foreground | `#1f2937` (gray-800) | Headings, borders, text |
+| border | `#1f2937` (gray-800) | Card borders, dividers |
+| card | `#ffffff` | Card backgrounds |
 
-### Theme Modes
+### Accent Colors (Pastels)
 
-#### Light Mode
-
-```css
-:root {
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-}
-```
-
-#### Dark Mode
-
-```css
-.dark {
-  --glass-bg: rgba(24, 24, 27, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-```
+| Token | Hex | Usage |
+|-------|-----|-------|
+| accent-pink | `#fecaca` | Highlights, badges |
+| accent-blue | `#93c5fd` | Highlights, badges |
+| accent-purple | `#ddd6fe` | Highlights, badges |
+| accent-green | `#bbf7d0` | Highlights, badges |
+| accent-lime | `#a3e635` | Highlights, badges |
+| accent-coral | `#f87171` | Highlights, badges |
 
 ### Semantic Color Mapping
 
-| Element | Light Mode | Dark Mode |
-|---------|------------|-----------|
-| Heading text | `#18181B` | `white` |
-| Body text | `#3F3F46` | `gray-300` |
-| CTA buttons | `#2563EB` | `blue-500` |
-| Page background | `#FAFAFA` | `gray-900` |
-| Card background | `white` | `gray-900/80` |
+| Element | Color |
+|---------|-------|
+| Heading text | `gray-800` |
+| Body text | `gray-500` |
+| Primary buttons | `green-500` |
+| Page background | `#f8f9fa` |
+| Card background | `white` |
+| Borders | `gray-800` |
 
 ## Typography
 
@@ -106,7 +98,7 @@ font-family: {
 | Card padding | `p-6` to `p-8` (24px - 32px) |
 | Card gap | `gap-6` to `gap-8` (24px - 32px) |
 | List items | `space-y-3` to `space-y-4` (12px - 16px) |
-| Button padding | `px-6 py-2.5` (small) or `px-8 py-4` (large) |
+| Button padding | `px-4 py-2` (sm) / `px-6 py-3` (md) / `px-8 py-4` (lg) |
 
 ### Layout Max Widths
 
@@ -118,15 +110,13 @@ font-family: {
 
 ## Component Styling
 
-### Glassmorphism Cards
+### Cards (Neo-Brutalist)
 
 ```tsx
 className={cn(
-  "rounded-2xl p-6",
-  "bg-white/70 dark:bg-gray-900/80",
-  "backdrop-blur-xl backdrop-saturate-180",
-  "border border-white/20 dark:border-white/10",
-  "shadow-xl shadow-black/5 dark:shadow-black/20"
+  "bg-white border-2 border-gray-800 rounded-xl p-6",
+  "shadow-card",
+  "hover:shadow-hover transition-shadow duration-200"
 )}
 ```
 
@@ -135,41 +125,61 @@ className={cn(
 #### Primary Button
 
 ```tsx
-className="px-6 py-2.5 bg-cta text-white rounded-lg font-medium
-           hover:bg-cta/90 transition-colors duration-200"
+className="px-6 py-3 bg-green-500 text-white rounded-xl font-medium
+           hover:bg-green-600 transition-all duration-200"
 ```
 
 #### Secondary Button
 
 ```tsx
-className="px-8 py-4 bg-transparent border-2 border-primary
-           text-primary rounded-xl font-heading font-semibold
-           hover:bg-primary hover:text-white transition-colors duration-200"
+className="px-6 py-3 bg-white text-gray-800 border-2 border-gray-800 rounded-xl
+           hover:bg-gray-50 transition-all duration-200"
 ```
 
-### Badges/Tags
+#### Outline Button
 
 ```tsx
-// Skill tag
-className="inline-block px-3 py-1 bg-cta/10 text-cta
-           text-sm font-medium rounded-lg"
+className="px-6 py-3 bg-transparent text-gray-800 border-2 border-gray-800 rounded-xl
+           hover:bg-white transition-all duration-200"
+```
 
-// Tech tag
-className="inline-block px-3 py-1 bg-primary/10 text-primary
-           text-xs font-medium rounded-lg"
+### Badges
+
+```tsx
+// Badge variants
+const variants = {
+  lime: "bg-lime-400 text-gray-800",
+  green: "bg-green-500 text-white",
+  pink: "bg-pink-200 text-gray-800",
+  blue: "bg-blue-200 text-gray-800",
+  purple: "bg-purple-200 text-gray-800",
+};
+
+// Usage
+className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
 ```
 
 ### Navigation
 
 ```tsx
 // Desktop nav link
-className="text-secondary hover:text-cta transition-colors
+className="text-gray-500 hover:text-green-500 transition-colors
            duration-200 font-medium cursor-pointer"
 
 // Mobile nav link
-className="block text-secondary hover:text-cta transition-colors
+className="block text-gray-500 hover:text-green-500 transition-colors
            duration-200 font-medium cursor-pointer py-2"
 ```
+
+## Shadow System
+
+| Shadow | Usage |
+|--------|-------|
+| `shadow-card` | Default card shadow |
+| `shadow-navbar` | Navbar shadow |
+| `shadow-hover` | Hover state elevation |
+| `shadow-brutal` | Neo-brutalist offset shadow (4px 4px 0 gray-800) |
+| `shadow-brutal-sm` | Small brutalist shadow (2px 2px 0 gray-800) |
 
 ## Animation Guidelines
 
@@ -177,32 +187,26 @@ className="block text-secondary hover:text-cta transition-colors
 
 | Variant | Properties | Usage |
 |---------|------------|-------|
-| fadeInUp | `opacity: 0→1, y: 30→0` | Section entries |
-| fadeIn | `opacity: 0→1` | Simple fade |
-| cardHover | `scale: 1→1.03, y: 0→-8` | Card interactions |
-| staggerContainer | `staggerChildren: 0.1` | List animations |
+| fadeInUp | `opacity: 0->1, y: 20->0` | Section entries |
+| fadeIn | `opacity: 0->1` | Simple fade |
+| cardHover | `scale: 1->1.02` | Button hover |
+| whileTap | `scale: 0.98` | Button press |
 
 ### Spring Transitions
 
 ```typescript
 // Default spring
 { type: "spring", stiffness: 300, damping: 20 }
-
-// Duration-based spring
-{ type: "spring", duration: 0.4, bounce: 0.2 }
-
-// Page transition
-{ type: "spring", stiffness: 260, damping: 25, duration: 0.4 }
 ```
 
 ### CSS Transitions
 
 ```css
 /* Standard transition */
-transition-colors duration-200
-
-/* All properties */
 transition-all duration-200
+
+/* Shadow transition */
+transition-shadow duration-200
 ```
 
 ### Reduced Motion
@@ -235,7 +239,7 @@ Always respect `prefers-reduced-motion`:
 
 ```tsx
 className="focus-visible:outline-none focus-visible:ring-2
-           focus-visible:ring-cta focus-visible:ring-offset-2"
+           focus-visible:ring-green-500 focus-visible:ring-offset-2"
 ```
 
 ### Color Contrast
@@ -247,11 +251,11 @@ className="focus-visible:outline-none focus-visible:ring-2
 ### Semantic Structure
 
 ```html
-<header> → Navigation
-<main> → Main content
-<section> → Content sections with heading hierarchy
-<footer> → Footer content
-<nav> → Navigation menus
+<header> -> Navigation
+<main> -> Main content
+<section> -> Content sections with heading hierarchy
+<footer> -> Footer content
+<nav> -> Navigation menus
 ```
 
 ## Icon Guidelines
@@ -259,4 +263,4 @@ className="focus-visible:outline-none focus-visible:ring-2
 - Size: `w-6 h-6` (24px) for inline icons
 - Size: `w-8 h-8` (32px) for feature icons
 - Use `aria-label` for icon-only buttons
-- Color follows parent text or explicit `text-cta`
+- Color follows parent text or explicit `text-green-500`

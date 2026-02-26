@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans } from "next/font/google";
-import { ThemeProvider } from "@/components/theme/theme-provider";
 import { MotionProvider } from "@/components/effects/motion-provider";
-import { GlassNavbar } from "@/components/layout/glass-navbar";
+import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import "./globals.css";
 
@@ -56,29 +55,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <MotionProvider>
-            {/* Skip to content link for accessibility */}
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-cta focus:text-white focus:rounded-lg"
-            >
-              Skip to main content
-            </a>
-            <GlassNavbar />
-            <main id="main-content">{children}</main>
-            <Footer />
-          </MotionProvider>
-        </ThemeProvider>
+        <MotionProvider>
+          {/* Skip to content link for accessibility */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-cta focus:text-white focus:rounded-lg"
+          >
+            Skip to main content
+          </a>
+          <Navbar />
+          <main id="main-content">{children}</main>
+          <Footer />
+        </MotionProvider>
       </body>
     </html>
   );

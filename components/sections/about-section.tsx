@@ -1,23 +1,52 @@
 "use client";
 
 import { ScrollReveal } from "@/components/effects/scroll-reveal";
-import { GlassCard } from "@/components/ui/glass-card";
+import { Card } from "@/components/ui/card";
+import { m } from "framer-motion";
+
+// Pastel colors for icon backgrounds
+const pastelColors = ["bg-pink-200", "bg-blue-200", "bg-purple-200"];
 
 const stats = [
-  { value: "5+", label: "Years of Experience" },
-  { value: "40%", label: "UI Development Time Reduction" },
-  { value: "90%", label: "Test Coverage Achieved" },
+  {
+    value: "5+",
+    label: "Years of Experience",
+    icon: "💼",
+    color: pastelColors[0],
+  },
+  {
+    value: "40%",
+    label: "UI Dev Time Reduction",
+    icon: "⚡",
+    color: pastelColors[1],
+  },
+  {
+    value: "90%",
+    label: "Test Coverage Achieved",
+    icon: "✅",
+    color: pastelColors[2],
+  },
 ];
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 20,
+    },
+  },
+};
 
 export function AboutSection() {
   return (
-    <section
-      id="about"
-      className="py-20 px-4 bg-white dark:bg-gray-900"
-    >
+    <section id="about" className="py-20 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         <ScrollReveal>
-          <h2 className="font-heading font-bold text-4xl md:text-5xl text-primary dark:text-white mb-12 text-center">
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-gray-800 mb-12 text-center">
             About Me
           </h2>
         </ScrollReveal>
@@ -26,20 +55,20 @@ export function AboutSection() {
           {/* Text Content */}
           <ScrollReveal delay={0.1}>
             <div className="space-y-6">
-              <p className="text-lg text-secondary dark:text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 I&apos;m a passionate Software Engineer with over 5 years of
                 experience building high-quality mobile applications. My
                 expertise spans native iOS development with Swift, SwiftUI, and
                 UIKit, as well as cross-platform development with React Native.
               </p>
-              <p className="text-lg text-secondary dark:text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 I take pride in delivering fast, reliable, and beautifully
                 crafted user experiences that adhere to Apple&apos;s design
                 guidelines and modern best practices. I&apos;m constantly
                 learning and leveraging AI-assisted development tools to
                 accelerate innovation.
               </p>
-              <p className="text-lg text-secondary dark:text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Currently working at Axon Active, I&apos;ve successfully built
                 design systems adopted by multiple teams, reducing UI
                 development time by 40% and visual bugs by 60%.
@@ -47,21 +76,38 @@ export function AboutSection() {
             </div>
           </ScrollReveal>
 
-          {/* Stats */}
-          <div className="space-y-4">
-            {stats.map((stat, index) => (
-              <ScrollReveal key={stat.label} delay={0.2 + index * 0.1}>
-                <GlassCard hover={false} className="text-center">
-                  <div className="text-4xl font-heading font-bold text-cta dark:text-blue-400 mb-2">
-                    {stat.value}
+          {/* Stats with Pastel Icons */}
+          <m.div
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 },
+              },
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            className="space-y-4"
+          >
+            {stats.map((stat) => (
+              <m.div key={stat.label} variants={cardVariants}>
+                <Card hover={false} className="flex items-center gap-4 p-6">
+                  <div
+                    className={`w-14 h-14 rounded-xl ${stat.color} flex items-center justify-center text-2xl flex-shrink-0`}
+                  >
+                    {stat.icon}
                   </div>
-                  <div className="text-secondary dark:text-gray-400">
-                    {stat.label}
+                  <div>
+                    <div className="text-2xl font-bold text-gray-800">
+                      {stat.value}
+                    </div>
+                    <div className="text-gray-500">{stat.label}</div>
                   </div>
-                </GlassCard>
-              </ScrollReveal>
+                </Card>
+              </m.div>
             ))}
-          </div>
+          </m.div>
         </div>
       </div>
     </section>

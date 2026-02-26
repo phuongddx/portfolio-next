@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Portfolio website for DOAN DUY PHUONG - iOS Software Engineer with 5+ years experience. Built with Next.js 14 App Router, TypeScript, Tailwind CSS, and Framer Motion.
+Portfolio website for DOAN DUY PHUONG - iOS Software Engineer with 5+ years experience. Built with Next.js 14 App Router, TypeScript, Tailwind CSS, and Framer Motion. Features a neo-brutalist design with bold colors and flat styling.
 
 ## Tech Stack
 
@@ -12,7 +12,6 @@ Portfolio website for DOAN DUY PHUONG - iOS Software Engineer with 5+ years expe
 | Language | TypeScript 5 (strict mode) |
 | Styling | Tailwind CSS 3.4.1 |
 | Animations | Framer Motion 11.18.2 (LazyMotion) |
-| Theme | next-themes 0.4.6 |
 | Utilities | clsx, tailwind-merge |
 
 ## Directory Structure
@@ -26,11 +25,14 @@ portfolio-next/
 │       └── page.tsx          # Homepage composing sections
 ├── components/
 │   ├── ui/                   # Reusable UI primitives
-│   │   ├── badge.tsx         # Badge component (3 variants)
+│   │   ├── badge.tsx         # Badge component (5 variants)
 │   │   ├── button.tsx        # Button with spring animations
-│   │   ├── glass-card.tsx    # Glassmorphism card
+│   │   ├── card.tsx          # Neo-brutalist card
 │   │   ├── device-mockup.tsx # Device frame wrapper
 │   │   ├── project-card.tsx  # Project display card
+│   │   ├── side-project-card.tsx # GitHub-style side project card
+│   │   ├── stat-badge.tsx    # Stat with icon display
+│   │   ├── rating-badge.tsx  # Circular rating display
 │   │   ├── social-icons.tsx  # SVG icon components
 │   │   └── index.ts          # Barrel exports
 │   ├── sections/             # Page sections
@@ -39,9 +41,10 @@ portfolio-next/
 │   │   ├── experience-section.tsx
 │   │   ├── skills-section.tsx
 │   │   ├── projects-section.tsx
+│   │   ├── side-projects-section.tsx
 │   │   └── contact-section.tsx
 │   ├── layout/               # Layout components
-│   │   ├── glass-navbar.tsx  # Fixed glass navbar
+│   │   ├── navbar.tsx        # Fixed navbar
 │   │   ├── mobile-menu.tsx   # Mobile navigation
 │   │   ├── footer.tsx        # Site footer
 │   │   └── page-transition.tsx
@@ -49,9 +52,6 @@ portfolio-next/
 │   │   ├── motion-provider.tsx   # LazyMotion + reduced motion
 │   │   ├── animation-variants.ts # Reusable animation presets
 │   │   └── scroll-reveal.tsx     # In-view animation wrapper
-│   ├── theme/                # Theme management
-│   │   ├── theme-provider.tsx    # next-themes wrapper
-│   │   └── theme-toggle.tsx      # Dark/light toggle
 │   └── data/                 # Static content data
 │       ├── skills-data.ts
 │       ├── projects-data.ts
@@ -71,9 +71,13 @@ portfolio-next/
 
 | Component | Purpose | Variants |
 |-----------|---------|----------|
-| `Button` | Interactive button with spring animations | primary, secondary |
-| `Badge` | Status/category label | default, cta, outline |
-| `GlassCard` | Glassmorphism container with hover effects | - |
+| `Button` | Interactive button with spring animations | primary, secondary, outline |
+| `Badge` | Status/category label | lime, green, pink, blue, purple |
+| `Card` | Neo-brutalist container with hover effects | - |
+| `StatBadge` | Stat display with icon | - |
+| `RatingBadge` | Circular rating display | - |
+| `ProjectCard` | Project showcase card | - |
+| `SideProjectCard` | GitHub-style project card | - |
 
 ### Sections (`components/sections/`)
 
@@ -84,6 +88,7 @@ portfolio-next/
 | `ExperienceSection` | Work history timeline |
 | `SkillsSection` | Skills by category grid |
 | `ProjectsSection` | Project showcase cards |
+| `SideProjectsSection` | GitHub-style side projects |
 | `ContactSection` | Contact form and info |
 
 ### Animation System (`components/effects/`)
@@ -92,7 +97,7 @@ portfolio-next/
 |------------------|---------|
 | `MotionProvider` | LazyMotion wrapper with reduced motion support |
 | `ScrollReveal` | Fade-in animation on scroll into view |
-| `animation-variants.ts` | Reusable animation presets (fadeIn, stagger, cardHover) |
+| `animation-variants.ts` | Reusable animation presets (fadeIn, stagger) |
 
 ## Data Layer
 
@@ -104,15 +109,27 @@ Static content separated into data files:
 
 ## Design System
 
-### Colors
+### Colors (Neo-Brutalist)
 
-| Token | Light | Dark |
-|-------|-------|------|
-| primary | #18181B | white |
-| secondary | #3F3F46 | gray-300 |
-| cta | #2563EB | blue-500 |
-| background | #FAFAFA | gray-900 |
-| text | #09090B | white |
+| Token | Value | Usage |
+|-------|-------|-------|
+| primary | `#22c55e` (green-500) | CTAs, highlights |
+| secondary | `#6b7280` (gray-500) | Body text |
+| background | `#f8f9fa` | Page background |
+| foreground | `#1f2937` (gray-800) | Headings, borders |
+| border | `#1f2937` (gray-800) | Card borders |
+| card | `#ffffff` | Card backgrounds |
+
+### Accent Colors
+
+| Token | Value |
+|-------|-------|
+| accent-pink | `#fecaca` |
+| accent-blue | `#93c5fd` |
+| accent-purple | `#ddd6fe` |
+| accent-green | `#bbf7d0` |
+| accent-lime | `#a3e635` |
+| accent-coral | `#f87171` |
 
 ### Typography
 
@@ -121,13 +138,12 @@ Static content separated into data files:
 | heading | Headlines, titles | Space Grotesk |
 | body | Body text | DM Sans |
 
-### Glassmorphism
+### Neo-Brutalist Card Style
 
 ```css
 /* Applied via Tailwind classes */
-bg-white/70 dark:bg-gray-900/80
-backdrop-blur-xl backdrop-saturate-180
-border border-white/20 dark:border-white/10
+bg-white border-2 border-gray-800 rounded-xl
+shadow-card hover:shadow-hover
 ```
 
 ## Architecture Patterns
@@ -147,8 +163,8 @@ border border-white/20 dark:border-white/10
 ### State Management
 
 - Local state via `useState` for UI interactions
-- Theme state via `next-themes` context
 - No global state library needed (static content)
+- No theme switching (single light mode)
 
 ## Performance Optimizations
 

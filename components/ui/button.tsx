@@ -32,7 +32,7 @@ export function Button({
     primary:
       "bg-cta text-white hover:bg-cta/90 dark:bg-blue-500 dark:hover:bg-blue-600",
     secondary:
-      "bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-primary",
+      "bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-gray-900",
   };
 
   const sizes = {

@@ -26,7 +26,7 @@ export const projects: Project[] = [
       "/screenshots/swisspost/460x998bb-2.webp",
       "/screenshots/swisspost/460x998bb-3.webp",
     ],
-    appStoreUrl: "https://apps.apple.com/app/swiss-post/id363556570",
+    appStoreUrl: "https://apps.apple.com/us/app/swiss-post/id378676700",
   },
   {
     id: "hva-financial",
@@ -37,7 +37,7 @@ export const projects: Project[] = [
     technologies: ["React Native", "TypeScript", "Firebase"],
     stat: { value: "90%+", label: "code quality compliance" },
     screenshots: [],
-    appStoreUrl: "https://apps.apple.com/app/hva",
+    appStoreUrl: "https://apps.apple.com/us/app/hva-%C4%91%E1%BA%A7u-t%C6%B0-%C4%91a-l%E1%BB%9Bp-t%C3%A0i-s%E1%BA%A3n/id6748415445",
   },
   {
     id: "smart-home",
@@ -48,7 +48,7 @@ export const projects: Project[] = [
     technologies: ["Swift", "WebSocket", "MVVM"],
     stat: { value: "90%", label: "test coverage achieved" },
     screenshots: [],
-    appStoreUrl: "https://apps.apple.com/app/smarthome",
+    appStoreUrl: undefined,
   },
   {
     id: "tvos-learning",
@@ -62,7 +62,7 @@ export const projects: Project[] = [
       "/screenshots/zillearn/Screenshot-2.png",
       "/screenshots/zillearn/Screenshot-3.png",
     ],
-    appStoreUrl: "https://apps.apple.com/app/zillearn",
+    appStoreUrl: "https://apps.apple.com/us/app/zillearn-bite-sized-learning/id1493909762",
   },
   {
     id: "vpn-client",
@@ -72,7 +72,7 @@ export const projects: Project[] = [
       "Led iOS development for VPN client with automated CI/CD deployment to QA environment.",
     technologies: ["Swift", "Bitrise", "CI/CD"],
     screenshots: ["/screenshots/windscribe/460x996bb.webp"],
-    appStoreUrl: "https://apps.apple.com/app/windscribe-vpn/id1163893293",
+    appStoreUrl: "https://apps.apple.com/us/app/vpn-windscribe-fast-secure/id1129435228",
   },
   {
     id: "legacy-refactoring",

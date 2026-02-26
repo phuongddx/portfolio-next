@@ -91,6 +91,11 @@ export function HeroSection() {
               View My Work
             </Button>
           </a>
+          <a href="/DoanPhuong.pdf" download="DoanPhuong.pdf">
+            <Button variant="secondary" size="large">
+              Download Resume
+            </Button>
+          </a>
         </m.div>
 
         {/* Social Links */}

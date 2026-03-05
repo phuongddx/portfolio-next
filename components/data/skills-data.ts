@@ -8,7 +8,7 @@ export const skillCategories: SkillCategory[] = [
   {
     id: "languages",
     title: "Languages",
-    skills: ["Swift", "Ruby", "Bash", "TypeScript", "JavaScript"],
+    skills: ["Swift", "Ruby", "Bash", "TypeScript"],
   },
   {
     id: "frameworks",
@@ -19,8 +19,9 @@ export const skillCategories: SkillCategory[] = [
       "Combine",
       "Core Data",
       "SwiftData",
+      "Moya",
+      "Realm Database",
       "React Native",
-      "Firebase",
     ],
   },
   {
@@ -30,9 +31,20 @@ export const skillCategories: SkillCategory[] = [
       "Xcode",
       "Instruments",
       "Visual Code",
+      "Cursor",
       "Claude Code",
       "XCTest",
       "Bitrise",
+      "EAS Build",
+    ],
+  },
+  {
+    id: "services",
+    title: "Services",
+    skills: [
+      "Firebase Suite",
+      "OneSignal",
+      "Branch",
     ],
   },
   {
@@ -48,6 +60,6 @@ export const skillCategories: SkillCategory[] = [
   {
     id: "expertise",
     title: "Expertise",
-    skills: ["Design Systems", "API Integration", "Testing & QA", "Cross-platform"],
+    skills: ["Design Systems", "API Integration", "WebSocket", "Testing & QA", "Cross-platform"],
   },
 ];

@@ -73,9 +73,9 @@ export function ContactSection() {
 
         <ScrollReveal delay={0.1}>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
-            I&apos;m currently open to new opportunities and exciting projects.
-            Whether you&apos;re looking for a skilled iOS developer or want to
-            discuss potential collaborations, I&apos;d love to hear from you.
+            Open to full-time roles and contract projects — remote or based in
+            Ho Chi Minh City, Vietnam. Drop me a message and I&apos;ll get back
+            to you within 24 hours.
           </p>
         </ScrollReveal>
 

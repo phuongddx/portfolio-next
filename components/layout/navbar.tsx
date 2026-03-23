@@ -54,8 +54,13 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* CTA */}
-          <div className="hidden md:block">
+          {/* CTAs */}
+          <div className="hidden md:flex items-center gap-3">
+            <a href="/DoanPhuong.pdf" download="DoanPhuong.pdf">
+              <Button variant="secondary" size="sm">
+                Resume
+              </Button>
+            </a>
             <a href="#contact">
               <Button variant="primary" size="sm">
                 Contact

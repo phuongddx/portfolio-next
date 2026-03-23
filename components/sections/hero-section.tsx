@@ -52,7 +52,7 @@ export function HeroSection() {
             {/* Badge */}
             <m.div variants={itemVariants}>
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-lime-400 text-gray-800">
-                🟢 Available for Work
+                🟢 Available for Work &middot; Remote-Friendly
               </span>
             </m.div>
 
@@ -77,9 +77,9 @@ export function HeroSection() {
               variants={itemVariants}
               className="text-lg text-gray-600 leading-relaxed"
             >
-              Passionate about building fast, reliable, and beautifully crafted
-              mobile experiences. 5+ years specializing in iOS development with
-              Swift, SwiftUI, and UIKit.
+              I build iOS apps used by millions — from design systems that cut
+              dev time by 40% to App Store products across fintech, security,
+              and IoT. 5+ years with Swift, SwiftUI, and UIKit.
             </m.p>
 
             {/* CTAs */}
@@ -89,9 +89,9 @@ export function HeroSection() {
                   Get In Touch
                 </Button>
               </a>
-              <a href="#projects">
+              <a href="/DoanPhuong.pdf" download="DoanPhuong.pdf">
                 <Button variant="secondary" size="lg">
-                  View My Work
+                  Download Resume
                 </Button>
               </a>
             </m.div>
@@ -105,8 +105,8 @@ export function HeroSection() {
               />
               <StatBadge
                 icon={<span>🚀</span>}
-                value="6+"
-                label="Projects"
+                value="4+"
+                label="Apps Shipped"
               />
             </m.div>
 

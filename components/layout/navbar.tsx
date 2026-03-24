@@ -22,7 +22,7 @@ export function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl"
+        className="fixed top-4 inset-x-0 mx-auto z-50 w-[95%] max-w-5xl"
       >
         <nav
           className={cn(

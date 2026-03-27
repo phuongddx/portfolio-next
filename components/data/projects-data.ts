@@ -14,17 +14,6 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "hva-financial",
-    title: "HVA Financial App",
-    category: "Fintech",
-    description:
-      "Large-scale fintech app across iOS, Android, and Web with 24+ modules including investment, savings, insurance, metal trading, and crypto wallet.",
-    technologies: ["React Native", "TypeScript", "Firebase", "OneSignal"],
-    stat: { value: "90%+", label: "code quality compliance" },
-    screenshots: [],
-    appStoreUrl: "https://apps.apple.com/us/app/hva-%C4%91%E1%BA%A7u-t%C6%B0-%C4%91a-l%E1%BB%9Bp-t%C3%A0i-s%E1%BA%A3n/id6748415445",
-  },
-  {
     id: "epost-design-system",
     title: "ePost Design System",
     category: "Design System",

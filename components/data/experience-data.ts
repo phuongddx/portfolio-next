@@ -11,21 +11,6 @@ export interface Experience {
 
 export const experiences: Experience[] = [
   {
-    id: "hva-app",
-    title: "Mobile Engineer (React Native)",
-    company: "HVA App",
-    startDate: "07/2025",
-    endDate: "Present",
-    location: "Ho Chi Minh",
-    locationType: "Remote",
-    achievements: [
-      "Designed and developed a large-scale fintech app across iOS, Android, and Web, serving thousands of active users",
-      "Built and maintained 24+ feature modules including investment, savings, insurance, metal trading, and crypto wallet integration",
-      "Implemented secure multi-tier authentication (Biometrics, KYC, PIN) and integrated Firebase, OneSignal, Branch, and payment gateways",
-      "Established CI/CD pipelines with EAS Build, automated testing, and OTA updates, achieving 90%+ code quality compliance",
-    ],
-  },
-  {
     id: "axon-active",
     title: "Software Engineer (iOS)",
     company: "Axon Active",

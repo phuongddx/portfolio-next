@@ -77,4 +77,77 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Blink cursor animation for terminal workflow */
+  @keyframes blink-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .animate-blink-cursor {
+    animation: blink-cursor 1s step-end infinite;
+  }
+}
+
+/* Print styles for PDF export */
+@media print {
+  /* Hide non-essential elements */
+  header, footer, .mode-toggle, .no-print,
+  button, .animate-pulse, nav, [role="radiogroup"] {
+    display: none !important;
+  }
+
+  /* Reset colors for print */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Remove shadows and decorative borders */
+  .shadow-card, .shadow-hover, .shadow-navbar, .shadow-brutal, .shadow-brutal-sm {
+    box-shadow: none !important;
+  }
+
+  /* Cards: simple border only */
+  [class*="border-2"] {
+    border: 1px solid #ccc !important;
+  }
+
+  /* Force Framer Motion elements to final states */
+  [data-skill-level] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Terminal lines: show all text immediately */
+  [style*="visibility"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Full width containers */
+  .max-w-6xl, .max-w-5xl {
+    max-width: 100% !important;
+  }
+
+  /* Page breaks between sections */
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Remove fixed positioning */
+  .fixed {
+    position: static !important;
+  }
+
+  /* Remove scroll margin */
+  section {
+    scroll-margin-top: 0 !important;
+  }
+
+  /* Ensure backgrounds print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

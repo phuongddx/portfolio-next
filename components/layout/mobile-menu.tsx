@@ -3,13 +3,8 @@
 import { m } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#experience", label: "Experience" },
-  { href: "#projects", label: "Projects" },
-  { href: "#skills", label: "Skills" },
-];
+import { useMode } from "@/components/context/mode-context";
+import { NAV_LINKS_BY_MODE } from "./nav-links";
 
 interface MobileMenuProps {
   onClose: () => void;
@@ -17,6 +12,8 @@ interface MobileMenuProps {
 
 export function MobileMenu({ onClose }: MobileMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
+  const { mode } = useMode();
+  const navLinks = NAV_LINKS_BY_MODE[mode];
 
   // Close on Escape key
   useEffect(() => {

@@ -5,16 +5,15 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "./mobile-menu";
-
-const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#experience", label: "Experience" },
-  { href: "#projects", label: "Projects" },
-  { href: "#skills", label: "Skills" },
-];
+import { ModeToggle } from "./mode-toggle";
+import { useMode } from "@/components/context/mode-context";
+import { NAV_LINKS_BY_MODE } from "./nav-links";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { mode } = useMode();
+
+  const navLinks = NAV_LINKS_BY_MODE[mode];
 
   return (
     <>
@@ -41,8 +40,8 @@ export function Navbar() {
             </span>
           </a>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Nav + Toggle */}
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -52,6 +51,7 @@ export function Navbar() {
                 {link.label}
               </a>
             ))}
+            <ModeToggle />
           </div>
 
           {/* CTAs */}
@@ -69,26 +69,29 @@ export function Navbar() {
           </div>
 
           {/* Mobile Toggle */}
-          <button
-            className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors border-2 border-gray-800"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={isMobileMenuOpen}
-          >
-            <svg
-              className="w-6 h-6 text-gray-800"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="flex md:hidden items-center gap-2">
+            <ModeToggle />
+            <button
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors border-2 border-gray-800"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-              />
-            </svg>
-          </button>
+              <svg
+                className="w-6 h-6 text-gray-800"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                />
+              </svg>
+            </button>
+          </div>
         </nav>
       </m.header>
 

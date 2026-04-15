@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans } from "next/font/google";
 import { MotionProvider } from "@/components/effects/motion-provider";
+import { ModeProvider } from "@/components/context/mode-context";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import "./globals.css";
@@ -98,6 +99,7 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}
       >
         <MotionProvider>
+          <ModeProvider>
           {/* Skip to content link for accessibility */}
           <a
             href="#main-content"
@@ -108,6 +110,7 @@ export default function RootLayout({
           <Navbar />
           <main id="main-content">{children}</main>
           <Footer />
+          </ModeProvider>
         </MotionProvider>
       </body>
     </html>

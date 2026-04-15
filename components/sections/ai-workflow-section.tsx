@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { m } from "framer-motion";
 import { ScrollReveal } from "@/components/effects/scroll-reveal";
 import { terminalLines } from "@/components/data/ai-resume-data";
+import { workflowSteps } from "@/components/data/ai-resume-data";
 import type { TerminalLine } from "@/components/data/ai-resume-data";
 
 /** Map line type to Tailwind text color class. */
@@ -21,12 +22,6 @@ function lineColor(type: TerminalLine["type"]): string {
 }
 
 /** Workflow steps displayed below the terminal. */
-const workflowSteps = [
-  { num: 1, label: "Decompose", desc: "Break the problem into prompts" },
-  { num: 2, label: "Generate", desc: "AI produces implementation code" },
-  { num: 3, label: "Verify", desc: "Review, test, and security-check" },
-  { num: 4, label: "Iterate", desc: "Refine until production-ready" },
-];
 
 export function AIWorkflowSection() {
   const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -120,7 +115,7 @@ export function AIWorkflowSection() {
 
         {/* Workflow steps */}
         <ScrollReveal delay={0.4}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-12">
             {workflowSteps.map((step) => (
               <m.div
                 key={step.num}

@@ -45,6 +45,12 @@ export interface TerminalLine {
   type: "command" | "output" | "success" | "cursor";
 }
 
+export interface WorkflowStep {
+  num: number;
+  label: string;
+  desc: string;
+}
+
 export interface AIHeroData {
   title: string;
   tagline: string;
@@ -245,17 +251,30 @@ export const aiProjects: AIProject[] = [
 // ---------------------------------------------------------------------------
 
 export const terminalLines: TerminalLine[] = [
-  { text: '$ claude "Build auth middleware with JWT validation"', delay: 0, type: "command" },
-  { text: "Analyzing project structure...", delay: 800, type: "output" },
-  { text: "Generating implementation...", delay: 1200, type: "output" },
-  { text: "\u2713 Created auth-middleware.ts", delay: 1800, type: "success" },
-  { text: "\u2713 Added JWT validation with RS256", delay: 2200, type: "success" },
-  { text: "\u2713 Unit tests generated (4 test cases)", delay: 2600, type: "success" },
-  { text: '$ claude "Review for security vulnerabilities"', delay: 3200, type: "command" },
-  { text: "Running security audit...", delay: 3800, type: "output" },
-  { text: "\u2713 No OWASP Top 10 issues found", delay: 4400, type: "success" },
-  { text: "\u2713 All tests passing", delay: 4800, type: "success" },
-  { text: "\u2588", delay: 5400, type: "cursor" },
+  // Phase 1: Requirements
+  { text: '$ claude "Analyze requirements for auth system"', delay: 0, type: "command" },
+  { text: "\u2713 Identified 5 functional requirements", delay: 600, type: "success" },
+  { text: "\u2713 Defined acceptance criteria and edge cases", delay: 1000, type: "success" },
+  // Phase 2: Design
+  { text: '$ claude "Design auth architecture with JWT"', delay: 1500, type: "command" },
+  { text: "\u2713 Architected middleware pipeline with RS256", delay: 2100, type: "success" },
+  { text: "\u2713 Created data flow diagram", delay: 2500, type: "success" },
+  // Phase 3: Planning
+  { text: '$ claude "Break down auth implementation tasks"', delay: 3000, type: "command" },
+  { text: "\u2713 Generated 8 actionable tasks with dependencies", delay: 3600, type: "success" },
+  // Phase 4: Implementation
+  { text: '$ claude "Implement JWT auth middleware"', delay: 4100, type: "command" },
+  { text: "\u2713 Created auth-middleware.ts", delay: 4600, type: "success" },
+  { text: "\u2713 Added token validation and refresh logic", delay: 5000, type: "success" },
+  // Phase 5: Testing
+  { text: '$ claude "Generate tests for auth middleware"', delay: 5500, type: "command" },
+  { text: "\u2713 Unit tests generated (12 test cases)", delay: 6000, type: "success" },
+  { text: "\u2713 All tests passing", delay: 6400, type: "success" },
+  // Phase 6: Code Review
+  { text: '$ claude "Review for security vulnerabilities"', delay: 6900, type: "command" },
+  { text: "\u2713 No OWASP Top 10 issues found", delay: 7400, type: "success" },
+  { text: "\u2713 Ready to commit", delay: 7800, type: "success" },
+  { text: "\u2588", delay: 8200, type: "cursor" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -268,3 +287,16 @@ export const aiHeroData: AIHeroData = {
   badges: ["Claude Code", "Cursor", "Codex", "Swift", "TypeScript"],
   typingPhrases: ["Prompt \u2192 Verify \u2192 Ship \u2192 Repeat"],
 };
+
+// ---------------------------------------------------------------------------
+// Workflow steps
+// ---------------------------------------------------------------------------
+
+export const workflowSteps: WorkflowStep[] = [
+  { num: 1, label: "Requirements", desc: "Define what you're building and why" },
+  { num: 2, label: "Design", desc: "Architect solutions with diagrams and decisions" },
+  { num: 3, label: "Planning", desc: "Break work into actionable tasks" },
+  { num: 4, label: "Implementation", desc: "Execute tasks step-by-step with AI guidance" },
+  { num: 5, label: "Testing", desc: "Generate tests and validate your code" },
+  { num: 6, label: "Code Review", desc: "Review changes before committing" },
+];

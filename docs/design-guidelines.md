@@ -6,7 +6,7 @@
 - **Minimalist** approach - content-focused, not decoration-focused
 - **Accessible** - high contrast, clear typography, keyboard-friendly
 - **Responsive** - mobile-first, progressive enhancement
-- **No Dark Mode** - single light theme for consistency
+- **Dual-mode support** - iOS mode (default) and AI-driven development mode (v1.1+)
 
 ## Color Palette
 
@@ -171,6 +171,26 @@ className="block text-gray-500 hover:text-green-500 transition-colors
            duration-200 font-medium cursor-pointer py-2"
 ```
 
+### Mode Toggle (iOS/AI)
+
+```tsx
+// Pill-style radio group
+className="inline-flex bg-white border-2 border-gray-800 rounded-full p-1"
+
+// Active pill
+className="px-4 py-2 bg-green-500 text-white rounded-full font-medium
+           transition-all duration-200 cursor-pointer"
+
+// Inactive pill
+className="px-4 py-2 text-gray-800 hover:text-green-500 transition-colors
+           duration-200 font-medium cursor-pointer"
+
+// Animations
+- Spring animation on active state change
+- 500ms debounce to prevent rapid toggling
+- Focus-visible ring for keyboard accessibility
+```
+
 ## Shadow System
 
 | Shadow | Usage |
@@ -191,13 +211,23 @@ className="block text-gray-500 hover:text-green-500 transition-colors
 | fadeIn | `opacity: 0->1` | Simple fade |
 | cardHover | `scale: 1->1.02` | Button hover |
 | whileTap | `scale: 0.98` | Button press |
+| modeTransition | `opacity: 0->1` (300ms) | Mode switch fade |
 
 ### Spring Transitions
 
 ```typescript
 // Default spring
 { type: "spring", stiffness: 300, damping: 20 }
+
+// Mode toggle spring
+{ type: "spring", stiffness: 400, damping: 30 }
 ```
+
+### Mode Switch Transitions
+
+- Cross-fade between iOS and AI content: 300ms opacity transition
+- `AnimatePresence mode="wait"` ensures sequential mounting/unmounting
+- `SectionSkeleton` provides loading visual during AI section lazy-load
 
 ### CSS Transitions
 
@@ -264,3 +294,20 @@ className="focus-visible:outline-none focus-visible:ring-2
 - Size: `w-8 h-8` (32px) for feature icons
 - Use `aria-label` for icon-only buttons
 - Color follows parent text or explicit `text-green-500`
+
+## AI Mode Design Notes
+
+### Visual Identity
+
+- **AI Hero Section**: Terminal/code aesthetic with monospace typography, dark background, animated character-by-character text reveal
+- **AI Workflow**: 6-phase development cycle with visual progression indicators
+- **AI Skills**: Animated progress bars with color coding by proficiency level
+- **AI Experience**: Expandable cards with "AI Impact" badge highlighting AI-driven aspects
+- **AI Projects**: GitHub-style cards with direct repository links
+
+### Brand Consistency
+
+- AI mode reuses the neo-brutalist color palette and typography system
+- Maintains consistent spacing and responsive breakpoints with iOS mode
+- Uses the same button styles and interactive patterns
+- Shares the contact section layout between modes

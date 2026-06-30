@@ -265,6 +265,12 @@ Before deployment:
 - [ ] Check dark/light theme toggle
 - [ ] Validate accessibility (keyboard nav)
 - [ ] Test in multiple browsers
+- [ ] **Test mode toggle** - iOS mode (default) and AI mode (`?mode=ai`)
+- [ ] **Verify mode persistence** - localStorage saves selection across sessions
+- [ ] **Test AI section loading** - Check SectionSkeleton appears during lazy load
+- [ ] **Test URL param** - Verify `?mode=ai` links work and load AI mode
+- [ ] **Test mode links** - Verify nav links change when switching modes
+- [ ] **Test contactsection** - Verify contact section appears in both modes
 
 ## Post-Deployment
 
@@ -275,12 +281,19 @@ Before deployment:
 3. Theme toggle functions
 4. Responsive design displays properly
 5. Social links open correctly
+6. **AI mode toggle** works in navbar
+7. **AI sections load** on demand when switching to AI mode
+8. **Mode persists** after page reload
+9. **URL param** (`?mode=ai`) routes correctly
+10. **Nav links update** based on active mode
 
 ### Monitor
 
 - Set up uptime monitoring (UptimeRobot, Pingdom)
 - Configure error tracking (Sentry, LogRocket)
 - Enable analytics (Google Analytics, Vercel Analytics)
+- Monitor AI section loading performance
+- Track mode switch usage (if analytics implemented)
 
 ## Troubleshooting
 

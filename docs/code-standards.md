@@ -41,11 +41,35 @@ import { cn } from "@/lib/utils";
 components/
 ├── ui/           # Reusable UI primitives
 ├── sections/     # Page-level sections
-├── layout/       # Layout components (navbar, footer)
+├── context/      # React Context providers
+├── layout/       # Layout components (navbar, footer, mode-router)
 ├── effects/      # Animation & motion components
 ├── theme/        # Theme-related components
+├── hooks/        # Custom React hooks
 └── data/         # Static data exports
 ```
+
+### Mode-Aware Components
+
+When components depend on mode state:
+
+```tsx
+"use client";
+
+import { useMode } from "@/components/context/mode-context";
+
+export function YourComponent() {
+  const { mode } = useMode();
+  
+  return (
+    <>
+      {mode === "ios" ? <IOSVersion /> : <AIVersion />}
+    </>
+  );
+}
+```
+
+**Rule**: Client components that manage mode state must use `ModeContext`, not local state.
 
 ### Component Template
 
@@ -250,8 +274,9 @@ className={cn(
 |------|------------|---------|
 | Components | kebab-case | `glass-card.tsx` |
 | Utilities | kebab-case | `animation-variants.ts` |
-| Data files | kebab-case with `-data` suffix | `skills-data.ts` |
-| Hooks | kebab-case with `use-` prefix | `use-scroll-lock.ts` |
+| Data files | kebab-case with `-data` suffix | `skills-data.ts`, `ai-resume-data.ts` |
+| Hooks | kebab-case with `use-` prefix | `use-scroll-lock.ts`, `use-typing-animation.ts` |
+| Context | kebab-case with `-context` suffix | `mode-context.tsx` |
 
 ## Import Order
 
@@ -294,6 +319,7 @@ try {
 ## Performance Guidelines
 
 1. **LazyMotion** - Required for all Framer Motion usage
-2. **Dynamic imports** - For heavy components below fold
+2. **Dynamic imports** - For heavy components below fold; AI sections use `next/dynamic` with `ssr: false`
 3. **Image optimization** - Use Next.js Image component
 4. **Bundle size** - Keep components under 200 lines
+5. **Mode-aware data** - Keep iOS and AI data in separate files to reduce base bundle

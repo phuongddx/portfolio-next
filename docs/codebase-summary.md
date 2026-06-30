@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Portfolio website for DOAN DUY PHUONG - iOS Software Engineer with 5+ years experience. Built with Next.js 14 App Router, TypeScript, Tailwind CSS, and Framer Motion. Features a neo-brutalist design with bold colors and flat styling.
+Dual-mode portfolio website for DOAN DUY PHUONG - iOS Software Engineer with 5+ years experience. Built with Next.js 14 App Router, TypeScript, Tailwind CSS, and Framer Motion. Features neo-brutalist design with bold colors and flat styling. Supports iOS mode (default) and AI developer mode with lazy-loaded sections.
 
 ## Tech Stack
 
@@ -179,22 +179,40 @@ shadow-card hover:shadow-hover
 - **LazyMotion** with `domAnimation` for bundle size optimization
 - **Reduced motion** respected via `useReducedMotion()` hook
 - **Animation variants** centralized in `animation-variants.ts`
-- **Terminal typing** uses `requestAnimationFrame` for efficient line-by-line reveal (~11 DOM nodes)
+- **Terminal typing** uses `requestAnimationFrame` for efficient line-by-line reveal
 - **Skill bars** animate via `whileInView` with `viewport={{ once: true }}`
+- **Mode transitions** use `AnimatePresence` with 300ms fade between iOS/AI views
 
-### AI Mode Architecture
+### AI Mode Architecture (v1.1)
 
-- **ModeRouter** (client component) conditionally renders iOS or AI sections
-- **AI sections** loaded via `next/dynamic` with `ssr: false` — no iOS bundle bloat
-- **AnimatePresence** cross-fade between modes (`mode="wait"`)
-- **ModeContext** persists state in localStorage, syncs to URL params
-- **ContactSection** shared across both modes
+**Mode System**:
+- `ModeContext` provides `useMode()` hook with `mode: "ios" | "ai"` and `setMode()`
+- State persists to localStorage (`portfolio-mode`) and URL params (`?mode=ai`)
+- URL params take precedence over localStorage (enables shareable links)
+- Post-mount hydration prevents layout shift; pre-renders iOS on server
+
+**Section Rendering**:
+- `ModeRouter` client component conditionally renders iOS or AI content
+- iOS sections (hero, about, experience, skills, projects, side-projects) - static imports
+- AI sections (hero, workflow, skills, experience, projects) - dynamic imports via `next/dynamic` with `ssr: false`
+- `SectionSkeleton` provides loading state during lazy hydration
+- `AnimatePresence mode="wait"` enables smooth cross-fade between modes (300ms duration)
+
+**Shared Components**:
+- `ContactSection` renders in both modes (not affected by mode switch)
+- `GlassNavbar` includes `ModeToggle` pill-style radio group
+- Navigation links change based on mode via `nav-links.ts`
+
+**Bundle Strategy**:
+- iOS bundle unaffected by AI code; AI modules only load when needed
+- Reduces initial page load for users who stay in iOS mode
+- Lazy loading provides better UX for mode switchers
 
 ### State Management
 
 - `ModeContext` (React Context) for iOS/AI mode switching
 - Mode persists via localStorage + URL param `?mode=ai`
-- Local state via `useState` for UI interactions
+- Local state via `useState` for UI interactions (mobile menu, toggles)
 - Two-pass rendering: server renders iOS, client hydrates mode post-mount
 
 ## Performance Optimizations

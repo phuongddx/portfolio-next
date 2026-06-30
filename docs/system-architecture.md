@@ -60,15 +60,25 @@ portfolio-next/
 │   │   ├── social-icons.tsx
 │   │   └── index.ts          # Barrel exports
 │   ├── sections/             # Page sections
-│   │   ├── hero-section.tsx
+│   │   ├── hero-section.tsx  # iOS hero
 │   │   ├── about-section.tsx
-│   │   ├── experience-section.tsx
-│   │   ├── skills-section.tsx
-│   │   ├── projects-section.tsx
-│   │   └── contact-section.tsx
+│   │   ├── experience-section.tsx  # iOS experience
+│   │   ├── skills-section.tsx      # iOS skills
+│   │   ├── projects-section.tsx    # iOS projects
+│   │   ├── contact-section.tsx     # Shared contact
+│   │   ├── ai-hero-section.tsx     # AI hero (terminal)
+│   │   ├── ai-workflow-section.tsx # AI workflow (6-phase)
+│   │   ├── ai-skills-section.tsx   # AI skills (bars)
+│   │   ├── ai-experience-section.tsx # AI experience (AI Impact)
+│   │   └── ai-projects-section.tsx # AI projects (GitHub)
+│   ├── context/              # React Context providers
+│   │   └── mode-context.tsx  # Mode state + useMode hook
 │   ├── layout/               # Layout components
-│   │   ├── glass-navbar.tsx
+│   │   ├── navbar.tsx        # Main navbar with mode toggle
 │   │   ├── mobile-menu.tsx
+│   │   ├── mode-toggle.tsx   # iOS/AI pill toggle
+│   │   ├── mode-router.tsx   # Mode-aware section renderer
+│   │   ├── nav-links.ts      # Mode-aware nav links
 │   │   ├── footer.tsx
 │   │   └── page-transition.tsx
 │   ├── effects/              # Animation system
@@ -79,9 +89,10 @@ portfolio-next/
 │   │   ├── theme-provider.tsx
 │   │   └── theme-toggle.tsx
 │   └── data/                 # Static content
-│       ├── skills-data.ts
-│       ├── projects-data.ts
-│       └── experience-data.ts
+│       ├── skills-data.ts    # iOS skills
+│       ├── projects-data.ts  # iOS projects
+│       ├── experience-data.ts # iOS experience
+│       └── ai-resume-data.ts # AI mode data
 └── lib/
     └── utils.ts              # cn() helper
 ```
@@ -149,19 +160,32 @@ portfolio-next/
 ```
 RootLayout (Server)
 ├── ThemeProvider (Client - next-themes)
-│   └── MotionProvider (Client - Framer Motion LazyMotion)
-│       ├── Skip Link (Accessibility)
-│       ├── GlassNavbar (Client)
-│       │   ├── Logo
-│       │   ├── Nav Links
-│       │   ├── ThemeToggle (Client)
-│       │   └── MobileMenu (Client)
-│       ├── Main Content
-│       │   └── Page Sections (Client/Server hybrid)
-│       │       ├── ScrollReveal wrappers
-│       │       ├── GlassCard containers
-│       │       └── UI primitives (Button, Badge)
-│       └── Footer (Server)
+│   └── ModeProvider (Client - iOS/AI mode context)
+│       └── MotionProvider (Client - Framer Motion LazyMotion)
+│           ├── Skip Link (Accessibility)
+│           ├── GlassNavbar (Client)
+│           │   ├── Logo
+│           │   ├── Nav Links (mode-aware)
+│           │   ├── ModeToggle (iOS/AI pill toggle)
+│           │   ├── ThemeToggle (Client)
+│           │   └── MobileMenu (Client)
+│           ├── ModeRouter (Client)
+│           │   ├── AnimatePresence (fade transition)
+│           │   ├── IOSContent (static sections)
+│           │   │   ├── HeroSection
+│           │   │   ├── AboutSection
+│           │   │   ├── ExperienceSection
+│           │   │   ├── SkillsSection
+│           │   │   ├── ProjectsSection
+│           │   │   └── SideProjectsSection
+│           │   └── AIContent (dynamic sections)
+│           │       ├── AIHeroSection
+│           │       ├── AIWorkflowSection
+│           │       ├── AISkillsSection
+│           │       ├── AIExperienceSection
+│           │       └── AIProjectsSection
+│           ├── ContactSection (Client - shared)
+│           └── Footer (Server)
 ```
 
 ## Data Flow
@@ -169,22 +193,53 @@ RootLayout (Server)
 ### Static Content Flow
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   skills-data   │     │  projects-data  │     │ experience-data │
-│       .ts       │     │       .ts       │     │       .ts       │
-└────────┬────────┘     └────────┬────────┘     └────────┬────────┘
-         │                       │                       │
-         v                       v                       v
-┌─────────────────────────────────────────────────────────────────┐
-│                      Section Components                          │
-│  (SkillsSection, ProjectsSection, ExperienceSection)             │
-└─────────────────────────────────────────────────────────────────┘
-         │
-         v
-┌─────────────────────────────────────────────────────────────────┐
-│                      UI Components                               │
-│  (Badge, GlassCard, ProjectCard)                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────┬──────────────────────────┐
+│   iOS Data               │   AI Mode Data           │
+│                          │                          │
+│ ┌──────────────────────┐ │ ┌──────────────────────┐ │
+│ │ skills-data.ts       │ │ │ ai-resume-data.ts    │ │
+│ │ projects-data.ts     │ │ │  - skills/levels     │ │
+│ │ experience-data.ts   │ │ │  - experiences/AI... │ │
+│ │                      │ │ │  - projects/GitHub   │ │
+│ └──────────────────────┘ │ │  - terminal lines    │ │
+│                          │ │  - workflow steps    │ │
+└──────────────┬───────────┴──────────────┬───────────┘
+               │                         │
+               v                         v
+┌──────────────────────────┬──────────────────────────┐
+│   iOS Sections           │   AI Sections            │
+│   (static imports)       │   (dynamic imports)      │
+│                          │                          │
+│ HeroSection              │ AIHeroSection            │
+│ AboutSection             │ AIWorkflowSection        │
+│ ExperienceSection        │ AISkillsSection          │
+│ SkillsSection            │ AIExperienceSection      │
+│ ProjectsSection          │ AIProjectsSection        │
+│ SideProjectsSection      │                          │
+└──────────────┬───────────┴──────────────┬───────────┘
+               │                         │
+               └──────────┬──────────────┘
+                          v
+             ┌────────────────────────────┐
+             │     ModeRouter (Client)    │
+             │   - Selects iOS or AI      │
+             │   - AnimatePresence fade   │
+             │   - SectionSkeleton loader │
+             └────────────────────────────┘
+```
+
+### Mode State Flow
+
+```
+ModeContext (iOS | AI)
+     ↓
+  useMode() hook
+     ↓
+ModeRouter (renders based on mode)
+     ↓
+AnimatePresence (300ms fade transition)
+     ↓
+iOS or AI content sections
 ```
 
 ### Theme State Flow
@@ -203,18 +258,35 @@ RootLayout (Server)
 └────────┘  └────────────┘
 ```
 
+### Mode State Flow (localStorage + URL)
+
+```
+ModeProvider (ModeContext)
+     ↓
+setMode(next) → localStorage + URL param update
+     ↓
+useMode() subscribers (ModeRouter, ModeToggle)
+     ↓
+Trigger re-render with AnimatePresence fade
+     ↓
+Load iOS or AI sections
+```
+
 ### Animation Flow
 
 ```
-┌─────────────────┐
-│ MotionProvider  │  (LazyMotion + domAnimation)
-└────────┬────────┘
-         │
-         v
-┌─────────────────┐     ┌─────────────────┐
-│ ScrollReveal    │────>│ Section Content │
-│ (in-view detect)│     │ (fadeInUp)      │
-└─────────────────┘     └─────────────────┘
+MotionProvider (LazyMotion + domAnimation)
+     ↓
+├─ ScrollReveal (in-view animations)
+│   └─ Section content (fadeInUp)
+│
+├─ ModeRouter (cross-fade on mode change)
+│   └─ AnimatePresence (300ms fade)
+│
+└─ Component animations
+    ├─ Skill bars (whileInView)
+    ├─ Terminal typing (requestAnimationFrame)
+    └─ Interactive elements (spring transitions)
 ```
 
 ## State Management
@@ -224,16 +296,25 @@ RootLayout (Server)
 | State Type | Solution | Example |
 |------------|----------|---------|
 | Theme | next-themes context | Dark/light mode |
-| UI State | Local useState | Mobile menu open/close |
-| Animation | Framer Motion | In-view animations |
-| Content | Static imports | Skills, projects, experience |
+| Mode (iOS/AI) | ModeContext | Mode selection + persistence |
+| UI State | Local useState | Mobile menu, disclosure toggles |
+| Animation | Framer Motion | In-view animations, transitions |
+| Content | Static imports | Skills, projects, experience, AI data |
 
-### No Global State Library
+### Context Providers
 
 The application uses:
-- React context for theme only
-- Local component state for UI interactions
-- Static data imports (no runtime data fetching)
+- **ThemeProvider** (next-themes) - Dark/light theme management
+- **ModeProvider** (ModeContext) - iOS/AI mode switching with localStorage + URL sync
+- **MotionProvider** (Framer Motion LazyMotion) - Animation configuration
+- Local component state for transient UI interactions
+
+### Data Persistence
+
+- **Theme**: persisted via next-themes (system preference + localStorage)
+- **Mode**: persisted via localStorage (`portfolio-mode`) and URL parameter (`?mode=ai`)
+  - URL params take precedence (enables shareable links)
+  - Post-mount hydration prevents layout shift
 
 ## Client vs Server Components
 
@@ -289,7 +370,12 @@ Configured in `next.config.mjs`:
 ## Performance Optimizations
 
 1. **LazyMotion** - Reduces Framer Motion bundle by lazy-loading animations
-2. **Static Generation** - No server-side rendering needed for static content
-3. **Font Optimization** - Next.js font loading with CSS variables
-4. **Image Optimization** - Next.js Image component ready (currently using external images)
-5. **Code Splitting** - Automatic with App Router
+2. **Dynamic Imports** - AI sections use `next/dynamic` with `ssr: false`
+   - iOS users never download AI bundle code
+   - AI sections load on-demand when user switches mode
+3. **Static Generation** - No server-side rendering needed for static content
+4. **Font Optimization** - Next.js font loading with CSS variables
+5. **Image Optimization** - Next.js Image component ready (currently using external images)
+6. **Code Splitting** - Automatic with App Router
+7. **Two-Pass Rendering** - ModeRouter pre-renders iOS to avoid hydration mismatch
+8. **SectionSkeleton** - Loading state for lazy-loaded AI sections

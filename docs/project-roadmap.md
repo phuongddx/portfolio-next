@@ -1,8 +1,8 @@
 # Project Roadmap
 
-## Current Status: Complete (v1.0)
+## Current Status: Active (v1.1)
 
-The portfolio website is fully functional with both static HTML and Next.js versions available.
+The portfolio website is fully functional with dual-mode support (iOS and AI developer modes) in the Next.js version. Features comprehensive mode switching with lazy-loaded AI sections.
 
 ## Completed Features
 
@@ -60,6 +60,24 @@ The portfolio website is fully functional with both static HTML and Next.js vers
 | Twitter Card tags | Done | v1.0 |
 | Robots meta | Done | v1.0 |
 
+### Phase 7: AI Mode Toggle (Complete - v1.1)
+
+| Feature | Status | Version |
+|---------|--------|---------|
+| Mode context + localStorage persistence | Done | v1.1 |
+| URL parameter support (`?mode=ai`) | Done | v1.1 |
+| Mode toggle UI component (pill-style) | Done | v1.1 |
+| Mode-aware navigation links | Done | v1.1 |
+| ModeRouter with dynamic imports | Done | v1.1 |
+| AI hero section (terminal animation) | Done | v1.1 |
+| AI workflow section (6-phase dev cycle) | Done | v1.1 |
+| AI skills section (animated bars) | Done | v1.1 |
+| AI experience section (AI Impact badges) | Done | v1.1 |
+| AI projects section (GitHub URLs) | Done | v1.1 |
+| ai-resume-data type system | Done | v1.1 |
+| SectionSkeleton loading states | Done | v1.1 |
+| Mobile-responsive AI sections | Done | v1.1 |
+
 ## Planned Features (v2.0)
 
 ### High Priority
@@ -92,21 +110,38 @@ The portfolio website is fully functional with both static HTML and Next.js vers
 
 ## Version History
 
-### v1.0.0 (Current)
+### v1.0.0
 
 - Initial release
-- 6 portfolio sections
+- 6 portfolio sections (iOS-focused)
 - Dark/light theme support (Next.js)
 - Responsive design
 - Accessibility features
 - SEO optimization
 - Static HTML alternative version
 
+### v1.1.0 (Current)
+
+- Dual-mode portfolio: iOS and AI developer modes
+- Mode toggle UI with localStorage persistence + URL params
+- AI mode with terminal-style hero animation
+- 6-phase AI development workflow visualization
+- AI skills section with animated progress bars
+- AI experience section with AI Impact badges
+- AI projects section with GitHub integration
+- Dynamic imports for AI sections (no iOS bundle bloat)
+- ModeRouter with AnimatePresence cross-fade transitions
+- Mode-aware navigation restructuring
+
 ## Milestones
 
 ```
 v1.0 ─────────────────────────────────────────────●
        Foundation  Core    Animation  Theme  A11y  SEO
+
+v1.1 ─────────────────────────────────────────────●
+       AI Mode    Terminal    Skills    Experience
+       Toggle     Animation   Bars      Projects
 
 v2.0                                              ○ (Planned)
        Contact     Blog    Analytics   Detail

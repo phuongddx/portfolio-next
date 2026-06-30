@@ -6,10 +6,15 @@ DDP Portfolio - Personal Portfolio Website
 
 ## Project Description
 
-A modern, responsive portfolio website showcasing the skills, experience, and projects of DOAN DUY PHUONG, an iOS Software Engineer with 5+ years of experience. The project exists in two versions:
+A modern, responsive portfolio website showcasing the skills, experience, and projects of DOAN DUY PHUONG, an iOS Software Engineer with 5+ years of experience. The portfolio supports dual presentation modes:
 
-1. **Static HTML Version** - Lightweight, CDN-hosted vanilla HTML/CSS/JS
-2. **Next.js Version** - Full-featured React application with advanced animations
+1. **iOS Mode** (default) - Highlights iOS development expertise and work history
+2. **AI Mode** - Alternate resume showcasing AI-driven development workflows and capabilities
+
+Technical implementations:
+
+- **Static HTML Version** - Lightweight, CDN-hosted vanilla HTML/CSS/JS
+- **Next.js Version** - Full-featured React application with advanced animations, mode switching, and dynamic section loading
 
 ## Purpose
 
@@ -39,6 +44,10 @@ A modern, responsive portfolio website showcasing the skills, experience, and pr
 - [x] Contact section with email and social links
 - [x] Responsive design (mobile, tablet, desktop)
 - [x] Accessibility support (ARIA, keyboard nav, skip links)
+- [x] **Dual-mode portfolio** - iOS and AI developer mode toggle
+- [x] **Mode persistence** - localStorage + URL parameter (`?mode=ai`)
+- [x] **AI mode sections** - hero, workflow, skills, experience, projects
+- [x] **Dynamic imports** - AI sections lazy-load; no impact on iOS bundle
 
 ### Should Have (P1)
 
@@ -47,6 +56,7 @@ A modern, responsive portfolio website showcasing the skills, experience, and pr
 - [x] Glassmorphism design elements
 - [x] SEO optimization (meta tags, Open Graph)
 - [x] Custom scrollbar styling
+- [x] Mode toggle component with accessible radio group pattern
 
 ### Nice to Have (P2)
 

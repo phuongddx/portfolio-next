@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Self-Introduction - Doan Duy Phuong</title>
+<style>
+  :root {
+    --primary: #22c55e;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --border: #1f2937;
+    --accent-pink: #fecaca;
+    --accent-blue: #93c5fd;
+    --accent-purple: #ddd6fe;
+    --accent-green: #bbf7d0;
+    --accent-lime: #a3e635;
+    --accent-coral: #f87171;
+    --accent-yellow: #fde68a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "DM Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 36px 28px;
+    box-shadow: 6px 6px 0 0 var(--border);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    font-size: 30px;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 16px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 2px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--accent-green);
+  }
+  .badge:nth-child(2) { background: var(--accent-blue); }
+  .badge:nth-child(3) { background: var(--accent-purple); }
+  .badge:nth-child(4) { background: var(--accent-pink); }
+  .badge:nth-child(5) { background: var(--accent-lime); }
+
+  /* Format tabs */
+  .format-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .tab {
+    flex: 1 1 auto;
+    min-width: 200px;
+    text-align: left;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform .12s ease, box-shadow .12s ease;
+    box-shadow: 3px 3px 0 0 var(--border);
+  }
+  .tab:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--border); }
+  .tab.active { background: var(--ink); color: #fff; }
+  .tab.active .tab-meta { color: #bbf7d0; }
+
+  .tab-meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .tab-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .tab-best {
+    font-size: 11px;
+    opacity: .8;
+    margin-top: 2px;
+  }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px);} to {opacity:1; transform:none;} }
+
+  .card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 28px;
+    box-shadow: 4px 4px 0 0 var(--border);
+    margin-top: 18px;
+  }
+
+  .card h2 {
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    font-size: 18px;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card h2 .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .stage-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .stage-present { background: var(--accent-green); }
+  .stage-past { background: var(--accent-blue); }
+  .stage-future { background: var(--accent-purple); }
+  .stage-who { background: var(--accent-green); }
+  .stage-what { background: var(--accent-blue); }
+  .stage-value { background: var(--accent-yellow); }
+  .stage-hook { background: var(--accent-pink); }
+  .stage-greeting { background: var(--accent-green); }
+  .stage-title { background: var(--accent-blue); }
+  .stage-responsibility { background: var(--accent-yellow); }
+  .stage-goal { background: var(--accent-purple); }
+
+  .stage-time {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-left: 6px;
+  }
+
+  .script {
+    font-size: 16.5px;
+    color: var(--ink);
+    white-space: pre-wrap;
+    margin: 0;
+    background: #fff;
+    border-left: 4px solid var(--accent-lime);
+    padding: 14px 18px;
+    border-radius: 0 10px 10px 0;
+  }
+
+  .script.full {
+    border-left-color: var(--primary);
+    background: #f0fdf4;
+  }
+
+  .em {
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--accent-yellow);
+    padding: 0 4px;
+    border-radius: 3px;
+  }
+
+  .num-hl {
+    font-weight: 700;
+    color: #047857;
+  }
+
+  .hook-q {
+    font-weight: 700;
+    color: #be185d;
+    font-style: italic;
+  }
+
+  .meta-line {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 6px 0 0;
+  }
+
+  .use-for {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1.5px dashed var(--muted);
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .stat {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    background: var(--bg);
+  }
+  .stat .val {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    display: block;
+  }
+  .stat .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-top: 2px;
+  }
+
+  /* Rules */
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .rule {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: var(--card);
+  }
+  .rule .rn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    background: var(--primary);
+    color: var(--ink);
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 12px;
+    margin-right: 8px;
+  }
+  .rule .rt {
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .rule .rd {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 32px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--muted);
+  }
+
+  .timer {
+    position: sticky;
+    top: 14px;
+    float: right;
+    background: var(--ink);
+    color: #fff;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 3px 3px 0 0 var(--primary);
+    z-index: 10;
+  }
+
+  @media print {
+    .timer, .format-tabs { display: none; }
+    .panel { display: block !important; page-break-after: always; }
+    .hero, .card { box-shadow: none; }
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 24px 14px 60px; }
+    .hero { padding: 26px 20px; }
+    .hero h1 { font-size: 24px; }
+    .script { font-size: 15.5px; }
+    .tab { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <span class="timer">Pick a format</span>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Doan Duy Phuong</h1>
+      <p class="subtitle">iOS Software Engineer &middot; AI-Driven Developer &middot; Ho Chi Minh City</p>
+      <div class="meta-row">
+        <span class="badge">5+ years iOS</span>
+        <span class="badge">Swift / SwiftUI</span>
+        <span class="badge">AI workflow</span>
+        <span class="badge">Open to remote</span>
+        <span class="badge">Open source</span>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="format-tabs" role="tablist">
+      <button class="tab active" data-target="ppf" role="tab">
+        <div class="tab-meta">Format 1 &middot; 60-90s</div>
+        <div class="tab-title">Present - Past - Future</div>
+        <div class="tab-best">Best for interviews, general intros</div>
+      </button>
+      <button class="tab" data-target="wwvh" role="tab">
+        <div class="tab-meta">Format 2 &middot; 60s</div>
+        <div class="tab-title">WHO - WHAT - VALUE - HOOK</div>
+        <div class="tab-best">Best for networking, pitches</div>
+      </button>
+      <button class="tab" data-target="gtrg" role="tab">
+        <div class="tab-meta">Format 3 &middot; 20-30s</div>
+        <div class="tab-title">G - T - R - G</div>
+        <div class="tab-best">Best for meetings, standups</div>
+      </button>
+      <button class="tab" data-target="blank" role="tab">
+        <div class="tab-meta">Template &middot; All-in-one</div>
+        <div class="tab-title">Fill-in-the-Blank</div>
+        <div class="tab-best">Reusable for any context</div>
+      </button>
+    </div>
+
+    <!-- ============ FORMAT 1: PRESENT - PAST - FUTURE ============ -->
+    <section class="panel active" id="ppf">
+      <div class="card">
+        <h2>Present - Past - Future <span class="stage-time">~ 60-90s</span></h2>
+        <p class="meta-line">Versatile narrative arc. Use for interviews, general introductions, and any "tell me about yourself" question.</p>
+        <p class="use-for">Best for: Interviews, general intros</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-present">Present</span><span class="stage-time">20-25s</span>
+        <p class="script">"Hi, I'm <span class="em">Doan Duy Phuong</span> - call me Phuong. I'm currently a <span class="em">Software Engineer at Axon Active</span> in Ho Chi Minh City, where I build <span class="em">native iOS apps</span> in Swift and SwiftUI, and ship features <span class="num-hl">60% faster</span> by integrating AI tools like Claude Code into my daily workflow."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-past">Past</span><span class="stage-time">20-25s</span>
+        <p class="script">"Before this, I spent <span class="num-hl">5+ years</span> shipping production iOS apps across 4 companies. I led a team at <span class="em">Windscribe</span> implementing OAuth 2.0 and zero-knowledge architecture, built CI/CD pipelines at <span class="em">Zillearn</span>, and at <span class="em">Axon Active</span> shipped a design system library adopted by <span class="num-hl">3+ teams</span> that cut UI development time by <span class="num-hl">40%</span>."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-future">Future</span><span class="stage-time">15-20s</span>
+        <p class="script">"I'm excited to bring this mix of <span class="em">deep iOS expertise</span> and <span class="em">AI-driven development</span> to a team that ships products people love. That's why I'm here - and I'd love to learn more about what your team is building next."</p>
+      </div>
+
+      <div class="card">
+        <h2>Full script (read-aloud)</h2>
+        <p class="script full">"Hi, I'm Doan Duy Phuong - call me Phuong. I'm currently a Software Engineer at Axon Active in Ho Chi Minh City, where I build native iOS apps in Swift and SwiftUI, and ship features 60% faster by integrating AI tools like Claude Code into my daily workflow. Before this, I spent 5+ years shipping production iOS apps across 4 companies. I led a team at Windscribe implementing OAuth 2.0 and zero-knowledge architecture, built CI/CD pipelines at Zillearn, and at Axon Active shipped a design system library adopted by 3+ teams that cut UI development time by 40%. I'm excited to bring this mix of deep iOS expertise and AI-driven development to a team that ships products people love - that's why I'm here, and I'd love to learn more about what your team is building next."</p>
+      </div>
+    </section>
+
+    <!-- ============ FORMAT 2: WHO - WHAT - VALUE - HOOK ============ -->
+    <section class="panel" id="wwvh">
+      <div class="card">
+        <h2>WHO - WHAT - VALUE - HOOK <span class="stage-time">~ 60s</span></h2>
+        <p class="meta-line">Sharpest format. Ends with an open question to invite conversation. Use for networking events, client meetings, elevator pitches.</p>
+        <p class="use-for">Best for: Networking, pitches, client meetings</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-who">WHO</span><span class="stage-time">10s</span>
+        <p class="script">"Hi, I'm <span class="em">Doan Duy Phuong</span> - iOS Software Engineer based in Ho Chi Minh City, currently at <span class="em">Axon Active</span>."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-what">WHAT</span><span class="stage-time">15s</span>
+        <p class="script">"I help <span class="em">product teams ship iOS apps faster</span> by combining <span class="em">native Swift expertise</span> with an <span class="em">AI-assisted workflow</span> - Claude Code, Cursor, and a 6-step prompt-verify-ship loop."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-value">VALUE</span><span class="stage-time">20s</span>
+        <p class="script">"Recently I built a <span class="em">design system library</span> supporting 4 dynamic appearances, adopted by <span class="num-hl">3+ teams</span> and cutting UI development time by <span class="num-hl">40%</span>. Before that I led the iOS team at <span class="em">Windscribe</span> shipping security features used by <span class="em">VPN users worldwide</span>."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-hook">HOOK</span><span class="stage-time">15s</span>
+        <p class="script">"I'm here because I'm looking for my next role where <span class="em">iOS craft meets AI-driven velocity</span>. <span class="hook-q">What's the biggest challenge your mobile team is facing right now?</span>"</p>
+      </div>
+
+      <div class="card">
+        <h2>Full script (read-aloud)</h2>
+        <p class="script full">"Hi, I'm Doan Duy Phuong - iOS Software Engineer based in Ho Chi Minh City, currently at Axon Active. I help product teams ship iOS apps faster by combining native Swift expertise with an AI-assisted workflow - Claude Code, Cursor, and a 6-step prompt-verify-ship loop. Recently I built a design system library supporting 4 dynamic appearances, adopted by 3+ teams and cutting UI development time by 40%. Before that I led the iOS team at Windscribe shipping security features used by VPN users worldwide. I'm here because I'm looking for my next role where iOS craft meets AI-driven velocity. What's the biggest challenge your mobile team is facing right now?"</p>
+      </div>
+    </section>
+
+    <!-- ============ FORMAT 3: G-T-R-G ============ -->
+    <section class="panel" id="gtrg">
+      <div class="card">
+        <h2>Greeting - Title - Responsibility - Goal <span class="stage-time">~ 20-30s</span></h2>
+        <p class="meta-line">Ultra-short. Hit only what matters for this specific meeting.</p>
+        <p class="use-for">Best for: Internal meetings, project kick-offs, standups, virtual calls</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-greeting">Greeting</span>
+        <p class="script">"Hi everyone."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-title">Title</span>
+        <p class="script">"I'm <span class="em">Phuong</span>, <span class="em">iOS Software Engineer</span>."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-responsibility">Responsibility</span>
+        <p class="script">"I own the <span class="em">iOS app architecture and feature delivery</span> - Swift, SwiftUI, CI/CD, and lately the <span class="em">AI-assisted dev workflow</span> that's speeding us up about <span class="num-hl">60%</span>."</p>
+      </div>
+
+      <div class="card">
+        <span class="stage-label stage-goal">Goal</span>
+        <p class="script">"I'm here today to <span class="em">[ship the design-system migration / unblock the auth feature / review the release plan]</span>."</p>
+      </div>
+
+      <div class="card">
+        <h2>Full script (read-aloud)</h2>
+        <p class="script full">"Hi everyone. I'm Phuong, iOS Software Engineer. I own the iOS app architecture and feature delivery - Swift, SwiftUI, CI/CD, and lately the AI-assisted dev workflow that's speeding us up about 60%. I'm here today to [ship the design-system migration / unblock the auth feature / review the release plan]."</p>
+      </div>
+    </section>
+
+    <!-- ============ FORMAT 4: FILL-IN-THE-BLANK ============ -->
+    <section class="panel" id="blank">
+      <div class="card">
+        <h2>Fill-in-the-Blank Template <span class="stage-time">All-in-one</span></h2>
+        <p class="meta-line">Reusable skeleton. Swap the bracketed parts for any context - interview, CV summary, LinkedIn bio, Slack intro.</p>
+        <p class="use-for">Best for: Reusable across contexts</p>
+      </div>
+
+      <div class="card">
+        <h2><span class="num">A</span> Template</h2>
+        <p class="script">"[Greeting],
+
+I'm <span class="em">[Name]</span>, currently a <span class="em">[Role]</span> at <span class="em">[Company]</span>, where I <span class="em">[one-line job description]</span>.
+
+I help <span class="em">[audience]</span> <span class="em">[achieve outcome]</span> through <span class="em">[method]</span>.
+
+Previously, I <span class="em">[notable experience]</span>, and I'm most proud of <span class="em">[achievement + number]</span>.
+
+I'm here because <span class="em">[goal]</span>. Looking forward to <span class="em">[connecting / learning / contributing]</span>."</p>
+      </div>
+
+      <div class="card">
+        <h2><span class="num">B</span> Filled in for you</h2>
+        <p class="script">"Hi,
+
+I'm <span class="em">Doan Duy Phuong</span>, currently a <span class="em">Software Engineer (iOS)</span> at <span class="em">Axon Active</span>, where I <span class="em">build and ship native iOS apps in Swift and SwiftUI</span>.
+
+I help <span class="em">product teams</span> <span class="em">ship iOS features faster and more consistently</span> through <span class="em">a design-system-first approach and an AI-assisted workflow</span>.
+
+Previously, I <span class="em">led the iOS team at Windscribe and built production apps for Zillearn, S3 Corp, and Axon Active</span>, and I'm most proud of <span class="em">shipping a design system adopted by 3+ teams that cut UI development time 40%</span>.
+
+I'm here because <span class="em">I'm exploring roles where iOS craft meets AI-driven velocity</span>. Looking forward to <span class="em">connecting</span>."</p>
+      </div>
+    </section>
+
+    <!-- ============ QUICK STATS ============ -->
+    <section class="card">
+      <h2><span class="num">~</span> Numbers to drop in (pick 1-2, don't list all)</h2>
+      <div class="stats">
+        <div class="stat"><span class="val">5+</span><span class="lbl">Years iOS</span></div>
+        <div class="stat"><span class="val">4</span><span class="lbl">Companies</span></div>
+        <div class="stat"><span class="val">3+</span><span class="lbl">Teams adopted</span></div>
+        <div class="stat"><span class="val">40%</span><span class="lbl">Faster UI dev</span></div>
+        <div class="stat"><span class="val">60%</span><span class="lbl">Faster w/ AI</span></div>
+        <div class="stat"><span class="val">90%</span><span class="lbl">Test coverage</span></div>
+        <div class="stat"><span class="val">22K</span><span class="lbl">LOC project</span></div>
+        <div class="stat"><span class="val">0</span><span class="lbl">External deps</span></div>
+      </div>
+    </section>
+
+    <!-- ============ GOLDEN RULES ============ -->
+    <section class="card">
+      <h2><span class="num">~</span> 3 Golden Rules</h2>
+      <div class="rules">
+        <div class="rule">
+          <div><span class="rn">1</span><span class="rt">Always include a number</span></div>
+          <div class="rd">"Cut UI dev time 40%" beats "improved performance". Numbers are proof.</div>
+        </div>
+        <div class="rule">
+          <div><span class="rn">2</span><span class="rt">End open</span></div>
+          <div class="rd">Always leave a hook - a question, a goal, an invitation - so they have a reason to continue.</div>
+        </div>
+        <div class="rule">
+          <div><span class="rn">3</span><span class="rt">Don't memorize word-for-word</span></div>
+          <div class="rd">Know the structure + your key numbers. Deliver naturally. The script is a map, not a script.</div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Self-introduction toolkit &middot; 4 formats tailored to Doan Duy Phuong &middot; English<br/>
+      Tip: pick ONE format per context. Practice the structure, not the words. <span style="color: var(--accent-coral);">You've got this, Phuong.</span>
+    </p>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    tabs.forEach(t => {
+      t.addEventListener('click', () => {
+        tabs.forEach(x => x.classList.remove('active'));
+        panels.forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        document.getElementById(t.dataset.target).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

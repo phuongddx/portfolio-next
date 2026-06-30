@@ -58,8 +58,8 @@ export const projects: Project[] = [
     title: "Windscribe VPN",
     category: "Security",
     description:
-      "Led iOS development for VPN client with automated CI/CD deployment to QA environment using Bitrise.",
-    technologies: ["Swift", "Bitrise", "CI/CD"],
+      "Led iOS development for VPN client with OAuth 2.0/PKCE authentication, AES encryption for credential storage, and zero-knowledge tunnel key management. Automated CI/CD deployment via Bitrise.",
+    technologies: ["Swift", "OAuth 2.0", "PKCE", "AES", "Keychain", "Bitrise"],
     screenshots: ["/screenshots/windscribe/460x996bb.webp"],
     appStoreUrl: "https://apps.apple.com/us/app/vpn-windscribe-fast-secure/id1129435228",
   },

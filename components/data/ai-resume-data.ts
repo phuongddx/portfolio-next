@@ -117,6 +117,17 @@ export const aiSkillCategories: AISkillCategory[] = [
       { name: "SOLID", level: 85 },
     ],
   },
+  {
+    id: "security",
+    title: "Security",
+    skills: [
+      { name: "OAuth 2.0 / PKCE", level: 80 },
+      { name: "AES Encryption", level: 75 },
+      { name: "Keychain Services", level: 80 },
+      { name: "SQLCipher", level: 70 },
+      { name: "Zero-Knowledge", level: 70 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -179,6 +190,8 @@ export const aiExperiences: AIExperience[] = [
     aiImpact: "Led remote team with AI-enhanced code review workflows",
     highlights: [
       "Led a team of 2-3 members, developing task plans and conducting code reviews",
+      "Implemented OAuth 2.0 with PKCE and AES encryption with Keychain Services for secure auth",
+      "Applied zero-knowledge principles to VPN tunnel key management",
       "Engaged in strategic discussions with CEO and CTO on feature planning",
       "Implemented CI/CD pipelines for automated QA deployment using Bitrise",
     ],
@@ -222,9 +235,11 @@ export const aiProjects: AIProject[] = [
     description:
       "iOS + watchOS stress monitoring app with HRV analysis, health data tracking, and widgets. 22K+ lines of pure Swift with zero external dependencies.",
     githubUrl: "https://github.com/NextGen-Limited/ios-stress-app",
-    techStack: ["SwiftUI", "HealthKit", "SwiftData", "CloudKit", "WidgetKit"],
+    techStack: ["SwiftUI", "HealthKit", "SwiftData", "SQLCipher", "CloudKit", "WidgetKit"],
     highlights: [
       "22K LOC with zero external deps",
+      "Encrypted health data storage with SQLCipher and Keychain Services",
+      "Shared data between iOS and watchOS via App Groups",
       "Custom HRV algorithm",
       "watchOS complications",
       "WidgetKit integration",

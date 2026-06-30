@@ -42,13 +42,13 @@ export const sideProjects: SideProject[] = [
     id: "ios-stress-app",
     title: "StressMonitor",
     description:
-      "Privacy-first stress monitoring for iOS & watchOS using Heart Rate Variability (HRV). Features CloudKit sync, Apple Watch complications, widgets, and breathing exercises.",
+      "Privacy-first stress monitoring for iOS & watchOS using HRV analysis. Encrypted storage with SQLCipher, Keychain Services for secure keys, App Groups for iOS/watchOS data sharing. CloudKit sync, widgets, and breathing exercises.",
     githubUrl: "https://github.com/NextGen-Limited/ios-stress-app",
     language: "Swift",
     languageColor: "#F05138",
     stars: 0,
     forks: 0,
-    topics: ["swiftui", "healthkit", "watchos", "cloudkit", "hrv"],
+    topics: ["swiftui", "healthkit", "watchos", "cloudkit", "hrv", "sqlcipher", "keychain", "app-groups"],
     status: "production",
   },
 ];

@@ -1,240 +1,261 @@
+<!-- refreshed: 2026-09-03 -->
 # Architecture
 
-**Analysis Date:** 2026-08-29
+**Analysis Date:** 2026-09-03
 
 ## System Overview
 
 ```text
-┌─────────────────────────────────────────────────────────────────┐
-│                    Next.js App Router (SSR)                     │
-│           `src/app/layout.tsx` · `src/app/page.tsx`            │
-├───────────────┬─────────────────────┬───────────────────────────┤
-│   Layout      │     Page            │    OG Image (Edge)        │
-│ `layout.tsx`  │ `page.tsx` →        │ `opengraph-image.tsx`     │
-│ fonts, SEO,   │ ModeRouter          │ ImageResponse             │
-│ providers     │                      │                           │
-└───────┬───────┴─────────┬───────────┴───────────────────────────┘
-        │                 │
-        ▼                 ▼
-┌───────────────────────────────────────────────────────────────┐
-│                     Component Tree                             │
-├───────────────┬─────────────────────┬───────────────────────────┤
-│  Providers    │   Layout Shell      │   Section Orchestrator    │
-│ MotionProvider│ Navbar              │ ModeRouter                │
-│ ModeProvider  │ Footer              │  ├─ IOSContent (static)   │
-│               │ MobileMenu          │  └─ AIContent (dynamic)   │
-│               │ ModeToggle          │ ContactSection (shared)   │
-└───────┬───────┴─────────┬───────────┴──────────┬────────────────┘
-        │                 │                     │
-        ▼                 ▼                     ▼
-┌──────────────────┐ ┌──────────────┐ ┌─────────────────────────┐
-│ Context Layer     │ │ UI Primitives│ │ Data Layer               │
-│ `context/`       │ │ `ui/`        │ │ `data/`                  │
-│ ModeContext      │ │ Card, Button │ │ experience-data.ts       │
-│                  │ │ Badge, etc.  │ │ skills-data.ts           │
-│                  │ │              │ │ ai-resume-data.ts        │
-│                  │ │              │ │ projects-data.ts         │
-│                  │ │              │ │ side-projects-data.ts    │
-└──────────────────┘ └──────────────┘ └─────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────┐
+│                        App Router (Next.js 14)                        │
+│  `src/app/layout.tsx` (fonts, metadata, JSON-LD, provider shell)      │
+│  `src/app/page.tsx` → renders <ModeRouter />                          │
+│  `src/app/opengraph-image.tsx` (edge runtime OG image)                │
+├───────────────────────────────────────────────────────────────────────┤
+│                              Providers                                 │
+│  MotionProvider (`components/effects/motion-provider.tsx`)             │
+│    └── ModeProvider (`components/context/mode-context.tsx`)            │
+│          ├── Navbar / MobileMenu / ModeToggle  (`components/layout/`)  │
+│          └── <main>{children}</main> → Footer                          │
+├───────────────────────────────────────────────────────────────────────┤
+│                     ModeRouter (client switch)                         │
+│            `components/layout/mode-router.tsx`                         │
+│   mode === "ios"                    mode === "ai"                     │
+│   ├─ HeroSection (static)           ├─ AIHeroSection (dynamic,ssr:off) │
+│   ├─ AboutSection (static)          ├─ AIWorkflowSection (dynamic)     │
+│   ├─ ExperienceSection (static)     ├─ AISkillsSection (dynamic)       │
+│   ├─ SkillsSection (static)         ├─ AIExperienceSection (dynamic)   │
+│   ├─ ProjectsSection (static)       └─ AIProjectsSection (dynamic)     │
+│   ├─ SideProjectsSection (static)                                      │
+│   └─ ContactSection (shared across both modes)                         │
+├───────────────────────────────────────────────────────────────────────┤
+│                        Static Data Layer                               │
+│  `components/data/experience-data.ts` · `projects-data.ts`            │
+│  `skills-data.ts` · `side-projects-data.ts` · `ai-resume-data.ts`     │
+├───────────────────────────────────────────────────────────────────────┤
+│                    UI Primitives / Effects / Hooks                     │
+│  `components/ui/*` (barrel: `components/ui/index.ts`)                  │
+│  `components/effects/*` (variants, ScrollReveal)                       │
+│  `components/hooks/use-typing-animation.ts` · `lib/utils.ts` (cn)      │
+└───────────────────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌───────────────────────────────────────────────────────────────────────┐
+│  Browser state: localStorage key `portfolio-mode` + URL `?mode=`       │
+│  Static assets: `public/` (resume PDF, screenshots, sitemap, robots)   │
+└───────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Component Responsibilities
 
 | Component | Responsibility | File |
 |-----------|----------------|------|
-| RootLayout | HTML shell, Google Fonts (Space Grotesk + DM Sans), SEO metadata, JSON-LD, provider wrapping | `src/app/layout.tsx` |
-| Home | Delegates entirely to ModeRouter | `src/app/page.tsx` |
-| OgImage | Edge-generated Open Graph image via `next/og` ImageResponse | `src/app/opengraph-image.tsx` |
-| MotionProvider | Wraps app in Framer Motion LazyMotion + respects `prefers-reduced-motion` | `components/effects/motion-provider.tsx` |
-| ModeProvider | Provides `ios` / `ai` mode via React Context; hydrates from `localStorage` + URL param `?mode=` | `components/context/mode-context.tsx` |
-| Navbar | Fixed floating nav bar with mode-aware links, logo, CTA buttons, mobile menu trigger | `components/layout/navbar.tsx` |
-| ModeToggle | iOS/AI segmented radio toggle with animated indicator | `components/layout/mode-toggle.tsx` |
-| ModeRouter | Conditionally renders IOSContent or AIContent sections based on mode; AnimatePresence crossfade | `components/layout/mode-router.tsx` |
-| Footer | Site footer with contact links and social icons | `components/layout/footer.tsx` |
-| MobileMenu | Full-screen mobile navigation overlay | `components/layout/mobile-menu.tsx` |
-| ScrollReveal | Reusable scroll-triggered fade-up animation wrapper | `components/effects/scroll-reveal.tsx` |
-| HeroSection | iOS-mode hero with stats, social links, intro text | `components/sections/hero-section.tsx` |
-| AIHeroSection | AI-mode hero with terminal typing animation | `components/sections/ai-hero-section.tsx` |
-| AboutSection | About me content section (iOS mode) | `components/sections/about-section.tsx` |
-| ExperienceSection | Work experience timeline (iOS mode) | `components/sections/experience-section.tsx` |
-| SkillsSection | Skill category grid (iOS mode) | `components/sections/skills-section.tsx` |
-| ProjectsSection | Featured projects cards (iOS mode) | `components/sections/projects-section.tsx` |
-| SideProjectsSection | Side/open-source projects (iOS mode) | `components/sections/side-projects-section.tsx` |
-| ContactSection | Contact form / CTA section (shared across both modes) | `components/sections/contact-section.tsx` |
-| AIWorkflowSection | AI workflow visualization (AI mode) | `components/sections/ai-workflow-section.tsx` |
-| AISkillsSection | AI-focused skills display (AI mode) | `components/sections/ai-skills-section.tsx` |
-| AIExperienceSection | AI-impact experience view (AI mode) | `components/sections/ai-experience-section.tsx` |
-| AIProjectsSection | AI projects showcase (AI mode) | `components/sections/ai-projects-section.tsx` |
+| RootLayout | Server component: Google fonts (`Space_Grotesk`, `DM_Sans`), full SEO metadata, JSON-LD Person schema, provider composition, skip-to-content link | `src/app/layout.tsx` |
+| Home page | Single route entry; delegates everything to ModeRouter | `src/app/page.tsx` |
+| OgImage | Edge-runtime generated OpenGraph image (1200x630) | `src/app/opengraph-image.tsx` |
+| ModeProvider | Owns `mode: "ios" \| "ai"` state; hydrates from URL param (precedence) then localStorage; persists on change; updates `document.title` per mode | `components/context/mode-context.tsx` |
+| useMode | Context consumer hook; throws if used outside ModeProvider | `components/context/mode-context.tsx` |
+| ModeRouter | Client-side mode switch: renders iOS sections (static imports) vs AI sections (`next/dynamic` with `ssr: false` + skeleton); wraps switch in `AnimatePresence` fade; renders iOS content pre-hydration to avoid layout shift | `components/layout/mode-router.tsx` |
+| Navbar | Fixed floating header; logo, mode-aware nav links, ModeToggle, MobileMenu trigger | `components/layout/navbar.tsx` |
+| ModeToggle | Accessible segmented iOS/AI radio-group toggle with 500ms cooldown and sliding indicator (`layoutId`) | `components/layout/mode-toggle.tsx` |
+| NAV_LINKS_BY_MODE | Per-mode anchor link config (id anchors `#about`, `#ai-workflow`, ...) | `components/layout/nav-links.ts` |
+| MobileMenu | Slide-over menu, Escape-to-close, outside-click handling | `components/layout/mobile-menu.tsx` |
+| Footer | Social links (inline SVGs) + footer nav | `components/layout/footer.tsx` |
+| iOS sections | Hero, About, Experience, Skills, Projects, Side Projects — all import data from `components/data/*` | `components/sections/*-section.tsx` |
+| AI sections | AI-flavored resume: terminal hero (typing animation), workflow steps, skill bars, AI-impact experience, GitHub-style projects — all import from `components/data/ai-resume-data.ts` | `components/sections/ai-*-section.tsx` |
+| ContactSection | Shared contact CTA rendered in both modes (outside AnimatePresence) | `components/sections/contact-section.tsx` |
+| MotionProvider | `LazyMotion` (domAnimation, strict) + `MotionConfig` respecting `prefers-reduced-motion`; requires all components use `m` not `motion` | `components/effects/motion-provider.tsx` |
+| ScrollReveal | Generic in-view fade-up wrapper (`useInView`, once, 30% threshold) | `components/effects/scroll-reveal.tsx` |
+| animation-variants | Shared motion presets: springs, fadeInUp, stagger container/item, cardHover, page variants | `components/effects/animation-variants.ts` |
+| useTypingAnimation | rAF-driven type/pause/delete cycling hook used by AI hero terminal | `components/hooks/use-typing-animation.ts` |
+| UI primitives | Card, Button, Badge, StatBadge, RatingBadge, ProjectCard, SideProjectCard, SocialLink, social icons; barrel-exported | `components/ui/` (`index.ts`) |
+| cn helper | `clsx` + `tailwind-merge` class composition; the ONLY export of `lib/utils.ts` | `lib/utils.ts` |
 
 ## Pattern Overview
 
-**Overall:** Single-page portfolio with dual-mode content switching (iOS resume vs AI resume), built as a flat component tree over static data files.
+**Overall:** Single-page Next.js App Router application with client-side dual-mode composition (no routing beyond `/`). Presentation-oriented component architecture: App Router shell → React Context (mode) → mode-routed section composition → static typed data modules → UI primitives.
 
 **Key Characteristics:**
-- **Single-page app with anchor navigation** — all sections render on one route (`/`); navigation uses `#section-id` anchors with `scroll-behavior: smooth`
-- **Dual-mode content switching** — a client-side Context (`ModeProvider`) toggles between two full sets of sections (iOS mode and AI mode), persisted to `localStorage` and reflected in the URL query param `?mode=ai`
-- **Static data layer** — all resume content (experiences, skills, projects) lives in `components/data/*.ts` as typed constant exports; components import from these files and never hardcode values
-- **Progressive enhancement** — AI-mode sections use `next/dynamic` with `ssr: false` so the iOS content renders during SSR; the ModeRouter shows iOS content before client hydration to prevent layout shift
-- **No API routes, no server actions, no database** — the entire site is statically generated at build time with no dynamic server-side data fetching
+- Server/client split is minimal: only `src/app/layout.tsx` and `src/app/page.tsx` are server components; virtually everything under `components/` is `"use client"`.
+- Content is code: all résumé/project data lives in typed TypeScript modules under `components/data/`, imported directly — no CMS, no API, no database.
+- Mode strategy (iOS = default/SSR, AI = dynamically imported with `ssr: false`) is the central architectural decision; every mode-aware piece (nav, sections, title) keys off `ModeContext`.
+- Styling is Tailwind utility classes composed via `cn()`, backed by CSS variables in `src/app/globals.css` and a neo-brutalist token set in `tailwind.config.ts`.
+- Animation is centralized: `LazyMotion strict` forces `m` component usage; shared variants in `components/effects/animation-variants.ts`; reduced-motion respected globally.
 
 ## Layers
 
-**App Router Layer:**
-- Purpose: Next.js page routing, layout, SEO metadata, font loading
+**App Router layer:**
+- Purpose: HTML shell, fonts, SEO metadata (OpenGraph, Twitter, JSON-LD), OG image generation
 - Location: `src/app/`
-- Contains: `layout.tsx` (root layout), `page.tsx` (home page), `opengraph-image.tsx` (OG image), `globals.css`, font files
-- Depends on: `components/layout/`, `components/effects/`, `components/context/`
-- Used by: Next.js framework (entry point)
+- Contains: `layout.tsx`, `page.tsx`, `opengraph-image.tsx`, `globals.css`, local `fonts/` (Geist woff files, currently unused by layout)
+- Depends on: providers and layout components in `components/`
+- Used by: Next.js framework only
 
-**Layout Shell Layer:**
-- Purpose: Page chrome — navigation, footer, mode switching, page transitions
+**Layout/navigation layer:**
+- Purpose: persistent chrome (navbar, footer, mobile menu) + mode switching machinery
 - Location: `components/layout/`
-- Contains: `navbar.tsx`, `footer.tsx`, `mobile-menu.tsx`, `mode-toggle.tsx`, `mode-router.tsx`, `page-transition.tsx`, `nav-links.ts`
-- Depends on: `components/context/`, `components/ui/`, `components/effects/`, `lib/utils.ts`
-- Used by: `src/app/layout.tsx`, `src/app/page.tsx`
+- Contains: navbar, footer, mobile-menu, mode-toggle, mode-router, nav-links
+- Depends on: `components/context/mode-context.tsx`, `components/ui/*`, `lib/utils.ts`
+- Used by: `src/app/layout.tsx` (Navbar, Footer), `src/app/page.tsx` (ModeRouter)
 
-**Section Layer:**
-- Purpose: Page content sections — each renders a distinct portfolio section (hero, about, experience, skills, projects, contact)
+**Section layer:**
+- Purpose: full-width page sections composing data + UI primitives + motion
 - Location: `components/sections/`
-- Contains: 12 section components (6 iOS-mode, 5 AI-mode, 1 shared contact)
-- Depends on: `components/data/`, `components/ui/`, `components/effects/`
-- Used by: `components/layout/mode-router.tsx`
+- Contains: 7 iOS/shared sections + 5 AI sections, all named `<name>-section.tsx`
+- Depends on: `components/data/*`, `components/ui/*`, `components/effects/*`, `components/hooks/*`
+- Used by: `components/layout/mode-router.tsx` exclusively
 
-**UI Primitives Layer:**
-- Purpose: Reusable presentational components — cards, buttons, badges, social icons
-- Location: `components/ui/`
-- Contains: `card.tsx`, `button.tsx`, `badge.tsx`, `stat-badge.tsx`, `rating-badge.tsx`, `project-card.tsx`, `side-project-card.tsx`, `social-icons.tsx`, `social-link.tsx`, `index.ts` (barrel export)
-- Depends on: `lib/utils.ts`, external icon approach
-- Used by: Sections and layout components
-
-**Data Layer:**
-- Purpose: Typed static data — experiences, skills, projects, AI resume content
+**Data layer:**
+- Purpose: typed static content (the site's "CMS"). Each file exports an `interface` + a const array/object
 - Location: `components/data/`
-- Contains: `experience-data.ts`, `skills-data.ts`, `projects-data.ts`, `side-projects-data.ts`, `ai-resume-data.ts`
-- Depends on: Nothing (pure TypeScript constants and interfaces)
-- Used by: Section components
+- Contains: `experience-data.ts`, `projects-data.ts`, `skills-data.ts`, `side-projects-data.ts`, `ai-resume-data.ts` (single file for ALL AI-mode content)
+- Depends on: nothing (leaf layer)
+- Used by: sections layer
+- Rule (documented in file header of `ai-resume-data.ts`): components must NOT hardcode content values; they import from this file
 
-**Context Layer:**
-- Purpose: React Context providers for cross-cutting client state
-- Location: `components/context/`
-- Contains: `mode-context.tsx` (Mode = `"ios"` | `"ai"`)
-- Depends on: React
-- Used by: `ModeProvider` in layout, `useMode()` hook in navbar/mode-toggle/mode-router
+**UI primitive layer:**
+- Purpose: dumb reusable presentational components
+- Location: `components/ui/` with barrel re-exports in `components/ui/index.ts`
+- Depends on: `lib/utils.ts` (cn), Tailwind tokens
+- Used by: sections, layout
 
-**Effects Layer:**
-- Purpose: Animation infrastructure — motion provider, scroll reveal, animation variant definitions
-- Location: `components/effects/`
-- Contains: `motion-provider.tsx`, `scroll-reveal.tsx`, `animation-variants.ts`
-- Depends on: `framer-motion`
-- Used by: Layout and section components
+**Effects/hooks layer:**
+- Purpose: motion infrastructure and reusable client hooks
+- Location: `components/effects/`, `components/hooks/`
+- Contains: `motion-provider.tsx`, `scroll-reveal.tsx`, `animation-variants.ts`, `use-typing-animation.ts`
+- Used by: layout root (`motion-provider`), sections (`m`, variants, ScrollReveal)
 
-**Utilities Layer:**
-- Purpose: Shared utility functions
-- Location: `lib/`
-- Contains: `utils.ts` (`cn` — clsx + tailwind-merge)
-- Depends on: `clsx`, `tailwind-merge`
-- Used by: Any component needing conditional class merging
+**Utilities:**
+- Location: `lib/utils.ts`
+- Contains: only `cn()`
 
 ## Data Flow
 
-### Primary Request Path
+### Primary Request Path (page load)
 
-1. **Next.js SSR** — `src/app/layout.tsx` renders the HTML shell with Google Fonts, SEO metadata, JSON-LD structured data, and wraps children in `MotionProvider` > `ModeProvider` > `Navbar` + `<main>` + `Footer`
-2. **Page render** — `src/app/page.tsx` returns `<ModeRouter />`
-3. **Mode resolution** — `ModeRouter` (`components/layout/mode-router.tsx`) reads `useMode()`; before hydration (SSR), it renders `IOSContent` + `ContactSection` to avoid layout shift; after hydration, it renders the active mode's sections with `AnimatePresence` crossfade
-4. **Section rendering** — Each section component imports data from `components/data/*.ts` and renders UI with `components/ui/*` primitives, animated via `components/effects/scroll-reveal.tsx`
+1. Next.js renders `RootLayout` server-side — fonts, metadata, JSON-LD (`src/app/layout.tsx:85`)
+2. `Home` renders `<ModeRouter />` (`src/app/page.tsx:4`)
+3. Pre-hydration (server HTML): ModeRouter returns `IOSContent` + `ContactSection` because `mounted === false` (`components/layout/mode-router.tsx:89-96`) — iOS mode is the SSR default so first paint never shifts
+4. `ModeProvider` mounts; `useEffect` reads `?mode=` URL param (takes precedence) then `localStorage["portfolio-mode"]`, both validated against the `ALLOWED_MODES` allowlist (`components/context/mode-context.tsx:49-62`)
+5. If mode is `ai`, AI sections load via `next/dynamic` with `ssr: false`, showing `SectionSkeleton` during chunk fetch (`components/layout/mode-router.tsx:17-36`)
+6. Sections import their content directly from `components/data/*.ts` and render UI primitives animated with `m` + shared variants
 
 ### Mode Toggle Flow
 
-1. User clicks `ModeToggle` (`components/layout/mode-toggle.tsx`)
-2. `setMode()` called on `ModeContext` with 500ms debounce
-3. `ModeProvider` (`components/context/mode-context.tsx`) updates state, persists to `localStorage`, updates URL query param via `history.replaceState`, updates `document.title`
-4. `ModeRouter` re-renders with new mode; `AnimatePresence` crossfades between IOSContent and AIContent
-5. `Navbar` re-renders with mode-appropriate nav links from `nav-links.ts`
+1. User clicks a segment in `ModeToggle` (500ms cooldown guard, `components/layout/mode-toggle.tsx:18-29`)
+2. `setMode(next)` validates against allowlist, sets state, writes `localStorage`, rewrites URL via `history.replaceState` (deletes `?mode` for the default `ios` mode), updates `document.title` from `TITLES` map (`components/context/mode-context.tsx:64-81`)
+3. `ModeRouter` re-renders; `AnimatePresence mode="wait"` fades out old section tree, fades in new (`components/layout/mode-router.tsx:100-104`)
+4. `Navbar`/`MobileMenu` swap link sets via `NAV_LINKS_BY_MODE[mode]` (`components/layout/nav-links.ts`)
 
 **State Management:**
-- Client state is minimal: only the mode toggle (`ios`/`ai`) stored in React Context + `localStorage`
-- No global state management library (no Redux, Zustand, etc.)
-- All portfolio content is static data imported at build time
-- No server-side state, no API calls, no database
+- Single React Context: `ModeContext` (`mode`, `setMode`, `mounted`)
+- Persistence: `localStorage` key `portfolio-mode` + URL search param `mode`
+- No global state library; per-component `useState`/refs everywhere else
+- No server state / data fetching — all content is bundled
 
 ## Key Abstractions
 
-**Mode (`"ios"` | `"ai"`):**
-- Purpose: Dual-persona portfolio — traditional iOS engineer resume vs AI-focused developer resume
-- Examples: `components/context/mode-context.tsx`, `components/layout/mode-router.tsx`, `components/layout/nav-links.ts`
-- Pattern: React Context + localStorage persistence + URL query param sync
+**ModeContext + useMode hook:**
+- Purpose: the app's only shared state — which résumé persona is displayed
+- Examples: `components/context/mode-context.tsx`
+- Pattern: createContext with null default + null-check throw in consumer; untrusted input (URL/localStorage) validated by `isValidMode` type guard before use
 
-**Section Component:**
-- Purpose: Self-contained page section with its own data imports and scroll-reveal animation
+**Typed static data modules:**
+- Purpose: content-as-code. File header comment in `ai-resume-data.ts` mandates: "Components must NOT hardcode values; they import from this file"
+- Examples: `components/data/projects-data.ts` (`interface Project` + `export const projects: Project[]`), `components/data/ai-resume-data.ts` (9 interfaces, 6 exported consts)
+- Pattern: one file per domain, interface + const array export, leaf layer with zero imports
+
+**Section component:**
+- Purpose: one `<section id="...">` anchor block per page region
 - Examples: `components/sections/hero-section.tsx`, `components/sections/ai-hero-section.tsx`
-- Pattern: Named export function component, marked `"use client"`, imports data from `components/data/`, wraps content in `ScrollReveal`
+- Pattern: `"use client"`; local `containerVariants`/`itemVariants` (or imports from `components/effects/animation-variants.ts`); `<m.div>` wrappers; data imported from `components/data/`; section `id` must match `NAV_LINKS_BY_MODE` anchors (`#about`, `#ai-workflow`, ...)
 
-**UI Primitive:**
-- Purpose: Reusable presentational component with no data dependencies
-- Examples: `components/ui/button.tsx`, `components/ui/card.tsx`, `components/ui/badge.tsx`
-- Pattern: Named export, accepts className via `cn()` for composition, barrel-exported from `components/ui/index.ts`
+**UI barrel:**
+- Purpose: single import surface for primitives — `import { Card, Button } from "@/components/ui"`
+- Examples: `components/ui/index.ts`
+- Pattern: explicit named re-exports per component; sections may also deep-import (`./social-link` is not in the barrel)
+
+**Motion system:**
+- Purpose: consistent animation with small bundle (`LazyMotion domAnimation strict`) and accessibility (`reducedMotion`)
+- Examples: `components/effects/motion-provider.tsx`, `components/effects/animation-variants.ts`, `components/effects/scroll-reveal.tsx`
+- Pattern: ALWAYS import `m` from `framer-motion` (never `motion` — `strict` mode will throw); reuse presets before defining new variants
 
 ## Entry Points
 
-**Next.js Application:**
-- Location: `src/app/layout.tsx` (root layout), `src/app/page.tsx` (home page)
-- Triggers: HTTP request to `/`
-- Responsibilities: SSR HTML shell, font loading, SEO, JSON-LD, provider hierarchy
+**Root layout:**
+- Location: `src/app/layout.tsx`
+- Triggers: every request (App Router shell)
+- Responsibilities: font loading via `next/font/google` (CSS vars `--font-heading`, `--font-body`), full SEO `Metadata` export, Person JSON-LD, provider nesting (MotionProvider → ModeProvider), Navbar/Footer chrome, skip-link
 
-**OpenGraph Image Generation:**
+**Home page:**
+- Location: `src/app/page.tsx`
+- Triggers: GET `/`
+- Responsibilities: delegates to ModeRouter; contains no logic
+
+**OG image route:**
 - Location: `src/app/opengraph-image.tsx`
-- Triggers: Social media crawler requesting `/opengraph-image` (auto-routed by Next.js file convention)
-- Responsibilities: Edge Runtime, returns PNG ImageResponse with name, role, stats
+- Triggers: metadata consumers (social scrapers)
+- Responsibilities: edge-runtime `ImageResponse` (1200x630)
 
-**Static Assets:**
-- Location: `public/`
-- Contains: `DoanPhuong.pdf` (resume), `sitemap.xml`, `robots.txt`, `screenshots/`, `favicon.ico`
-- Served directly by Next.js
+**Mode toggle (user entry point):**
+- Location: `components/layout/mode-toggle.tsx`
+- Triggers: user click / `?mode=ai` URL / returning visitor localStorage
+- Responsibilities: persona switch described in Mode Toggle Flow above
 
 ## Architectural Constraints
 
-- **Threading:** Single-threaded React event loop; no Web Workers or server-side threading
-- **Global state:** One module-level Context (`ModeContext` in `components/context/mode-context.tsx`); no other shared mutable state
-- **Circular imports:** None detected — dependency graph is acyclic: `app` → `layout` → `sections` → `data` + `ui`; `effects` and `context` are leaf dependencies
-- **Static site:** No API routes, no middleware, no server actions — the entire site is a single statically-generated page
-- **Single route:** All content lives on `/`; no client-side routing (no `next/link` for page navigation, only anchor links)
+- **Rendering model:** Standard Next.js single-threaded event loop. No workers, no streaming beyond framework defaults. `reactStrictMode: true` (`next.config.mjs`)
+- **SSR boundary:** ALL AI-mode sections are `ssr: false` dynamic imports — they can never use server-only features; iOS sections are SSR'd and must stay hydration-safe (no `localStorage`/`window` during render — ModeProvider guards with `mounted`)
+- **Motion constraint:** `LazyMotion strict` means importing `motion` from `framer-motion` throws at runtime; always use `m` (`components/effects/motion-provider.tsx:13`)
+- **Path alias:** `@/*` maps to the REPO ROOT (`tsconfig.json` paths), not `src/*` — imports are `@/components/...`, `@/lib/...`. New top-level source dirs are automatically aliasable; do NOT move `components/` under `src/` without updating every import
+- **Global state:** Only `ModeContext`. Module-level singletons: data consts in `components/data/*` (immutable), variant consts (immutable)
+- **Security headers:** `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` lockdown applied to all routes in `next.config.mjs`
+- **Single route:** No `app/api/`, no route handlers, no dynamic segments. New pages go in `src/app/<segment>/page.tsx`
+- **Circular imports:** None observed. Layering is strictly one-directional: app → layout → sections → (data, ui, effects) → lib
+- **Theme constraint:** Dark-mode scaffolding exists (`components/theme/theme-provider.tsx`, `next-themes` dependency, Sun/Moon icons in `components/ui/social-icons.tsx`) but ThemeProvider is NOT wired into `src/app/layout.tsx`; the palette in `globals.css` is light-only neo-brutalist. Do not assume dark mode works
 
 ## Anti-Patterns
 
-### Duplicated section pairs
+### Hardcoded colors bypassing design tokens
 
-**What happens:** Each portfolio section has two variants — an iOS-mode version and an AI-mode version — as separate files (`hero-section.tsx` vs `ai-hero-section.tsx`, `experience-section.tsx` vs `ai-experience-section.tsx`).
-**Why it's wrong:** Shared layout, animation, and styling patterns are duplicated across pairs rather than extracted into shared wrappers. Adding a new section requires creating two files.
-**Do this instead:** Extract a shared `SectionWrapper` component for consistent layout/animation, and use data-driven rendering where the section component accepts data props from either `experience-data.ts` or `ai-resume-data.ts`.
+**What happens:** Sections use literal colors like `bg-[#f8f9fa]` (`components/sections/hero-section.tsx:53`, `components/sections/ai-hero-section.tsx:48`) even though `--background: #f8f9fa` exists as `bg-background`
+**Why it's wrong:** Token changes in `src/app/globals.css` will not propagate; drift between sections
+**Do this instead:** Use the Tailwind token classes (`bg-background`, `text-foreground`, `border-border`, `shadow-brutal`) mapped in `tailwind.config.ts`
 
-### Data co-located with components
+### Duplicate local variants instead of shared presets
 
-**What happens:** Data files live inside `components/data/` rather than in a separate `data/` or `content/` directory at the project root.
-**Why it's wrong:** Data is not a component. Placing it inside `components/` breaks the separation of concerns and makes it harder to reuse data outside the component tree (e.g., for RSS feeds, sitemap generation, or API routes).
-**Do this instead:** Move `components/data/` to a top-level `data/` directory. Update import paths from `@/components/data/` to `@/data/`.
+**What happens:** `hero-section.tsx` and `ai-hero-section.tsx` each define identical local `containerVariants`/`itemVariants` instead of importing `staggerContainer`/`staggerItem` from `components/effects/animation-variants.ts`
+**Why it's wrong:** Animation timing drifts between modes; the effects module exists precisely to prevent this
+**Do this instead:** Import shared presets from `components/effects/animation-variants.ts`; add new presets there when a genuinely new motion is needed
+
+### Unwired scaffolding left in tree
+
+**What happens:** `components/theme/theme-provider.tsx` + `next-themes` dependency + `PageTransition` (`components/layout/page-transition.tsx`, dead because there is one route) exist but are referenced by nothing
+**Why it's wrong:** Misleads future work into assuming dark mode/route transitions are active; inflates dependency surface
+**Do this instead:** Either wire them intentionally (add `<ThemeProvider>` inside `src/app/layout.tsx`) or delete; do not build on top assuming they function
 
 ## Error Handling
 
-**Strategy:** No runtime error handling is implemented — the site is static with no API calls or user inputs that could fail.
+**Strategy:** Minimal, client-side only. No error boundaries, no global error handlers, no logging.
 
 **Patterns:**
-- `ModeContext` throws if `useMode()` is called outside `ModeProvider`: `if (!ctx) throw new Error("useMode must be used within ModeProvider")`
-- AI-mode dynamic imports use `loading: () => <SectionSkeleton />` for graceful loading state
-- `mode-context.tsx` validates mode values against `ALLOWED_MODES` allowlist before setting state
+- Context consumer guard: `useMode` throws `"useMode must be used within ModeProvider"` (`components/context/mode-context.tsx:36`)
+- Input validation: `isValidMode` type guard rejects bad `?mode=` values and corrupted localStorage instead of crashing (`components/context/mode-context.tsx:22-24`)
+- Action guards: `setMode` silently no-ops on invalid values; `ModeToggle` cooldown ref prevents rapid toggle spam
+- Data completeness: optional fields (`stat?`, `aiImpact?`, `appStoreUrl?`) in data interfaces let sections render conditionally rather than crash
 
 ## Cross-Cutting Concerns
 
-**Logging:** None — no logging framework or console logging in production code
+**Logging:** None (no console usage policy, no observability — appropriate for a static portfolio)
 
-**Validation:** Mode values validated against `ALLOWED_MODES` literal array in `components/context/mode-context.tsx`; no form validation (contact section is CTA-only, not a form)
+**Validation:** `isValidMode` allowlist for user-controllable mode input; TypeScript strict mode (`tsconfig.json` `"strict": true`) for everything else; ESLint via `eslint-config-next` (`.eslintrc.json`)
 
-**Authentication:** None — no user authentication; the portfolio is fully public
+**Authentication:** None — public static site; no PII beyond contact email/social URLs already intended for publication
 
-**Accessibility:** Skip-to-content link in `src/app/layout.tsx`; `role="radiogroup"` + `aria-checked` on mode toggle; `prefers-reduced-motion` respected via `MotionProvider`; `focus-visible` ring styles on interactive elements
+**Accessibility (built-in):** skip-to-content link (`src/app/layout.tsx:104-109`), `prefers-reduced-motion` honored both in MotionConfig and CSS (`src/app/globals.css:47-56`), `role="radiogroup"`/`aria-checked` on mode toggle, Escape/outside-click close on mobile menu, `focus-visible` rings
 
-**SEO:** Full Open Graph + Twitter Card metadata in `src/app/layout.tsx`; JSON-LD Person schema; dynamic OG image via Edge Runtime; `sitemap.xml` and `robots.txt` in `public/`; security headers in `next.config.mjs`
+**SEO:** metadata export in `src/app/layout.tsx` (canonical, OpenGraph, Twitter cards), JSON-LD Person schema, `public/sitemap.xml` + `public/robots.txt`, edge OG image route
 
 ---
 
-*Architecture analysis: 2026-08-29*
+*Architecture analysis: 2026-09-03*

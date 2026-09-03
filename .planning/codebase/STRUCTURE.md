@@ -1,254 +1,232 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-08-29
+**Analysis Date:** 2026-09-03
 
 ## Directory Layout
 
 ```
 portfolio-next/
 ├── src/
-│   └── app/                  # Next.js App Router pages and layout
-│       ├── layout.tsx        # Root layout (fonts, SEO, providers)
-│       ├── page.tsx          # Home page (delegates to ModeRouter)
-│       ├── opengraph-image.tsx # Edge-generated OG image
-│       ├── globals.css       # Global styles, CSS variables, Tailwind layers
-│       └── fonts/            # Self-hosted font files (Geist)
-├── components/               # All React components
-│   ├── context/              # React Context providers
-│   ├── data/                 # Static portfolio data (experiences, skills, projects)
-│   ├── effects/              # Animation infrastructure
-│   ├── hooks/                # Custom React hooks
-│   ├── icons/                # Icon components (currently empty)
-│   ├── layout/               # Page chrome (navbar, footer, mode switching)
-│   ├── sections/             # Page content sections (hero, about, experience, etc.)
-│   ├── theme/                # Theme provider
-│   └── ui/                   # Reusable UI primitives
-├── lib/                      # Utility functions
-│   └── utils.ts              # cn() helper (clsx + tailwind-merge)
-├── public/                   # Static assets served directly
-│   ├── DoanPhuong.pdf        # Resume PDF
-│   ├── sitemap.xml           # Sitemap for search engines
-│   ├── robots.txt            # Crawler directives
-│   └── screenshots/          # App screenshots
-├── docs/                     # Project documentation (human-maintained)
-│   ├── codebase-summary.md
-│   ├── deployment-guide.md
-│   ├── design-guidelines.md
-│   ├── code-standards.md
-│   ├── system-architecture.md
-│   ├── project-overview-pdr.md
-│   ├── project-roadmap.md
-│   └── ai/
-├── resources/                # Reference materials
-│   ├── app-store-screenshot/
-│   └── url.md
-├── plans/                    # Historical implementation plans
-│   ├── reports/
-│   └── [plan-directories]/
-├── .planning/                # GSD planning artifacts
-│   └── codebase/             # Codebase analysis documents
-├── tailwind.config.ts        # Tailwind CSS configuration
-├── next.config.mjs           # Next.js configuration (security headers)
-├── tsconfig.json             # TypeScript configuration (strict mode, @/* path alias)
-├── postcss.config.mjs        # PostCSS configuration (Tailwind plugin)
-├── .eslintrc.json            # ESLint configuration (next preset)
-├── package.json              # Dependencies and scripts
-└── package-lock.json         # Lockfile
+│   └── app/                        # Next.js App Router (ONLY source dir under src/)
+│       ├── fonts/                  # GeistVF.woff, GeistMonoVF.woff (unused by layout)
+│       ├── globals.css             # CSS variables (neo-brutalist palette), base styles, scrollbar
+│       ├── layout.tsx              # Root layout: fonts, SEO metadata, JSON-LD, providers
+│       ├── opengraph-image.tsx     # Edge-runtime OG image (1200x630)
+│       └── page.tsx                # Home route → <ModeRouter />
+├── components/                     # ALL React components (root level, NOT under src/)
+│   ├── context/                    # React Context providers
+│   │   └── mode-context.tsx        # ModeProvider + useMode hook (ios | ai)
+│   ├── data/                       # Static typed content modules (the "CMS")
+│   │   ├── ai-resume-data.ts       # ALL AI-mode content (9 interfaces, 6 consts)
+│   │   ├── experience-data.ts      # iOS work history
+│   │   ├── projects-data.ts        # iOS portfolio projects
+│   │   ├── side-projects-data.ts   # GitHub side projects
+│   │   └── skills-data.ts          # iOS skill categories
+│   ├── effects/                    # Motion infrastructure
+│   │   ├── animation-variants.ts   # Shared motion presets (fadeInUp, stagger, springs)
+│   │   ├── motion-provider.tsx     # LazyMotion strict + reduced-motion MotionConfig
+│   │   └── scroll-reveal.tsx       # In-view fade-up wrapper
+│   ├── hooks/
+│   │   └── use-typing-animation.ts # rAF typing cycle hook (AI hero terminal)
+│   ├── layout/                     # Page chrome + mode routing
+│   │   ├── footer.tsx              # Social links + footer
+│   │   ├── mobile-menu.tsx         # Slide-over menu (Esc/outside-click close)
+│   │   ├── mode-router.tsx         # iOS/AI section switcher (dynamic imports)
+│   │   ├── mode-toggle.tsx         # Segmented iOS/AI radio toggle
+│   │   ├── nav-links.ts            # NAV_LINKS_BY_MODE anchor config
+│   │   ├── navbar.tsx              # Fixed floating header
+│   │   └── page-transition.tsx     # Dead code (single route, not wired)
+│   ├── sections/                   # Full-width page sections
+│   │   ├── about-section.tsx       # ┐
+│   │   ├── hero-section.tsx        # │ iOS mode (static imports, SSR'd)
+│   │   ├── experience-section.tsx  # │
+│   │   ├── skills-section.tsx      # │
+│   │   ├── projects-section.tsx    # │
+│   │   ├── side-projects-section.tsx # ┘
+│   │   ├── ai-hero-section.tsx     # ┐
+│   │   ├── ai-workflow-section.tsx # │ AI mode (dynamic, ssr: false)
+│   │   ├── ai-skills-section.tsx   # │
+│   │   ├── ai-experience-section.tsx # │
+│   │   ├── ai-projects-section.tsx # ┘
+│   │   └── contact-section.tsx     # Shared across both modes
+│   ├── theme/
+│   │   └── theme-provider.tsx      # next-themes wrapper (NOT wired into layout)
+│   └── ui/                         # Presentational primitives
+│       ├── index.ts                # Barrel: Card, Button, Badge, StatBadge, ...
+│       ├── badge.tsx, button.tsx, card.tsx
+│       ├── project-card.tsx, side-project-card.tsx
+│       ├── rating-badge.tsx, stat-badge.tsx
+│       ├── social-icons.tsx, social-link.tsx
+├── lib/
+│   └── utils.ts                    # cn() = clsx + tailwind-merge (only utility)
+├── public/                         # Served statically
+│   ├── DoanPhuong.pdf              # Downloadable resume (contact section links it)
+│   ├── screenshots/{swisspost,windscribe,zillearn}/  # Project screenshots
+│   ├── robots.txt, sitemap.xml
+├── docs/                           # Human documentation
+│   ├── system-architecture.md      # Canonical architecture writeup
+│   ├── codebase-summary.md, code-standards.md, design-guidelines.md
+│   ├── project-roadmap.md, project-overview-pdr.md, deployment-guide.md
+│   └── ai/                         # AI workflow doc scaffolding (planning/design/...)
+├── plans/                          # AI-agent plan artifacts (per-workflow dirs + reports/)
+├── resources/                      # Raw source assets (app-store-screenshot/, url.md)
+├── .planning/                      # GSD planning state (codebase maps live here)
+├── .claude/                        # Claude settings, commands, skills, session state
+├── tailwind.config.ts              # Design tokens → CSS variable mapping
+├── next.config.mjs                 # Security headers, reactStrictMode
+├── tsconfig.json                   # strict, @/* → repo root
+├── postcss.config.mjs, .eslintrc.json
+└── package.json                    # next 14.2.35, react 18, framer-motion 11, tailwind 3.4
 ```
 
 ## Directory Purposes
 
 **`src/app/`:**
-- Purpose: Next.js App Router entry points — root layout, home page, OG image generation
-- Contains: Layout component, page component, OG image (Edge Runtime), global CSS, font files
-- Key files: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/opengraph-image.tsx`, `src/app/globals.css`
+- Purpose: Next.js App Router routes and global styles — the ONLY directory Next requires in a specific place
+- Contains: root layout, single page, OG image route, `globals.css`, unused Geist woff fonts
+- Key files: `src/app/layout.tsx`, `src/app/page.tsx`
 
-**`components/sections/`:**
-- Purpose: Page content sections — the main visible content of the portfolio
-- Contains: 12 section components split between iOS mode (6), AI mode (5), and shared (1 contact)
-- Key files: `components/sections/hero-section.tsx`, `components/sections/ai-hero-section.tsx`, `components/sections/contact-section.tsx`
+**`components/`:**
+- Purpose: every React component in the app, grouped by role (context, data, effects, hooks, layout, sections, theme, ui)
+- Contains: `.tsx` components and `.ts` modules (data, nav-links, animation-variants)
+- Key files: `components/layout/mode-router.tsx`, `components/context/mode-context.tsx`
+- NOTE: lives at repo root because `tsconfig.json` maps `@/*` → `./*` (NOT `./src/*`)
 
 **`components/data/`:**
-- Purpose: Static typed data for all portfolio content — experiences, skills, projects, AI resume data
-- Contains: TypeScript interfaces + const arrays/objects exported as named exports
-- Key files: `components/data/experience-data.ts`, `components/data/ai-resume-data.ts`, `components/data/skills-data.ts`, `components/data/projects-data.ts`, `components/data/side-projects-data.ts`
+- Purpose: content-as-code data layer; each file exports `interface X` + `export const xs: X[]`
+- Contains: 5 data modules; `ai-resume-data.ts` holds ALL AI-mode content in one file
+- Key files: `components/data/ai-resume-data.ts` (332 lines, largest data file)
+
+**`components/sections/`:**
+- Purpose: one full-width section per page region; the only consumers of `components/data/`
+- Contains: 13 section components; iOS sections SSR'd, AI sections `ssr: false` dynamic
+- Key files: `components/layout/mode-router.tsx` imports ALL of them — new sections must be registered there
 
 **`components/ui/`:**
-- Purpose: Reusable presentational primitives — buttons, cards, badges, social icons
-- Contains: Small, composable components with `className` prop pattern via `cn()`
-- Key files: `components/ui/index.ts` (barrel export), `components/ui/button.tsx`, `components/ui/card.tsx`, `components/ui/project-card.tsx`
-
-**`components/layout/`:**
-- Purpose: Page shell components — navigation, footer, mode routing/toggling
-- Contains: Navbar, footer, mobile menu, mode toggle, mode router, nav link data, page transition
-- Key files: `components/layout/mode-router.tsx`, `components/layout/navbar.tsx`, `components/layout/mode-toggle.tsx`, `components/layout/nav-links.ts`
-
-**`components/context/`:**
-- Purpose: React Context provider for mode state (ios/ai)
-- Contains: `mode-context.tsx` — defines `Mode` type, `ModeProvider`, `useMode` hook
-- Key files: `components/context/mode-context.tsx`
-
-**`components/effects/`:**
-- Purpose: Animation infrastructure for Framer Motion
-- Contains: Motion provider (lazy load + reduced motion), scroll-reveal wrapper, animation variant definitions
-- Key files: `components/effects/motion-provider.tsx`, `components/effects/scroll-reveal.tsx`, `components/effects/animation-variants.ts`
-
-**`components/hooks/`:**
-- Purpose: Custom React hooks
-- Contains: `use-typing-animation.ts` — terminal typing effect for AI hero section
-- Key files: `components/hooks/use-typing-animation.ts`
-
-**`components/theme/`:**
-- Purpose: Theme configuration provider
-- Contains: `theme-provider.tsx` — wraps `next-themes` ThemeProvider
-- Key files: `components/theme/theme-provider.tsx`
-
-**`components/icons/`:**
-- Purpose: Icon components (reserved directory, currently empty — icons live in `components/ui/social-icons.tsx`)
+- Purpose: dumb presentational primitives, reused across sections
+- Contains: 10 component files + `index.ts` barrel
+- Key files: `components/ui/index.ts`
 
 **`lib/`:**
-- Purpose: Shared utility functions
-- Contains: `utils.ts` — the `cn()` helper combining `clsx` and `tailwind-merge`
-- Key files: `lib/utils.ts`
+- Purpose: framework-agnostic utilities
+- Contains: `utils.ts` with the single `cn()` helper
 
 **`public/`:**
-- Purpose: Static assets served at the site root
-- Contains: Resume PDF, sitemap, robots.txt, app screenshots
-- Key files: `public/DoanPhuong.pdf`, `public/sitemap.xml`, `public/robots.txt`
+- Purpose: static assets served at site root; screenshot paths in `components/data/projects-data.ts` reference `/screenshots/...`
 
 **`docs/`:**
-- Purpose: Human-maintained project documentation
-- Contains: Architecture, design guidelines, code standards, deployment guide, roadmap
-- Key files: `docs/system-architecture.md`, `docs/design-guidelines.md`, `docs/code-standards.md`
+- Purpose: human-maintained documentation; `docs/system-architecture.md` is the canonical architecture reference; `docs/deployment-guide.md` covers Vercel deployment
+
+**`plans/`:**
+- Purpose: historical AI-workflow plan artifacts (e.g., `0226-2143-portfolio-neo-brutalist-redesign/`, `0414-2246-ai-resume-toggle-page/`) with phase files and `plans/reports/` agent reports
+- Generated: partially (agent reports); committed: yes
+
+**`resources/`:**
+- Purpose: raw/source assets (original screenshots with spaces in filenames) — referenced only by copy-paste into `public/`, not by code
 
 ## Key File Locations
 
 **Entry Points:**
-- `src/app/layout.tsx`: Root layout — HTML shell, fonts, metadata, providers, navbar/footer
-- `src/app/page.tsx`: Home page — renders `<ModeRouter />`
-- `src/app/opengraph-image.tsx`: Edge Runtime OG image generation
+- `src/app/layout.tsx`: root layout — fonts, metadata, JSON-LD, provider tree, Navbar/Footer
+- `src/app/page.tsx`: home route, renders ModeRouter
+- `src/app/opengraph-image.tsx`: edge OG image generation
 
 **Configuration:**
-- `next.config.mjs`: Next.js config with security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy)
-- `tailwind.config.ts`: Tailwind theme — custom colors (CSS var-driven), fonts, border-radius, box-shadows (including brutal)
-- `tsconfig.json`: TypeScript strict mode, `@/*` path alias, bundler module resolution
-- `postcss.config.mjs`: PostCSS with Tailwind plugin
-- `.eslintrc.json`: ESLint with `eslint-config-next` preset
+- `next.config.mjs`: security headers (X-Frame-Options DENY etc.), reactStrictMode
+- `tailwind.config.ts`: design tokens (colors → CSS vars, fonts, shadows incl. `brutal`, radii)
+- `tsconfig.json`: strict mode, `@/*` path alias to repo root
+- `src/app/globals.css`: CSS variable palette, reduced-motion rules, scrollbar, scroll-margin
 
 **Core Logic:**
-- `components/context/mode-context.tsx`: Mode state management — the only client-side state in the app
-- `components/layout/mode-router.tsx`: Section orchestration — conditionally renders iOS or AI sections
-- `components/data/ai-resume-data.ts`: Largest data file — all AI-mode resume content with typed interfaces
-- `components/data/experience-data.ts`: iOS-mode work experience data
+- `components/context/mode-context.tsx`: mode state machine + persistence + title sync
+- `components/layout/mode-router.tsx`: dual-persona section composition
+- `components/data/*.ts`: all site content
+- `lib/utils.ts`: `cn()`
 
 **Testing:**
-- Not applicable — no test files or test configuration detected
+- None — no test files, no test framework, no test script in `package.json`
+
+**Deployment:**
+- Vercel (canonical URL `https://portfolio-phi-lac-67.vercel.app` set in `src/app/layout.tsx:19`); guide at `docs/deployment-guide.md`
 
 ## Naming Conventions
 
 **Files:**
-- Components: kebab-case — `hero-section.tsx`, `mode-toggle.tsx`, `scroll-reveal.tsx`
-- Data files: kebab-case with `-data` suffix — `experience-data.ts`, `skills-data.ts`, `ai-resume-data.ts`
-- Utilities: kebab-case — `utils.ts`, `nav-links.ts`
-- Config: kebab-case with framework suffix — `tailwind.config.ts`, `postcss.config.mjs`
-- Directories: kebab-case — `components/`, `sections/`, `effects/`
+- Components: kebab-case, role-suffixed — `<name>-section.tsx` (sections), `<name>-card.tsx` / `<name>-badge.tsx` (ui), `<name>-menu.tsx` (layout)
+- AI-mode components prefixed `ai-`: `ai-hero-section.tsx`, `ai-resume-data.ts`
+- Data modules suffixed `-data.ts`: `projects-data.ts`
+- Hooks prefixed `use-`: `use-typing-animation.ts`
+- Providers suffixed `-provider.tsx`: `mode-provider` (actual: `mode-context.tsx`), `motion-provider.tsx`, `theme-provider.tsx` — context files may use either; prefer `-context.tsx` for context+hook files
+- Plain `.ts` for non-JSX modules (data, variants, nav-links, utils); `.tsx` only when JSX present
 
 **Directories:**
-- Component subdirectories group by concern: `sections/`, `ui/`, `layout/`, `context/`, `effects/`, `hooks/`, `data/`
-- No feature-based grouping — all sections share one directory regardless of mode
+- Plural lowercase role names: `sections/`, `ui/`, `layout/`, `data/`, `effects/`, `hooks/`, `context/`, `theme/`
 
-**Components:**
-- Named exports (not default): `export function HeroSection`, `export function ModeRouter`
-- UI primitives barrel-exported from `components/ui/index.ts`
-- Client components marked with `"use client"` directive at file top
-- AI-mode section components: prefixed with `ai-` — `ai-hero-section.tsx`, `ai-experience-section.tsx`
+**Exports:**
+- Named exports only; components exported as `export function HeroSection()` (PascalCase matching filename)
+- Data: `export interface Project` (singular) + `export const projects: Project[]` (plural camelCase)
 
-**Types/Interfaces:**
-- PascalCase: `Experience`, `SkillCategory`, `AIProject`, `TerminalLine`, `WorkflowStep`
-- Co-located with data files that define them
-- Exported alongside data constants from the same file
-
-**CSS:**
-- Tailwind utility classes used inline in JSX
-- CSS custom properties defined in `src/app/globals.css` under `:root`
-- Custom animations defined in `@layer utilities` in globals.css
-
-**Variables:**
-- camelCase for functions, hooks, state: `useMode`, `isMounted`, `handleToggle`
-- UPPER_SNAKE_CASE for constants: `ALLOWED_MODES`, `STORAGE_KEY`, `NAV_LINKS_BY_MODE`
-- kebab-case for CSS custom properties: `--primary`, `--accent-pink`, `--font-heading`
+**Section anchors:**
+- Section `id` attribute matches nav hrefs: iOS uses bare ids (`#about`), AI mode uses `ai-` prefixed ids (`#ai-workflow`) — defined in `components/layout/nav-links.ts`
 
 ## Where to Add New Code
 
-**New portfolio section (iOS mode):**
-- Component: `components/sections/<section-name>-section.tsx`
-- Data: Add to existing `components/data/<relevant>-data.ts` or create new `components/data/<section-name>-data.ts`
-- Register in `components/layout/mode-router.tsx` inside the `IOSContent` function
-- Add nav link to `components/layout/nav-links.ts` under the `ios` key
-- Add section id anchor with `scroll-margin-top: 100px` (inherited from globals.css `section` rule)
+**New page section (iOS mode):**
+1. Create `components/sections/<name>-section.tsx` — `"use client"`, `<section id="<name>">`, import data + `m` + UI primitives
+2. Add data: new array in existing `components/data/<domain>-data.ts` or new `<name>-data.ts` (interface + const export)
+3. Register in `IOSContent` in `components/layout/mode-router.tsx`
+4. Add link to `NAV_LINKS_BY_MODE.ios` in `components/layout/nav-links.ts`
 
-**New portfolio section (AI mode):**
-- Component: `components/sections/ai-<section-name>-section.tsx` (prefixed with `ai-`)
-- Data: Add to `components/data/ai-resume-data.ts` or create new data file
-- Register in `components/layout/mode-router.tsx` with `next/dynamic` import + `ssr: false` + `SectionSkeleton` loading state
-- Add nav link to `components/layout/nav-links.ts` under the `ai` key
+**New page section (AI mode):**
+1. Create `components/sections/ai-<name>-section.tsx`
+2. Add ALL content to `components/data/ai-resume-data.ts` (never hardcode in the component)
+3. Register via `next/dynamic` import with `{ ssr: false, loading: () => <SectionSkeleton /> }` in `mode-router.tsx`
+4. Add link to `NAV_LINKS_BY_MODE.ai` with `ai-`-prefixed anchor
 
-**New UI primitive (card, button, badge):**
-- Component: `components/ui/<component-name>.tsx`
-- Export: Add named export to `components/ui/index.ts` barrel file
-- Use `cn()` from `@/lib/utils` for className merging
-- Accept `className?: string` prop for composition
+**New UI primitive:**
+1. Create `components/ui/<name>.tsx` (dumb, `cn()` for classes, Tailwind tokens only)
+2. Add re-export to `components/ui/index.ts`
+3. Optional: shared motion presets go in `components/effects/animation-variants.ts`
 
-**New animation effect:**
-- Animation variants: `components/effects/animation-variants.ts`
-- Scroll-triggered wrapper: Use existing `ScrollReveal` from `components/effects/scroll-reveal.tsx`
-- New provider/wrapper: `components/effects/<name>.tsx`
+**New content/data:**
+- iOS content: `components/data/<domain>-data.ts`
+- AI content: append to `components/data/ai-resume-data.ts`
+- New screenshot: put file in `public/screenshots/<project>/`, reference as `/screenshots/...` in the data file
 
-**New custom hook:**
-- Location: `components/hooks/use-<name>.ts`
-- Must be marked `"use client"` if it uses React hooks
+**New route (page):**
+- `src/app/<segment>/page.tsx`; shared chrome comes free from root layout
 
-**New utility function:**
-- Location: `lib/utils.ts` (if small and general) or `lib/<name>.ts` (if substantial)
+**New hook:**
+- `components/hooks/use-<name>.ts`
 
-**New static asset:**
-- Images, PDFs, fonts: `public/<path>`
-- Served at site root: `public/sitemap.xml` → `https://domain/sitemap.xml`
-
-**New page/route (if ever needed):**
-- Location: `src/app/<route>/page.tsx`
-- Layout: `src/app/<route>/layout.tsx` (optional)
-- Note: Current architecture is single-page; adding routes is a structural change
+**Tests (none exist today):**
+- If introducing: add a runner (vitest/jest) to `package.json` and co-locate as `components/__tests__/` or `tests/` — no established pattern to follow yet
 
 ## Special Directories
 
-**`components/icons/`:**
-- Purpose: Reserved for icon components
-- Generated: No
-- Committed: Yes
-- Note: Currently empty; icons are defined inline in `components/ui/social-icons.tsx`
+**`.planning/`:**
+- Purpose: GSD workflow state (roadmap, phases, codebase maps in `.planning/codebase/`)
+- Generated: by GSD commands; Committed: yes
 
-**`src/app/fonts/`:**
-- Purpose: Self-hosted Geist font files (woff)
-- Generated: No
-- Committed: Yes
-- Note: Fonts are also loaded via `next/font/google` (Space Grotesk, DM Sans) in layout.tsx — these woff files may be a legacy fallback
+**`.claude/`:**
+- Purpose: Claude Code settings (`settings.local.json`), commands, skills, agent memory, session state
+- Generated: partially; Committed: mixed (local settings typically not)
 
-**`public/screenshots/`:**
-- Purpose: App Store screenshots for portfolio display
-- Generated: No
-- Committed: Yes
-
-**`docs/`:**
-- Purpose: Human-maintained project documentation
-- Generated: No
-- Committed: Yes
+**`.next/`:**
+- Purpose: Next.js build output
+- Generated: yes; Committed: no (gitignored)
 
 **`plans/`:**
-- Purpose: Historical implementation plans from previous GSD sessions
-- Generated: No
-- Committed: Yes
+- Purpose: AI-workflow plan documents and agent reports (historical record of the neo-brutalist redesign and AI-resume-toggle feature)
+- Generated: by planning agents; Committed: yes
+
+**`resources/`:**
+- Purpose: raw asset sources (screenshots with original names); NOT referenced by code — `public/screenshots/` holds the runtime copies
+- Committed: yes
+
+**`repomix-output.xml` (repo root, ~2.4MB):**
+- Purpose: generated codebase snapshot for LLM consumption; not referenced by code
 
 ---
 
-*Structure analysis: 2026-08-29*
+*Structure analysis: 2026-09-03*

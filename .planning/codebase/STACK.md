@@ -1,84 +1,96 @@
 # Technology Stack
 
-**Analysis Date:** 2026-08-29
+**Analysis Date:** 2026-09-03
 
 ## Languages
 
 **Primary:**
-- TypeScript 5.x — All source code (`src/app/`, `components/`)
-- CSS — Global styles via Tailwind directives in `src/app/globals.css`
+- TypeScript 5.9.3 — all application code (`.ts`/`.tsx`), strict mode enabled in `tsconfig.json`
+- CSS — Tailwind-based styling via `src/app/globals.css` with CSS custom properties for the neo-brutalist palette
 
 **Secondary:**
-- JavaScript (ESM) — Build configuration (`next.config.mjs`, `postcss.config.mjs`, `tailwind.config.ts`)
-- SVG (inline) — Custom icons in `components/ui/social-icons.tsx`
+- JavaScript (config only) — `next.config.mjs`, `postcss.config.mjs` (`allowJs: true` in `tsconfig.json`)
+- MDX — declared in Tailwind content globs (`tailwind.config.ts`) but no `.mdx` files currently exist
 
 ## Runtime
 
 **Environment:**
-- Node.js v22.23.2
+- Node.js ≥ 18.17 required (per `docs/deployment-guide.md`); local dev machine runs Node v24
+- Edge runtime used for one route: OG image generation (`src/app/opengraph-image.tsx` declares `export const runtime = "edge"`)
+- Everything else runs on the standard Next.js Node.js server runtime
 
 **Package Manager:**
-- npm
-- Lockfile: `package-lock.json` present
+- npm (no `packageManager` field pinned)
+- Lockfile: `package-lock.json` present (lockfileVersion 3)
 
 ## Frameworks
 
 **Core:**
-- Next.js 14.2.35 — Full React framework (App Router, SSG, Edge Runtime for OG image)
-- React 18.x — UI library
-- React DOM 18.x — DOM rendering
+- Next.js 14.2.35 — App Router (single route `/` in `src/app/page.tsx`), pinned exact version (no caret)
+- React 18.3.1 / react-dom 18.3.1 — client components with `"use client"` directives; static imports for iOS-mode sections, `next/dynamic` with `ssr: false` for AI-mode sections (`components/layout/mode-router.tsx`)
 
 **Testing:**
-- Not detected
+- None. No test runner, no test files, no test script in `package.json`
 
 **Build/Dev:**
-- TypeScript 5.x — Type checking and compiler
-- Tailwind CSS 3.4.1 — Utility-first CSS framework
-- PostCSS 8.x — CSS processing pipeline
-- ESLint 8.x — Linting (extends `next/core-web-vitals`, `next/typescript`)
+- Next.js built-in compiler (`next dev`, `next build`, `next start`)
+- PostCSS 8 with `tailwindcss` plugin (`postcss.config.mjs`)
+- ESLint 8 + `eslint-config-next` 14.2.35 (`next lint`), extends `next/core-web-vitals` and `next/typescript` (`.eslintrc.json`)
+- Turbopack not used; webpack-based default
 
 ## Key Dependencies
 
-**Critical:**
-- `framer-motion` 11.18.2 — Animation library; powers scroll reveals, page transitions, and the AI-mode terminal animation. Used in virtually every section component and `components/layout/page-transition.tsx`.
-- `next-themes` 0.4.6 — Dark/light mode theming via `components/theme/theme-provider.tsx`
-- `clsx` 2.1.1 — Conditional CSS class composition
-- `tailwind-merge` 3.5.0 — Merge Tailwind classes without conflicts (used alongside `clsx` for class composition)
+**Critical (all 6 runtime deps):**
+
+| Package | Version | Purpose | Used in |
+|---------|---------|---------|---------|
+| `next` | 14.2.35 | App Router framework, routing, metadata, OG image | `src/app/*` |
+| `react` / `react-dom` | ^18 | UI rendering | all components |
+| `framer-motion` | ^11.18.2 | All animations — page transitions, scroll reveal, section motion (`m`/`AnimatePresence`) | `components/effects/*`, `components/layout/mode-router.tsx`, sections |
+| `next-themes` | ^0.4.6 | Dark/light theme provider — **currently unused**: `components/theme/theme-provider.tsx` wraps it but is never mounted in `src/app/layout.tsx` | (dead code) |
+| `clsx` + `tailwind-merge` | ^2.1.1 / ^3.5.0 | `cn()` class-merge utility | `lib/utils.ts` |
 
 **Infrastructure:**
-- `next/font/google` — Font optimization for Space Grotesk (heading) and DM Sans (body), loaded in `src/app/layout.tsx`
-- `next/og` (built-in) — Edge Runtime OG image generation in `src/app/opengraph-image.tsx`
+- None beyond Next.js itself — no state management lib, no forms lib, no HTTP client, no icon library (all icons are hand-written inline SVGs in `components/ui/social-icons.tsx` and `components/icons/` — note `components/icons/` is an empty directory)
+
+**Dev-only:**
+- `typescript` ^5, `@types/node` ^20, `@types/react` ^18, `@types/react-dom` ^18
+- `tailwindcss` ^3.4.1, `postcss` ^8, `eslint` ^8, `eslint-config-next` 14.2.35
 
 ## Configuration
 
 **Environment:**
-- No `.env` files detected. No environment variables are required.
-- Mode switching (iOS vs AI) uses `localStorage` and URL search params, not server-side config — see `components/context/mode-context.tsx`.
+- No `.env` files exist; **zero environment variables required** (confirmed in `docs/deployment-guide.md`)
+- No `process.env` references anywhere in source
 
 **Build:**
-- `next.config.mjs` — React Strict Mode enabled, security headers (X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, Permissions-Policy restricting camera/microphone/geolocation)
-- `tailwind.config.ts` — Content paths scan `src/` and `components/`; custom CSS variable-based color system, custom border-radius, box-shadow (including `brutal` variant), font families
-- `postcss.config.mjs` — Tailwind CSS plugin only
-- `tsconfig.json` — Strict mode, bundler module resolution, path alias `@/*` → `./*`, incremental builds enabled
-- `.eslintrc.json` — Extends `next/core-web-vitals` and `next/typescript`
+- `next.config.mjs`: `reactStrictMode: true` + custom security headers applied to all routes (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`)
+- `tsconfig.json`: strict, `moduleResolution: "bundler"`, `isolatedModules`, path alias `@/*` → repo root `./*` (⚠️ maps to project root, NOT `./src/*` — imports like `@/components/...` and `@/lib/...` resolve to top-level `components/` and `lib/`, while app code lives in `src/app/`)
+- `tailwind.config.ts`: content globs cover both `src/**` and root `components/**`; design tokens are CSS-variable-driven colors (`--primary`, `--accent-*`, etc. defined in `src/app/globals.css`), fixed `cta: "#2563EB"`, custom font families via `next/font` CSS variables (`--font-heading` = Space Grotesk, `--font-body` = DM Sans), brutalist box-shadow scale
+- `.eslintrc.json`: `next/core-web-vitals` + `next/typescript`
 
 **Fonts:**
-- Space Grotesk — Heading font (Google Fonts, optimized via `next/font/google`, CSS variable `--font-heading`)
-- DM Sans — Body font (Google Fonts, optimized via `next/font/google`, CSS variable `--font-body`)
-- Geist VF and Geist Mono VF — Local font files in `src/app/fonts/` (not currently imported in layout)
+- Google Fonts loaded at build time via `next/font/google` (Space Grotesk, DM Sans) in `src/app/layout.tsx` — no runtime font requests, self-hosted by Next.js
+
+**Scripts (package.json):**
+```bash
+npm run dev     # next dev (port 3000)
+npm run build   # next build
+npm run start   # next start
+npm run lint    # next lint
+```
 
 ## Platform Requirements
 
 **Development:**
-- Node.js 18+ (v22.23.2 used)
-- npm
-- No database or external service dependencies
+- Node.js ≥ 18.17, npm
+- `npm install` then `npm run dev` — no other setup steps
 
 **Production:**
-- Deployed on Vercel (site URL: `https://portfolio-phi-lac-67.vercel.app` per `src/app/layout.tsx` metadata)
-- Fully static site (SSG) — no server-side data fetching, no API routes, no middleware
-- OG image uses Edge Runtime (`src/app/opengraph-image.tsx`)
+- Deployed to Vercel (canonical URL `https://portfolio-phi-lac-67.vercel.app` hardcoded in `src/app/layout.tsx`, `public/robots.txt`, `public/sitemap.xml`)
+- Git remote: `github.com/phuongddx/portfolio-next`
+- No `vercel.json`, no CI pipeline (`.github/` absent) — deployment is implicit via Vercel git integration
 
 ---
 
-*Stack analysis: 2026-08-29*
+*Stack analysis: 2026-09-03*

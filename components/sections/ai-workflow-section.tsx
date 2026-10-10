@@ -138,15 +138,17 @@ export function AIWorkflowSection() {
                   {step.artifact}
                 </p>
                 <p className="mt-2 text-sm text-gray-800">
-                  <span className="font-semibold">Gate:</span> {step.gate}
+                  <span className="font-semibold">{workflowSectionCopy.gateLabel}</span> {step.gate}
                 </p>
                 <a
                   href={step.evidence.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-auto pt-3 text-sm font-semibold text-green-600 hover:underline break-all"
+                  className="mt-auto pt-3 text-sm font-semibold text-green-700 hover:underline break-words"
                 >
-                  {step.evidence.label} {"↗"}
+                  {step.evidence.label}
+                  <span aria-hidden="true"> {"↗"}</span>
+                  <span className="sr-only"> {workflowSectionCopy.newTabLabel}</span>
                 </a>
               </m.div>
             ))}
@@ -176,9 +178,11 @@ export function AIWorkflowSection() {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-shrink-0 text-sm font-semibold text-green-600 hover:underline"
+                    className="flex-shrink-0 text-sm font-semibold text-green-700 hover:underline"
                   >
-                    fix {"↗"}
+                    {workflowSectionCopy.fixLabel}
+                    <span aria-hidden="true"> {"↗"}</span>
+                    <span className="sr-only"> for {item.title} {workflowSectionCopy.newTabLabel}</span>
                   </a>
                 </li>
               ))}

@@ -66,6 +66,9 @@ export interface WorkflowSectionCopy {
   subtitle: string;
   terminalTitle: string;
   catchesHeading: string;
+  gateLabel: string;
+  fixLabel: string;
+  newTabLabel: string;
 }
 
 export interface AIHeroData {
@@ -278,8 +281,8 @@ export const aiProjects: AIProject[] = [
 export const terminalLines: TerminalLine[] = [
   { text: "$ context", delay: 0, type: "command" },
   { text: "\u2713 AGENTS.md \u00b7 ARCHITECTURE.md \u00b7 docs/engineering", delay: 500, type: "success" },
-  { text: "$ spec resume-content", delay: 1000, type: "command" },
-  { text: "\u2713 owner approved: both modes, iOS default", delay: 1500, type: "success" },
+  { text: "$ intent resume-content", delay: 1000, type: "command" },
+  { text: "\u2713 owner confirmed: both modes, iOS default", delay: 1500, type: "success" },
   { text: "$ plan resume-content", delay: 2000, type: "command" },
   { text: "\u2713 6 tasks, each with an exact check", delay: 2500, type: "success" },
   { text: "$ build --task 1..5", delay: 3000, type: "command" },
@@ -316,9 +319,12 @@ const REPO_URL = "https://github.com/phuongddx/portfolio-next";
 export const workflowSectionCopy: WorkflowSectionCopy = {
   heading: "My AI-Native SDLC",
   subtitle:
-    "How this site's last update shipped: 6 planned tasks, 7 commits, 4 Important issues caught in review.",
+    "How the resume-content update shipped: 6 planned tasks, 7 commits, 4 Important issues caught in review.",
   terminalTitle: "resume-content \u00b7 session replay",
   catchesHeading: "What review caught",
+  gateLabel: "Gate:",
+  fixLabel: "fix",
+  newTabLabel: "(opens in new tab)",
 };
 
 // ---------------------------------------------------------------------------
@@ -340,7 +346,7 @@ export const workflowSteps: WorkflowStep[] = [
     desc: "I state the outcome; the agent writes its understanding back, I correct it, and the design becomes a spec.",
     artifact: "spec.md",
     gate: "I correct the understanding and approve the spec",
-    evidence: { label: "spec.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/spec.md` },
+    evidence: { label: "spec.md \u2014 this section's spec", href: `${REPO_URL}/blob/main/docs/features/resume-content/spec.md` },
   },
   {
     num: 3,
@@ -398,7 +404,7 @@ export const reviewCatches: ReviewCatch[] = [
   },
   {
     title: "Featured Project card overstated the CV",
-    detail: "It claimed figures the CV does not make.",
+    detail: "It invented one figure and misquoted another.",
     href: `${REPO_URL}/commit/4881249`,
   },
 ];

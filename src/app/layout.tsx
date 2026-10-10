@@ -16,24 +16,27 @@ const dmSans = DM_Sans({
   variable: "--font-body",
 });
 
-const siteUrl = "https://portfolio-phi-lac-67.vercel.app";
+const siteUrl = "https://www.phuongddx.cc";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "iOS Software Engineer | Doan Duy Phuong",
+  title: "Software Engineer (iOS → AI Platform) | Doan Duy Phuong",
   description:
-    "iOS Engineer with 5+ years shipping App Store products in Swift, SwiftUI & UIKit. Built a design system adopted by 3+ teams, cutting dev time by 40%. Open to full-time & remote roles.",
+    "Software engineer with 6+ years shipping production apps, including 2 years as a team lead, now building LLM, retrieval, and agent systems on an internal AI platform.",
   keywords: [
-    "iOS Developer",
-    "iOS Engineer",
-    "Swift Developer",
-    "SwiftUI",
-    "UIKit",
-    "React Native",
-    "Mobile Developer",
     "Software Engineer",
+    "AI Platform Engineer",
+    "LLM",
+    "Retrieval",
+    "AI Agents",
+    "MCP",
+    "Model Context Protocol",
+    "iOS Engineer",
+    "Swift",
+    "SwiftUI",
+    "Python",
+    "FastAPI",
     "Ho Chi Minh City",
-    "Remote iOS Developer",
   ],
   authors: [{ name: "Doan Duy Phuong" }],
   creator: "Doan Duy Phuong",
@@ -44,17 +47,17 @@ export const metadata: Metadata = {
     type: "website",
     url: siteUrl,
     locale: "en_US",
-    title: "iOS Software Engineer | Doan Duy Phuong",
+    title: "Software Engineer (iOS → AI Platform) | Doan Duy Phuong",
     description:
-      "iOS Engineer with 5+ years shipping App Store products. Built a design system adopted by 3+ teams, cutting dev time by 40%. Open to full-time & remote roles.",
-    siteName: "Doan Duy Phuong — iOS Engineer",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Doan Duy Phuong — iOS Software Engineer" }],
+      "Software engineer with 6+ years shipping production apps, including 2 years as a team lead, now building LLM, retrieval, and agent systems.",
+    siteName: "Doan Duy Phuong — Software Engineer",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Doan Duy Phuong — Software Engineer (iOS → AI Platform)" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "iOS Software Engineer | Doan Duy Phuong",
+    title: "Software Engineer (iOS → AI Platform) | Doan Duy Phuong",
     description:
-      "iOS Engineer with 5+ years shipping App Store products. Open to full-time & remote roles.",
+      "Software engineer with 6+ years shipping production apps, now building LLM, retrieval, and agent systems.",
     images: ["/opengraph-image.png"],
   },
   robots: {
@@ -67,14 +70,24 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Doan Duy Phuong",
-  jobTitle: "iOS Software Engineer",
+  jobTitle: "Software Engineer",
   url: siteUrl,
   email: "95doanphuong@gmail.com",
   sameAs: [
     "https://linkedin.com/in/phuongddx/",
     "https://github.com/phuongddx",
   ],
-  knowsAbout: ["iOS Development", "Swift", "SwiftUI", "UIKit", "React Native"],
+  knowsAbout: [
+    "LLM Systems",
+    "Retrieval",
+    "AI Agents",
+    "Model Context Protocol",
+    "iOS Development",
+    "Swift",
+    "SwiftUI",
+    "Python",
+    "Java",
+  ],
   address: {
     "@type": "PostalAddress",
     addressLocality: "Ho Chi Minh City",

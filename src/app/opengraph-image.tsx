@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Doan Duy Phuong — iOS Software Engineer";
+export const alt = "Doan Duy Phuong — Software Engineer (iOS → AI Platform)";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -73,15 +73,15 @@ export default function OgImage() {
             marginBottom: "40px",
           }}
         >
-          iOS Software Engineer
+          Software Engineer · iOS &amp; AI Platform
         </div>
 
         {/* Stats row */}
         <div style={{ display: "flex", gap: "40px" }}>
           {[
-            { value: "5+", label: "Years Experience" },
-            { value: "4+", label: "Apps Shipped" },
-            { value: "40%", label: "Faster Dev Time" },
+            { value: "6+", label: "Years Experience" },
+            { value: "~100", label: "AI Platform Users" },
+            { value: "2 yrs", label: "As Team Lead" },
           ].map((stat) => (
             <div key={stat.label} style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ fontSize: "40px", fontWeight: 800, color: "#1f2937" }}>

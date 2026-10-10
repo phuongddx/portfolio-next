@@ -61,7 +61,7 @@ export function Footer() {
                   Doan Duy Phuong
                 </p>
                 <p className="text-sm text-gray-500">
-                  iOS Software Engineer
+                  Software Engineer
                 </p>
               </div>
             </div>
@@ -113,7 +113,7 @@ export function Footer() {
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              Ho Chi Minh, Vietnam
+              Ho Chi Minh City, Vietnam
             </p>
           </div>
         </div>

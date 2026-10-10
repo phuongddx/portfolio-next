@@ -18,11 +18,9 @@ const pastelColors = [
 // Project icons based on category
 const categoryIcons: Record<string, string> = {
   "Design System": "🎨",
-  Fintech: "💰",
-  IoT: "🏠",
+  Health: "🧘",
   Education: "📺",
   Security: "🔒",
-  Architecture: "🏗️",
 };
 
 const containerVariants = {

@@ -18,9 +18,9 @@ export const projects: Project[] = [
     title: "ePost Design System",
     category: "Design System",
     description:
-      "Built a scalable design system library with 4 dynamic appearances and customizable brand colors, adopted by 3+ teams.",
+      "UIKit + SwiftUI design-system library for the ePost iOS app, adopted by 3+ teams.",
     technologies: ["SwiftUI", "UIKit", "Design Systems"],
-    stat: { value: "40%", label: "reduction in UI development time" },
+    stat: { value: "~40%", label: "reduction in UI development time" },
     screenshots: [
       "/screenshots/swisspost/460x998bb.webp",
       "/screenshots/swisspost/460x998bb-2.webp",
@@ -29,23 +29,22 @@ export const projects: Project[] = [
     appStoreUrl: "https://apps.apple.com/us/app/swiss-post/id378676700",
   },
   {
-    id: "smart-home",
-    title: "Darkin Smart Home",
-    category: "IoT",
+    id: "stress-ai-coach",
+    title: "Stress AI Coach",
+    category: "Health",
     description:
-      "iOS app for controlling Darkin Air conditioners using NWWebSocket for real-time communication.",
-    technologies: ["Swift", "NWWebSocket", "MVVM", "XCTest"],
-    stat: { value: "90%", label: "test coverage at ViewModel layer" },
+      "iOS + watchOS app with privacy-first stress scoring from HealthKit and a streaming AI coach. Raw health data never leaves the device; only derived scores reach the model.",
+    technologies: ["Swift", "watchOS", "HealthKit", "StoreKit", "SSE"],
     screenshots: [],
-    appStoreUrl: undefined,
+    appStoreUrl: "https://apps.apple.com/us/app/stress-ai-coach/id6778478266",
   },
   {
     id: "tvos-learning",
     title: "tvOS Learning Platform",
     category: "Education",
     description:
-      "Developed UI/UX for tvOS enabling users to manage courses and learn from their Apple TV with video/audio playback using AVFoundation.",
-    technologies: ["tvOS", "AVFoundation", "SwiftUI"],
+      "tvOS course and video-playback experience built with AVFoundation for ZILLEARN, an AI-powered learning platform for schools and enterprises.",
+    technologies: ["tvOS", "AVFoundation", "Coordinator + MVVM"],
     screenshots: [
       "/screenshots/zillearn/Screenshot-1.png",
       "/screenshots/zillearn/Screenshot-2.png",
@@ -58,8 +57,8 @@ export const projects: Project[] = [
     title: "Windscribe VPN",
     category: "Security",
     description:
-      "Led iOS development for VPN client with OAuth 2.0/PKCE authentication, AES encryption for credential storage, and zero-knowledge tunnel key management. Automated CI/CD deployment via Bitrise.",
-    technologies: ["Swift", "OAuth 2.0", "PKCE", "AES", "Keychain", "Bitrise"],
+      "Led a team of 2–3 on the production VPN app: OAuth 2.0 with PKCE, AES credential encryption via Keychain, and zero-knowledge VPN tunnel key management.",
+    technologies: ["Swift", "OAuth 2.0", "PKCE", "Keychain", "Network Extension"],
     screenshots: ["/screenshots/windscribe/460x996bb.webp"],
     appStoreUrl: "https://apps.apple.com/us/app/vpn-windscribe-fast-secure/id1129435228",
   },

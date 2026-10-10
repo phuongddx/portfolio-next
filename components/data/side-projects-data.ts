@@ -11,44 +11,45 @@ export interface SideProject {
   status: "production" | "development" | "archived";
 }
 
+// Star/fork counts are a snapshot from the GitHub API on 2026-10-10.
 export const sideProjects: SideProject[] = [
   {
-    id: "xcframework-cli",
-    title: "XCFramework CLI",
+    id: "jarvis",
+    title: "jarvis",
     description:
-      "Build XCFrameworks from Xcode projects or Swift Packages with YAML/JSON config support. Features iOS + Simulator support, resource bundles, and colored output.",
-    githubUrl: "https://github.com/phuongddx/xcframework-cli",
+      "Local-first code-intelligence MCP server. Hybrid retrieval fuses dense vectors, Zoekt lexical search, and SCIP symbols via reciprocal rank fusion. On PyPI (jarvis-mcp) and the official MCP Registry.",
+    githubUrl: "https://github.com/jarvis-intelligence/jarvis",
+    language: "Python",
+    languageColor: "#3572A5",
+    stars: 4,
+    forks: 0,
+    topics: ["mcp", "code-intelligence", "scip", "tree-sitter", "lancedb"],
+    status: "production",
+  },
+  {
+    id: "llm-gateway",
+    title: "LLM Gateway",
+    description:
+      "OpenAI-compatible gateway routing to 500+ models behind one key, capturing TTFT, latency, and token usage per request, with an agent-run trace viewer and per-model circuit breakers.",
+    githubUrl: "https://github.com/phuongddx/llm-gateway",
+    language: "Python",
+    languageColor: "#3572A5",
+    stars: 0,
+    forks: 0,
+    topics: ["llm", "gateway", "observability", "fastapi", "sse"],
+    status: "production",
+  },
+  {
+    id: "spm-cache",
+    title: "spm-cache",
+    description:
+      "Swift Package Manager xcframework cache proxy, shipped with a Homebrew tap and a GitHub Action.",
+    githubUrl: "https://github.com/phuongddx/spm-cache",
     language: "Ruby",
     languageColor: "#CC342D",
-    stars: 0,
+    stars: 1,
     forks: 0,
-    topics: ["ios", "xcframework", "cli", "swift-package", "xcode"],
-    status: "production",
-  },
-  {
-    id: "trending-movie-ios",
-    title: "Trending Movies",
-    description:
-      "iOS app showcasing trending movies using TMDB API. Built with Clean Architecture + MVVM, featuring hero carousel, trailer playback, search, and watchlist management.",
-    githubUrl: "https://github.com/phuongddx/trending-movie-ios",
-    language: "Swift",
-    languageColor: "#F05138",
-    stars: 0,
-    forks: 0,
-    topics: ["swiftui", "mvvm", "clean-architecture", "tmdb", "movies"],
-    status: "production",
-  },
-  {
-    id: "ios-stress-app",
-    title: "StressMonitor",
-    description:
-      "Privacy-first stress monitoring for iOS & watchOS using HRV analysis. Encrypted storage with SQLCipher, Keychain Services for secure keys, App Groups for iOS/watchOS data sharing. CloudKit sync, widgets, and breathing exercises.",
-    githubUrl: "https://github.com/NextGen-Limited/ios-stress-app",
-    language: "Swift",
-    languageColor: "#F05138",
-    stars: 0,
-    forks: 0,
-    topics: ["swiftui", "healthkit", "watchos", "cloudkit", "hrv", "sqlcipher", "keychain", "app-groups"],
+    topics: ["swift-package-manager", "xcframework", "cache", "homebrew", "github-actions"],
     status: "production",
   },
 ];

@@ -1042,3 +1042,652 @@ Stop the server afterwards.
 - `docs/system-architecture.md` describes an unused ThemeProvider and a `portfolio3/` parent.
 - Pre-existing uncommitted deletions of `resources/resume.pdf` and `resources/resume-latest.pdf` — owner decides separately.
 - `introduce-myself.html` copy (5+ years, iOS-only framing) is a separate artifact.
+
+---
+---
+
+# Round 2: AI-Native SDLC Workflow Section Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use text2prod:subagent-driven-development (recommended) or text2prod:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Round 1 (Tasks 1–6 above) is shipped; execute **Tasks 7–10 only**.
+
+**Goal:** Replace AI mode's invented workflow demo with the owner's real AI-native SDLC, using this site's resume-content run as a verifiable case study.
+
+**Architecture:** All copy goes in `components/data/ai-resume-data.ts` (new `workflowSectionCopy`, `reviewCatches`; rewritten `workflowSteps`, `terminalLines`, hero typing phrase). `components/sections/ai-workflow-section.tsx` reads that copy, shows richer step cards (artifact, gate, evidence link) and a new "What review caught" strip. No new section, route, or dependency.
+
+**Tech Stack:** Next.js 14.2 App Router, TypeScript strict, Tailwind 3.4.19, framer-motion 11 (`m.*` under strict `LazyMotion`). npm.
+
+**Spec:** `docs/features/resume-content/spec.md` (approved, `a557861`).
+
+## Global Constraints (round 2)
+
+- All copy lives in `components/data/ai-resume-data.ts`; components import it and hardcode none.
+- Motion uses `m.*` under strict `LazyMotion`; sections wrap content in `ScrollReveal`.
+- TypeScript strict; `npx tsc --noEmit`, `npm run lint`, `npm run build` must pass.
+- No speedup, percentage, or "x faster" claims in `workflowSectionCopy`, `workflowSteps`, `reviewCatches`, or `terminalLines`.
+- No product or tool names in the workflow section (tool-agnostic): no "Claude", "Claude Code", "text2prod", "Copilot", "Cursor".
+- External links open in a new tab with `rel="noopener noreferrer"`.
+- No horizontal page scroll at 390px width. Every terminal line is ≤ 48 characters (after `\u` escapes are decoded).
+- Evidence links point at `https://github.com/phuongddx/portfolio-next`: file links via `/tree/main/…` or `/blob/main/…`; commit and range links via real SHAs.
+- Every number traces to git or `docs/features/resume-content/`: 6 planned tasks, 7 commits (`f19d974..f7d4237`), 5 build commits (`f19d974..7a41c1c`), 4 Important findings, fix commit `4881249`.
+- Non-ASCII symbols in TS strings use `\u` escapes, matching the file (`✓` ✓, `✗` ✗, `·` ·, `→` →, `█` █, `—` —, `↗` ↗).
+- Stage **only** the files each task lists. Never stage `resources/resume*.pdf` deletions, `.ai-devkit.json`, `.claude/`, `.omx/`, `docs/ai/`, `engineer.yaml`, `header-ui.png`, `plans/`, or `repomix-output.xml`.
+- Never stop processes by name (`pkill -f next-server`); stop only the PID you started.
+- Conventional commits `type(scope): subject`, lowercase imperative.
+
+## Data check script (used by Tasks 8 and 10)
+
+Run from the repo root. It reports, for each workflow export, whether it is missing, contains a claim (`%` / "faster") or a tool name, plus the terminal line count and how many exceed 48 characters.
+
+```bash
+node -e '
+const s=require("fs").readFileSync("components/data/ai-resume-data.ts","utf8");
+const block=n=>{const i=s.indexOf("export const "+n);if(i<0)return null;const j=s.indexOf("\n// ---",i);return s.slice(i,j<0?s.length:j);};
+for(const n of ["workflowSectionCopy","workflowSteps","reviewCatches","terminalLines"]){const b=block(n);console.log(n+": "+(b===null?"MISSING":/%|faster/i.test(b)?"HAS CLAIM":/[Cc]laude|text2prod|[Cc]opilot|Cursor/.test(b)?"HAS TOOL NAME":"clean"));}
+const t=[...(block("terminalLines")||"").matchAll(/text: "((?:[^"\\]|\\.)*)"/g)].map(m=>JSON.parse("\""+m[1]+"\""));
+console.log(t.length+" terminal lines, over 48: "+t.filter(x=>[...x].length>48).length);'
+```
+
+---
+
+### Task 7: Commit the AI-native repo structure
+
+**Files:**
+- Add (already on disk, untracked): `AGENTS.md`, `ARCHITECTURE.md`, `.agents/skills/.gitkeep`, `.agents/policies/.gitkeep`, `.agents/hooks/.gitkeep`, `.agents/templates/spec.md`, `.agents/templates/review.md`, `docs/engineering/conventions.md`, `docs/engineering/tech-stack.md`, `docs/features/.gitkeep`
+- Do not edit any of them.
+
+**Interfaces:**
+- Consumes: nothing
+- Produces: those paths tracked on `main`, so the Context card's evidence link (`/tree/main/docs/engineering`) shows all three engineering docs after push.
+
+- [ ] **Step 1: Confirm they are untracked (failing check)**
+
+Run:
+```bash
+git ls-files AGENTS.md ARCHITECTURE.md .agents docs/engineering/conventions.md docs/engineering/tech-stack.md docs/features/.gitkeep | wc -l
+```
+Expected: `0`
+
+- [ ] **Step 2: Scan for secrets or personal tokens before committing**
+
+Run:
+```bash
+grep -rnEi "api[_-]?key|secret|token|password|BEGIN (RSA|OPENSSH)" AGENTS.md ARCHITECTURE.md .agents docs/engineering/conventions.md docs/engineering/tech-stack.md; echo "matches: $?"
+```
+Expected: `matches: 1`. If anything matches, stop and report it (status BLOCKED); do not commit.
+
+- [ ] **Step 3: Stage exactly these files and commit**
+
+```bash
+git add AGENTS.md ARCHITECTURE.md .agents/skills/.gitkeep .agents/policies/.gitkeep .agents/hooks/.gitkeep .agents/templates/spec.md .agents/templates/review.md docs/engineering/conventions.md docs/engineering/tech-stack.md docs/features/.gitkeep
+git commit -m "docs: add ai-native repo structure"
+```
+
+- [ ] **Step 4: Verify (passing check)**
+
+Run:
+```bash
+git ls-files AGENTS.md ARCHITECTURE.md .agents docs/engineering/conventions.md docs/engineering/tech-stack.md docs/features/.gitkeep | wc -l
+git show --stat --oneline HEAD | tail -1
+```
+Expected: `10`, and `10 files changed`.
+
+---
+
+### Task 8: Workflow data — copy, steps, review catches, terminal replay
+
+**Files:**
+- Modify: `components/data/ai-resume-data.ts` (interfaces block lines 43–60; terminal lines block lines 258–287; hero `typingPhrases` line 298; workflow steps block lines 301–312)
+- Modify: `components/sections/ai-workflow-section.tsx` (`lineColor` switch only, lines 11–22)
+- Modify: `components/sections/ai-hero-section.tsx` (typing-line container class only, line 80)
+
+**Interfaces:**
+- Consumes: nothing
+- Produces (Task 9 relies on these exact names and shapes):
+```ts
+export interface TerminalLine { text: string; delay: number; type: "command" | "output" | "success" | "error" | "cursor"; }
+export interface WorkflowStep { num: number; label: string; desc: string; artifact: string; gate: string; evidence: { label: string; href: string }; }
+export interface ReviewCatch { title: string; detail: string; href: string; }
+export interface WorkflowSectionCopy { heading: string; subtitle: string; terminalTitle: string; catchesHeading: string; }
+export const workflowSectionCopy: WorkflowSectionCopy;
+export const workflowSteps: WorkflowStep[];   // 6
+export const reviewCatches: ReviewCatch[];    // 4
+export const terminalLines: TerminalLine[];   // 17
+```
+
+- [ ] **Step 1: Run the data check (failing)**
+
+Run the "Data check script" from the top of Round 2.
+Expected:
+```
+workflowSectionCopy: MISSING
+workflowSteps: clean
+reviewCatches: MISSING
+terminalLines: HAS TOOL NAME
+```
+(the last line count may vary). Also run:
+```bash
+grep -nE 'auth system|JWT|Prompt (\\u2192|→)' components/data/ai-resume-data.ts | wc -l
+```
+Expected: a number greater than `0`.
+
+- [ ] **Step 2: Update the interfaces**
+
+In `components/data/ai-resume-data.ts`, replace the `TerminalLine` and `WorkflowStep` interfaces with:
+```ts
+export interface TerminalLine {
+  text: string;
+  delay: number;
+  type: "command" | "output" | "success" | "error" | "cursor";
+}
+
+export interface WorkflowStep {
+  num: number;
+  label: string;
+  desc: string;
+  artifact: string;
+  gate: string;
+  evidence: { label: string; href: string };
+}
+
+export interface ReviewCatch {
+  title: string;
+  detail: string;
+  href: string;
+}
+
+export interface WorkflowSectionCopy {
+  heading: string;
+  subtitle: string;
+  terminalTitle: string;
+  catchesHeading: string;
+}
+```
+Leave `AIHeroData` and every other interface unchanged.
+
+- [ ] **Step 3: Replace the terminal lines block**
+
+Replace the whole `// Terminal animation lines` section (its divider comment through the closing `];` of `terminalLines`) with:
+```ts
+// ---------------------------------------------------------------------------
+// Terminal animation lines — replay of the resume-content run (f19d974..f7d4237)
+// ---------------------------------------------------------------------------
+
+export const terminalLines: TerminalLine[] = [
+  { text: "$ context", delay: 0, type: "command" },
+  { text: "✓ AGENTS.md · ARCHITECTURE.md · docs/engineering", delay: 500, type: "success" },
+  { text: "$ spec resume-content", delay: 1000, type: "command" },
+  { text: "✓ owner approved: both modes, iOS default", delay: 1500, type: "success" },
+  { text: "$ plan resume-content", delay: 2000, type: "command" },
+  { text: "✓ 6 tasks, each with an exact check", delay: 2500, type: "success" },
+  { text: "$ build --task 1..5", delay: 3000, type: "command" },
+  { text: "✓ 5 commits · lint + types per task", delay: 3500, type: "success" },
+  { text: "$ review --whole-change", delay: 4000, type: "command" },
+  { text: "✗ 4 Important findings", delay: 4600, type: "error" },
+  { text: "  skill bars grey · link-preview crash", delay: 5000, type: "output" },
+  { text: "  missing icons · card copy vs CV", delay: 5400, type: "output" },
+  { text: "$ fix", delay: 5900, type: "command" },
+  { text: "✓ 1 fix wave · re-review: all addressed", delay: 6400, type: "success" },
+  { text: "$ ship", delay: 6900, type: "command" },
+  { text: "✓ build · pushed f19d974..f7d4237", delay: 7400, type: "success" },
+  { text: "█", delay: 7900, type: "cursor" },
+];
+```
+Every `text` uses double quotes (the check script relies on it).
+
+- [ ] **Step 4: Replace the hero typing phrase**
+
+In `aiHeroData`, replace the `typingPhrases` line with:
+```ts
+  typingPhrases: ["Context → Spec → Plan → Build → Review → Ship"],
+```
+
+- [ ] **Step 5: Replace the workflow steps block**
+
+Replace the whole `// Workflow steps` section (its divider comment through the closing `];` of `workflowSteps`, the end of the file) with:
+```ts
+// ---------------------------------------------------------------------------
+// Workflow section — AI-Native SDLC case study (resume-content run)
+// ---------------------------------------------------------------------------
+
+const REPO_URL = "https://github.com/phuongddx/portfolio-next";
+
+export const workflowSectionCopy: WorkflowSectionCopy = {
+  heading: "My AI-Native SDLC",
+  subtitle:
+    "How this site's last update shipped: 6 planned tasks, 7 commits, 4 Important issues caught in review.",
+  terminalTitle: "resume-content · session replay",
+  catchesHeading: "What review caught",
+};
+
+// ---------------------------------------------------------------------------
+// Workflow steps
+// ---------------------------------------------------------------------------
+
+export const workflowSteps: WorkflowStep[] = [
+  {
+    num: 1,
+    label: "Context",
+    desc: "Agents map the repo before touching it, so every change starts from written conventions.",
+    artifact: "AGENTS.md · ARCHITECTURE.md · docs/engineering/",
+    gate: "Read-only — no gate",
+    evidence: { label: "docs/engineering", href: `${REPO_URL}/tree/main/docs/engineering` },
+  },
+  {
+    num: 2,
+    label: "Intent & Spec",
+    desc: "I state the outcome; the agent writes its understanding back, I correct it, and the design becomes a spec.",
+    artifact: "spec.md",
+    gate: "I correct the understanding and approve the spec",
+    evidence: { label: "spec.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/spec.md` },
+  },
+  {
+    num: 3,
+    label: "Plan",
+    desc: "The spec becomes bite-sized tasks, each with exact files, values, and a check to run.",
+    artifact: "plan.md — bite-sized tasks with exact checks",
+    gate: "I approve and pick the execution mode",
+    evidence: { label: "plan.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/plan.md` },
+  },
+  {
+    num: 4,
+    label: "Build",
+    desc: "A fresh agent implements each task and commits it; nothing carries over between tasks.",
+    artifact: "One commit per task, each by a fresh agent",
+    gate: "Lint, type check, and build must pass",
+    evidence: { label: "5 build commits", href: `${REPO_URL}/compare/f19d974...7a41c1c` },
+  },
+  {
+    num: 5,
+    label: "Review",
+    desc: "Each task gets a spec-and-quality review; then a stronger model reviews the whole change.",
+    artifact: "review.md — per-task review, then whole-change review on a stronger model",
+    gate: "Reviewer verdict, then one fix wave",
+    evidence: { label: "review.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/review.md` },
+  },
+  {
+    num: 6,
+    label: "Ship",
+    desc: "Gates re-run on the final tree, and I decide how it integrates.",
+    artifact: "Pushed commit range",
+    gate: "I make the integration call",
+    evidence: { label: "f19d974…f7d4237", href: `${REPO_URL}/compare/f19d974...f7d4237` },
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Review catches — the 4 Important findings in review.md, all fixed in 4881249
+// ---------------------------------------------------------------------------
+
+export const reviewCatches: ReviewCatch[] = [
+  {
+    title: "5 of 7 AI skill bars rendered grey",
+    detail: "The colour map was keyed by category titles that the update renamed.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
+  {
+    title: "Link-preview image route crashed",
+    detail: "Pre-existing: the image renderer rejects an unsupported CSS value.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
+  {
+    title: "Skill-category icons went missing",
+    detail: "The icon map still used an id the update had renamed.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
+  {
+    title: "Featured Project card overstated the CV",
+    detail: "It claimed figures the CV does not make.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
+];
+```
+
+- [ ] **Step 6: Add the `"error"` colour case**
+
+In `components/sections/ai-workflow-section.tsx`, inside `lineColor`, add after the `case "success":` return:
+```ts
+    case "error":
+      return "text-red-400";
+```
+Without it `tsc` fails (TS2366: function lacks ending return statement), because the switch must stay exhaustive. Change nothing else in this file in this task.
+
+- [ ] **Step 7: Let the longer hero phrase wrap on phones**
+
+The new phrase is 44 characters and wraps at 390px; the container's fixed `h-8` would let the second line overlap the tagline. In `components/sections/ai-hero-section.tsx`, change the typing container's class:
+```
+font-heading text-xl md:text-2xl text-green-500 h-8 flex items-center
+```
+to:
+```
+font-heading text-xl md:text-2xl text-green-500 min-h-8 flex items-center
+```
+
+- [ ] **Step 8: Run the data check (passing)**
+
+Run the "Data check script".
+Expected:
+```
+workflowSectionCopy: clean
+workflowSteps: clean
+reviewCatches: clean
+terminalLines: clean
+17 terminal lines, over 48: 0
+```
+And:
+```bash
+grep -nE 'auth system|JWT|Prompt (\\u2192|→)' components/data/ai-resume-data.ts | wc -l
+```
+Expected: `0`
+
+- [ ] **Step 9: Type check and lint**
+
+Run: `npx tsc --noEmit && npm run lint`
+Expected: no tsc output; lint prints `✔ No ESLint warnings or errors`.
+
+- [ ] **Step 10: Commit**
+
+```bash
+git add components/data/ai-resume-data.ts components/sections/ai-workflow-section.tsx components/sections/ai-hero-section.tsx
+git commit -m "feat(ai-workflow): replace demo with ai-native sdlc case-study data"
+```
+
+---
+
+### Task 9: Workflow section — copy from data, richer cards, review strip
+
+**Files:**
+- Modify: `components/sections/ai-workflow-section.tsx` (whole file)
+
+**Interfaces:**
+- Consumes (from Task 8): `workflowSectionCopy`, `workflowSteps`, `reviewCatches`, `terminalLines`, type `TerminalLine` (with `"error"`), from `@/components/data/ai-resume-data`.
+- Produces: `export function AIWorkflowSection()` (unchanged name; `mode-router.tsx` imports it). Section id stays `ai-workflow` (nav link and hero CTA target it).
+
+- [ ] **Step 1: Confirm the hardcoded copy is still present (failing)**
+
+Run:
+```bash
+grep -nE 'Claude Code Session|My AI Development Workflow|See how I use AI|reviewCatches' components/sections/ai-workflow-section.tsx
+```
+Expected: matches for `Claude Code Session`, `My AI Development Workflow`, `See how I use AI`; no `reviewCatches`.
+
+- [ ] **Step 2: Replace the file**
+
+Write `components/sections/ai-workflow-section.tsx` with exactly:
+```tsx
+"use client";
+
+import { useEffect, useRef } from "react";
+import { m } from "framer-motion";
+import { ScrollReveal } from "@/components/effects/scroll-reveal";
+import {
+  reviewCatches,
+  terminalLines,
+  workflowSectionCopy,
+  workflowSteps,
+} from "@/components/data/ai-resume-data";
+import type { TerminalLine } from "@/components/data/ai-resume-data";
+
+/** Map line type to Tailwind text color class. */
+function lineColor(type: TerminalLine["type"]): string {
+  switch (type) {
+    case "command":
+      return "text-white";
+    case "output":
+      return "text-gray-400";
+    case "success":
+      return "text-green-400";
+    case "error":
+      return "text-red-400";
+    case "cursor":
+      return "text-green-400";
+  }
+}
+
+export function AIWorkflowSection() {
+  const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const frameIds = useRef<number[]>([]);
+
+  useEffect(() => {
+    // Reset refs on mount
+    lineRefs.current = lineRefs.current.slice(0, terminalLines.length);
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    terminalLines.forEach((line, idx) => {
+      // Show line container after delay
+      const showTimer = setTimeout(() => {
+        const el = lineRefs.current[idx];
+        if (!el) return;
+        el.style.visibility = "visible";
+
+        // Type text character by character using textContent
+        const text = line.text;
+        let charPos = 0;
+
+        const typeFrame = () => {
+          charPos += 2; // 2 chars per frame for visible speed
+          if (charPos > text.length) charPos = text.length;
+          el.textContent = text.slice(0, charPos);
+
+          if (charPos < text.length) {
+            const fid = requestAnimationFrame(typeFrame);
+            frameIds.current.push(fid);
+          } else if (line.type === "cursor") {
+            el.classList.add("animate-blink-cursor");
+          }
+        };
+
+        if (text.length === 0) return;
+        const fid = requestAnimationFrame(typeFrame);
+        frameIds.current.push(fid);
+      }, line.delay);
+
+      timers.push(showTimer);
+    });
+
+    return () => {
+      timers.forEach(clearTimeout);
+      frameIds.current.forEach(cancelAnimationFrame);
+      frameIds.current = [];
+    };
+  }, []);
+
+  return (
+    <section id="ai-workflow" className="px-4 py-20 bg-[#f8f9fa]">
+      <div className="max-w-6xl mx-auto">
+        {/* Section heading */}
+        <ScrollReveal>
+          <h2 className="text-3xl md:text-4xl font-bold font-heading text-gray-800 text-center mb-4">
+            {workflowSectionCopy.heading}
+          </h2>
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            {workflowSectionCopy.subtitle}
+          </p>
+        </ScrollReveal>
+
+        {/* Terminal window — replay of the case-study run */}
+        <ScrollReveal delay={0.2}>
+          <div className="overflow-x-auto">
+            <div className="bg-[#1e1e1e] font-mono p-6 rounded-xl border-2 border-gray-700 shadow-card min-w-[320px]">
+              {/* macOS title bar */}
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-700">
+                <span className="w-3 h-3 rounded-full" style={{ background: "#ff5f56" }} />
+                <span className="w-3 h-3 rounded-full" style={{ background: "#ffbd2e" }} />
+                <span className="w-3 h-3 rounded-full" style={{ background: "#27c93f" }} />
+                <span className="ml-3 text-gray-500 text-sm">{workflowSectionCopy.terminalTitle}</span>
+              </div>
+
+              {/* Terminal lines — one <div> per line, text revealed via rAF */}
+              <div className="space-y-1 text-sm md:text-base whitespace-pre-wrap">
+                {terminalLines.map((line, idx) => (
+                  <div
+                    key={idx}
+                    ref={(el) => { lineRefs.current[idx] = el; }}
+                    className={`${lineColor(line.type)} ${line.type === "cursor" ? "inline-block" : ""}`}
+                    style={{ visibility: "hidden", minHeight: line.type === "cursor" ? "1em" : undefined }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+
+        {/* Stage cards — artifact, gate, and evidence link per stage */}
+        <ScrollReveal delay={0.4}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-12">
+            {workflowSteps.map((step) => (
+              <m.div
+                key={step.num}
+                className="flex flex-col bg-white border-2 border-gray-800 rounded-xl p-5 shadow-card"
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0">
+                    {step.num}
+                  </div>
+                  <h3 className="font-heading font-bold text-gray-800 text-lg">
+                    {step.label}
+                  </h3>
+                </div>
+                <p className="text-gray-600 text-sm">{step.desc}</p>
+                <p className="mt-3 font-mono text-xs text-gray-700 bg-gray-100 rounded-md px-2 py-1 break-words">
+                  {step.artifact}
+                </p>
+                <p className="mt-2 text-sm text-gray-800">
+                  <span className="font-semibold">Gate:</span> {step.gate}
+                </p>
+                <a
+                  href={step.evidence.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto pt-3 text-sm font-semibold text-green-600 hover:underline break-all"
+                >
+                  {step.evidence.label} {"↗"}
+                </a>
+              </m.div>
+            ))}
+          </div>
+        </ScrollReveal>
+
+        {/* What review caught — findings from the whole-change review */}
+        <ScrollReveal delay={0.2}>
+          <div className="mt-12 bg-white border-2 border-gray-800 rounded-xl p-6 shadow-card">
+            <h3 className="font-heading font-bold text-gray-800 text-xl mb-4">
+              {workflowSectionCopy.catchesHeading}
+            </h3>
+            <ul className="divide-y divide-gray-200">
+              {reviewCatches.map((item) => (
+                <li
+                  key={item.title}
+                  className="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4"
+                >
+                  <div>
+                    <p className="font-semibold text-gray-800">
+                      <span className="text-red-500" aria-hidden="true">{"✗"} </span>
+                      {item.title}
+                    </p>
+                    <p className="text-sm text-gray-500">{item.detail}</p>
+                  </div>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-shrink-0 text-sm font-semibold text-green-600 hover:underline"
+                  >
+                    fix {"↗"}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+```
+Notes for the implementer: `whitespace-pre-wrap` on the terminal container keeps the two-space indent of the `output` lines and wraps long lines at phone width (about 36 monospace characters fit at 390px). The typing effect, refs, and timers are unchanged from the current file.
+
+- [ ] **Step 3: Confirm the hardcoded copy is gone (passing)**
+
+Run:
+```bash
+grep -cE 'Claude Code Session|My AI Development Workflow|See how I use AI' components/sections/ai-workflow-section.tsx
+grep -c 'rel="noopener noreferrer"' components/sections/ai-workflow-section.tsx
+```
+Expected: `0`, then `2`.
+
+- [ ] **Step 4: Type check and lint**
+
+Run: `npx tsc --noEmit && npm run lint`
+Expected: no tsc output; lint prints `✔ No ESLint warnings or errors`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add components/sections/ai-workflow-section.tsx
+git commit -m "feat(ai-workflow): show stage gates, evidence links, and review catches"
+```
+
+---
+
+### Task 10: Round-2 verification
+
+**Files:** none modified. If a check fails, fix it in the owning task's file and add a `fix(ai-workflow): …` commit.
+
+**Interfaces:**
+- Consumes: Tasks 7–9
+- Produces: verified build; link-check result
+
+- [ ] **Step 1: Repo-wide demo and tool-name sweep**
+
+Run:
+```bash
+grep -rnE 'auth system|JWT|Claude Code Session|Prompt (\\u2192|→) Verify|AI-Assisted Output' components src; echo "matches: $?"
+```
+Expected: `matches: 1`
+
+Then run the "Data check script". Expected: all four exports `clean`, `17 terminal lines, over 48: 0`.
+
+- [ ] **Step 2: Production build**
+
+Run: `npm run build`
+Expected: `✓ Compiled successfully`, static pages generated, no type or lint errors.
+
+- [ ] **Step 3: Browser check at 390px and 1280px**
+
+Run `npm run start` in the background and note its PID. Using the Playwright MCP browser:
+1. Resize to 390×844, open `http://localhost:3000/?mode=ai`.
+   - Hero typing line shows `Context → Spec → Plan → Build → Review → Ship` and does not overlap the tagline.
+   - Scroll to `#ai-workflow`: heading `My AI-Native SDLC`; terminal title `resume-content · session replay`; after ~8s the replay shows 16 lines plus cursor, with the `✗ 4 Important findings` line in red.
+   - Stage cards stack one per row; each shows artifact, `Gate:`, and an evidence link.
+   - "What review caught" shows 4 rows, each with a `fix ↗` link.
+   - `document.documentElement.scrollWidth <= window.innerWidth` evaluates to `true` (no horizontal page scroll).
+2. Resize to 1280×800 and reload `/?mode=ai`: cards in 3 columns; strip rows show title/detail left, `fix ↗` right.
+3. Open `http://localhost:3000/?mode=ios`: the iOS hero still reads `iOS Software Engineer` (unchanged).
+
+Stop the server with `kill <PID>` (the PID you started; never by process name).
+
+- [ ] **Step 4: Link check (pre-push)**
+
+These links already resolve on GitHub before this round is pushed:
+```bash
+for u in \
+  https://github.com/phuongddx/portfolio-next/tree/main/docs/engineering \
+  https://github.com/phuongddx/portfolio-next/blob/main/docs/features/resume-content/plan.md \
+  https://github.com/phuongddx/portfolio-next/blob/main/docs/features/resume-content/review.md \
+  https://github.com/phuongddx/portfolio-next/compare/f19d974...7a41c1c \
+  https://github.com/phuongddx/portfolio-next/compare/f19d974...f7d4237 \
+  https://github.com/phuongddx/portfolio-next/commit/4881249 ; do
+  curl -s -o /dev/null -L -w "%{http_code} $u\n" "$u"; done
+```
+Expected: six lines starting `200`.
+
+- [ ] **Step 5: Link check (post-push — controller runs this after the owner's integration choice)**
+
+`spec.md` exists on `origin/main` only after the push. After pushing, run:
+```bash
+curl -s -o /dev/null -L -w "%{http_code}\n" https://github.com/phuongddx/portfolio-next/blob/main/docs/features/resume-content/spec.md
+git ls-tree --name-only origin/main docs/engineering/
+```
+Expected: `200`, and the tree lists `conventions.md`, `infrastructure.md`, `tech-stack.md`. If the owner does not push, record this step as deferred in `review.md`.

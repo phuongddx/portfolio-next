@@ -16,6 +16,8 @@ function lineColor(type: TerminalLine["type"]): string {
       return "text-gray-400";
     case "success":
       return "text-green-400";
+    case "error":
+      return "text-red-400";
     case "cursor":
       return "text-green-400";
   }

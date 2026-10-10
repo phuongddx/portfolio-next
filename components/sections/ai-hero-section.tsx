@@ -77,7 +77,7 @@ export function AIHeroSection() {
             {/* Typing animation */}
             <m.div
               variants={itemVariants}
-              className="font-heading text-xl md:text-2xl text-green-500 h-8 flex items-center"
+              className="font-heading text-xl md:text-2xl text-green-500 min-h-8 flex items-center"
             >
               <span>{typed}</span>
               <span className="inline-block w-[2px] h-6 bg-green-500 ml-1 animate-pulse" />

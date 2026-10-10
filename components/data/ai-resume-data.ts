@@ -43,13 +43,29 @@ export interface AIProject {
 export interface TerminalLine {
   text: string;
   delay: number;
-  type: "command" | "output" | "success" | "cursor";
+  type: "command" | "output" | "success" | "error" | "cursor";
 }
 
 export interface WorkflowStep {
   num: number;
   label: string;
   desc: string;
+  artifact: string;
+  gate: string;
+  evidence: { label: string; href: string };
+}
+
+export interface ReviewCatch {
+  title: string;
+  detail: string;
+  href: string;
+}
+
+export interface WorkflowSectionCopy {
+  heading: string;
+  subtitle: string;
+  terminalTitle: string;
+  catchesHeading: string;
 }
 
 export interface AIHeroData {
@@ -256,34 +272,27 @@ export const aiProjects: AIProject[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Terminal animation lines
+// Terminal animation lines — replay of the resume-content run (f19d974..f7d4237)
 // ---------------------------------------------------------------------------
 
 export const terminalLines: TerminalLine[] = [
-  // Phase 1: Requirements
-  { text: '$ claude "Analyze requirements for auth system"', delay: 0, type: "command" },
-  { text: "\u2713 Identified 5 functional requirements", delay: 600, type: "success" },
-  { text: "\u2713 Defined acceptance criteria and edge cases", delay: 1000, type: "success" },
-  // Phase 2: Design
-  { text: '$ claude "Design auth architecture with JWT"', delay: 1500, type: "command" },
-  { text: "\u2713 Architected middleware pipeline with RS256", delay: 2100, type: "success" },
-  { text: "\u2713 Created data flow diagram", delay: 2500, type: "success" },
-  // Phase 3: Planning
-  { text: '$ claude "Break down auth implementation tasks"', delay: 3000, type: "command" },
-  { text: "\u2713 Generated 8 actionable tasks with dependencies", delay: 3600, type: "success" },
-  // Phase 4: Implementation
-  { text: '$ claude "Implement JWT auth middleware"', delay: 4100, type: "command" },
-  { text: "\u2713 Created auth-middleware.ts", delay: 4600, type: "success" },
-  { text: "\u2713 Added token validation and refresh logic", delay: 5000, type: "success" },
-  // Phase 5: Testing
-  { text: '$ claude "Generate tests for auth middleware"', delay: 5500, type: "command" },
-  { text: "\u2713 Unit tests generated (12 test cases)", delay: 6000, type: "success" },
-  { text: "\u2713 All tests passing", delay: 6400, type: "success" },
-  // Phase 6: Code Review
-  { text: '$ claude "Review for security vulnerabilities"', delay: 6900, type: "command" },
-  { text: "\u2713 No OWASP Top 10 issues found", delay: 7400, type: "success" },
-  { text: "\u2713 Ready to commit", delay: 7800, type: "success" },
-  { text: "\u2588", delay: 8200, type: "cursor" },
+  { text: "$ context", delay: 0, type: "command" },
+  { text: "\u2713 AGENTS.md \u00b7 ARCHITECTURE.md \u00b7 docs/engineering", delay: 500, type: "success" },
+  { text: "$ spec resume-content", delay: 1000, type: "command" },
+  { text: "\u2713 owner approved: both modes, iOS default", delay: 1500, type: "success" },
+  { text: "$ plan resume-content", delay: 2000, type: "command" },
+  { text: "\u2713 6 tasks, each with an exact check", delay: 2500, type: "success" },
+  { text: "$ build --task 1..5", delay: 3000, type: "command" },
+  { text: "\u2713 5 commits \u00b7 lint + types per task", delay: 3500, type: "success" },
+  { text: "$ review --whole-change", delay: 4000, type: "command" },
+  { text: "\u2717 4 Important findings", delay: 4600, type: "error" },
+  { text: "  skill bars grey \u00b7 link-preview crash", delay: 5000, type: "output" },
+  { text: "  missing icons \u00b7 card copy vs CV", delay: 5400, type: "output" },
+  { text: "$ fix", delay: 5900, type: "command" },
+  { text: "\u2713 1 fix wave \u00b7 re-review: all addressed", delay: 6400, type: "success" },
+  { text: "$ ship", delay: 6900, type: "command" },
+  { text: "\u2713 build \u00b7 pushed f19d974..f7d4237", delay: 7400, type: "success" },
+  { text: "\u2588", delay: 7900, type: "cursor" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -295,7 +304,21 @@ export const aiHeroData: AIHeroData = {
   tagline:
     "6+ years shipping production apps, now building the code-intelligence, tool-admission, and vendor-gateway services of an internal AI platform.",
   badges: ["MCP", "Python", "Java / Quarkus", "Vertex AI", "Swift"],
-  typingPhrases: ["Prompt \u2192 Verify \u2192 Ship \u2192 Repeat"],
+  typingPhrases: ["Context \u2192 Spec \u2192 Plan \u2192 Build \u2192 Review \u2192 Ship"],
+};
+
+// ---------------------------------------------------------------------------
+// Workflow section — AI-Native SDLC case study (resume-content run)
+// ---------------------------------------------------------------------------
+
+const REPO_URL = "https://github.com/phuongddx/portfolio-next";
+
+export const workflowSectionCopy: WorkflowSectionCopy = {
+  heading: "My AI-Native SDLC",
+  subtitle:
+    "How this site's last update shipped: 6 planned tasks, 7 commits, 4 Important issues caught in review.",
+  terminalTitle: "resume-content \u00b7 session replay",
+  catchesHeading: "What review caught",
 };
 
 // ---------------------------------------------------------------------------
@@ -303,10 +326,79 @@ export const aiHeroData: AIHeroData = {
 // ---------------------------------------------------------------------------
 
 export const workflowSteps: WorkflowStep[] = [
-  { num: 1, label: "Requirements", desc: "Define what you're building and why" },
-  { num: 2, label: "Design", desc: "Architect solutions with diagrams and decisions" },
-  { num: 3, label: "Planning", desc: "Break work into actionable tasks" },
-  { num: 4, label: "Implementation", desc: "Execute tasks step-by-step with AI guidance" },
-  { num: 5, label: "Testing", desc: "Generate tests and validate your code" },
-  { num: 6, label: "Code Review", desc: "Review changes before committing" },
+  {
+    num: 1,
+    label: "Context",
+    desc: "Agents map the repo before touching it, so every change starts from written conventions.",
+    artifact: "AGENTS.md \u00b7 ARCHITECTURE.md \u00b7 docs/engineering/",
+    gate: "Read-only \u2014 no gate",
+    evidence: { label: "docs/engineering", href: `${REPO_URL}/tree/main/docs/engineering` },
+  },
+  {
+    num: 2,
+    label: "Intent & Spec",
+    desc: "I state the outcome; the agent writes its understanding back, I correct it, and the design becomes a spec.",
+    artifact: "spec.md",
+    gate: "I correct the understanding and approve the spec",
+    evidence: { label: "spec.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/spec.md` },
+  },
+  {
+    num: 3,
+    label: "Plan",
+    desc: "The spec becomes bite-sized tasks, each with exact files, values, and a check to run.",
+    artifact: "plan.md \u2014 bite-sized tasks with exact checks",
+    gate: "I approve and pick the execution mode",
+    evidence: { label: "plan.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/plan.md` },
+  },
+  {
+    num: 4,
+    label: "Build",
+    desc: "A fresh agent implements each task and commits it; nothing carries over between tasks.",
+    artifact: "One commit per task, each by a fresh agent",
+    gate: "Lint, type check, and build must pass",
+    evidence: { label: "5 build commits", href: `${REPO_URL}/compare/f19d974...7a41c1c` },
+  },
+  {
+    num: 5,
+    label: "Review",
+    desc: "Each task gets a spec-and-quality review; then a stronger model reviews the whole change.",
+    artifact: "review.md \u2014 per-task review, then whole-change review on a stronger model",
+    gate: "Reviewer verdict, then one fix wave",
+    evidence: { label: "review.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/review.md` },
+  },
+  {
+    num: 6,
+    label: "Ship",
+    desc: "Gates re-run on the final tree, and I decide how it integrates.",
+    artifact: "Pushed commit range",
+    gate: "I make the integration call",
+    evidence: { label: "f19d974\u2026f7d4237", href: `${REPO_URL}/compare/f19d974...f7d4237` },
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Review catches — the 4 Important findings in review.md, all fixed in 4881249
+// ---------------------------------------------------------------------------
+
+export const reviewCatches: ReviewCatch[] = [
+  {
+    title: "5 of 7 AI skill bars rendered grey",
+    detail: "The colour map was keyed by category titles that the update renamed.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
+  {
+    title: "Link-preview image route crashed",
+    detail: "Pre-existing: the image renderer rejects an unsupported CSS value.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
+  {
+    title: "Skill-category icons went missing",
+    detail: "The icon map still used an id the update had renamed.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
+  {
+    title: "Featured Project card overstated the CV",
+    detail: "It claimed figures the CV does not make.",
+    href: `${REPO_URL}/commit/4881249`,
+  },
 ];

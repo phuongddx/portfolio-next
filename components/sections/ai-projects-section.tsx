@@ -32,7 +32,7 @@ function ProjectCard({
   return (
     <ScrollReveal delay={index * 0.1}>
       <Card hover={false} className="flex flex-col h-full">
-        {/* Title row with GitHub link */}
+        {/* Title row with optional GitHub link */}
         <div className="flex items-start justify-between mb-3">
           <h3 className="font-heading font-bold text-xl text-gray-800">
             {project.title}
@@ -80,7 +80,7 @@ function ProjectCard({
           ))}
         </ul>
 
-        {/* View on GitHub button */}
+        {/* Primary link button (GitHub or App Store) */}
         <a
           href={href}
           target="_blank"

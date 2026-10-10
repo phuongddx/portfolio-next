@@ -51,14 +51,12 @@ export const metadata: Metadata = {
     description:
       "Software engineer with 6+ years shipping production apps, including 2 years as a team lead, now building LLM, retrieval, and agent systems.",
     siteName: "Doan Duy Phuong — Software Engineer",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Doan Duy Phuong — Software Engineer (iOS → AI Platform)" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Software Engineer (iOS → AI Platform) | Doan Duy Phuong",
     description:
       "Software engineer with 6+ years shipping production apps, now building LLM, retrieval, and agent systems.",
-    images: ["/opengraph-image.png"],
   },
   robots: {
     index: true,

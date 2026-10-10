@@ -15,7 +15,7 @@ const stats = [
     color: pastelColors[0],
   },
   {
-    value: "40%",
+    value: "~40%",
     label: "UI Dev Time Reduction",
     icon: "⚡",
     color: pastelColors[1],

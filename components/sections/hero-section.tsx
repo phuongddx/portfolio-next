@@ -147,9 +147,8 @@ export function HeroSection() {
                     ePost Design System
                   </h3>
                   <p className="text-gray-600 mt-1">
-                    Built a scalable design system library with 4 dynamic
-                    appearances and customizable brand colors, adopted by 3+
-                    teams.
+                    UIKit + SwiftUI design-system library for the ePost iOS
+                    app, adopted by 3+ teams.
                   </p>
 
                   {/* Tech Stack */}
@@ -170,7 +169,7 @@ export function HeroSection() {
                     <div className="flex justify-between text-sm mb-2">
                       <span className="text-gray-500">Impact</span>
                       <span className="text-green-500 font-medium">
-                        40% faster
+                        ~40% less UI dev time
                       </span>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">

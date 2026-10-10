@@ -18,8 +18,9 @@ const categoryIcons: Record<string, string> = {
   languages: "💻",
   frameworks: "🔧",
   tools: "🛠️",
+  services: "☁️",
   architecture: "🏗️",
-  "ai-assisted": "🤖",
+  "ai-platform": "🤖",
   expertise: "⭐",
 };
 

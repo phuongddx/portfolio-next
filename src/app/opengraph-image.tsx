@@ -41,7 +41,7 @@ export default function OgImage() {
             background: "#a3e635",
             borderRadius: "999px",
             padding: "8px 20px",
-            width: "fit-content",
+            alignSelf: "flex-start",
             marginBottom: "32px",
             fontSize: "20px",
             fontWeight: 600,

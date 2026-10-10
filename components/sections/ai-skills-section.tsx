@@ -6,12 +6,13 @@ import { aiSkillCategories } from "@/components/data/ai-resume-data";
 
 // Category colors — used as skill bar fill color
 const categoryColors: Record<string, string> = {
-  "AI Tools": "#8b5cf6",
-  Languages: "#3b82f6",
-  Backend: "#f97316",
-  Frontend: "#22c55e",
-  DevOps: "#ec4899",
-  Architecture: "#eab308",
+  "ai-platform": "#8b5cf6",
+  languages: "#3b82f6",
+  backend: "#f97316",
+  cloud: "#ec4899",
+  mobile: "#22c55e",
+  security: "#ef4444",
+  quality: "#eab308",
 };
 
 export function AISkillsSection() {
@@ -39,7 +40,7 @@ export function AISkillsSection() {
                       name={skill.name}
                       level={skill.level}
                       index={index}
-                      color={categoryColors[category.title] ?? "#6b7280"}
+                      color={categoryColors[category.id] ?? "#6b7280"}
                     />
                   ))}
                 </div>

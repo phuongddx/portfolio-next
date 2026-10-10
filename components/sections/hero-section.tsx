@@ -78,9 +78,10 @@ export function HeroSection() {
               variants={itemVariants}
               className="text-lg text-gray-600 leading-relaxed"
             >
-              I build iOS apps used by millions — from design systems that cut
-              dev time by 40% to App Store products across fintech, security,
-              and IoT. 5+ years with Swift, SwiftUI, and UIKit.
+              6+ years shipping production iOS apps — a design system adopted
+              by 3+ teams that cut UI development time ~40%, a VPN app I led as
+              team lead, and a tvOS learning platform. Now also building LLM
+              and agent systems.
             </m.p>
 
             {/* CTAs */}
@@ -101,7 +102,7 @@ export function HeroSection() {
             <m.div variants={itemVariants} className="flex gap-6 pt-4">
               <StatBadge
                 icon={<span>💼</span>}
-                value="5+"
+                value="6+"
                 label="Years XP"
               />
               <StatBadge

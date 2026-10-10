@@ -12,9 +12,9 @@ const pastelColors = ["bg-pink-200", "bg-blue-200", "bg-purple-200", "bg-green-2
 // Company icons
 const companyIcons: Record<string, string> = {
   "Axon Active": "🏢",
-  "SP Group": "🇸🇬",
-  "WINDSCRIBE": "🔒",
+  "S3 Corp": "💻",
   "ZILLEARN": "📚",
+  "Windscribe": "🔒",
 };
 
 const containerVariants = {

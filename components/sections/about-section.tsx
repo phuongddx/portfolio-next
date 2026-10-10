@@ -9,7 +9,7 @@ const pastelColors = ["bg-pink-200", "bg-blue-200", "bg-purple-200"];
 
 const stats = [
   {
-    value: "5+",
+    value: "6+",
     label: "Years of Experience",
     icon: "💼",
     color: pastelColors[0],
@@ -56,22 +56,22 @@ export function AboutSection() {
           <ScrollReveal delay={0.1}>
             <div className="space-y-6">
               <p className="text-lg text-gray-600 leading-relaxed">
-                I&apos;m a passionate Software Engineer with over 5 years of
-                experience building high-quality mobile applications. My
-                expertise spans native iOS development with Swift, SwiftUI, and
-                UIKit, as well as cross-platform development with React Native.
+                I&apos;m a software engineer with 6+ years shipping production
+                apps, including 2 years as a team lead. Most of that time was
+                native iOS: Swift, SwiftUI, UIKit, RxSwift, and Coordinator +
+                MVVM.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                I take pride in delivering fast, reliable, and beautifully
-                crafted user experiences that adhere to Apple&apos;s design
-                guidelines and modern best practices. I&apos;m constantly
-                learning and leveraging AI-assisted development tools to
-                accelerate innovation.
+                Since June 2026 I&apos;ve been a core engineer on Axon
+                Active&apos;s internal AI agent platform, owning the
+                code-intelligence, tool-admission, and vendor-gateway services
+                used by ~100 people across engineering, marketing, product, and
+                leadership.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Currently working at Axon Active, I&apos;ve successfully built
-                design systems adopted by multiple teams, reducing UI
-                development time by 40% and visual bugs by 60%.
+                Outside work I maintain jarvis, a local-first code-intelligence
+                MCP server on PyPI and the official MCP Registry, and ship
+                Stress AI Coach, an iOS + watchOS app on the App Store.
               </p>
             </div>
           </ScrollReveal>

@@ -26,6 +26,9 @@ function ProjectCard({
   project: (typeof aiProjects)[0];
   index: number;
 }) {
+  const href = project.githubUrl ?? project.appStoreUrl;
+  const linkLabel = project.githubUrl ? "View on GitHub" : "View on App Store";
+
   return (
     <ScrollReveal delay={index * 0.1}>
       <Card hover={false} className="flex flex-col h-full">
@@ -34,15 +37,17 @@ function ProjectCard({
           <h3 className="font-heading font-bold text-xl text-gray-800">
             {project.title}
           </h3>
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${project.title} on GitHub`}
-            className="text-gray-800 hover:text-green-500 transition-colors mt-1 shrink-0 ml-3"
-          >
-            <GitHubIcon />
-          </a>
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${project.title} on GitHub`}
+              className="text-gray-800 hover:text-green-500 transition-colors mt-1 shrink-0 ml-3"
+            >
+              <GitHubIcon />
+            </a>
+          )}
         </div>
 
         {/* Description */}
@@ -77,13 +82,13 @@ function ProjectCard({
 
         {/* View on GitHub button */}
         <a
-          href={project.githubUrl}
+          href={href}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center gap-2 w-full bg-white text-gray-800 border-2 border-gray-800 rounded-xl px-6 py-3 font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer"
         >
-          <GitHubIcon />
-          View on GitHub
+          {project.githubUrl && <GitHubIcon />}
+          {linkLabel}
         </a>
       </Card>
     </ScrollReveal>

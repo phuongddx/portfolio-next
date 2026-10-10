@@ -69,9 +69,9 @@ export function AIHeroSection() {
 
             <m.h1
               variants={itemVariants}
-              className="font-heading font-bold text-4xl md:text-5xl text-gray-800 leading-tight"
+              className="font-heading font-bold text-4xl md:text-5xl text-gray-800 leading-tight uppercase"
             >
-              AI-DRIVEN FULL-STACK DEVELOPER
+              {aiHeroData.title}
             </m.h1>
 
             {/* Typing animation */}
@@ -95,15 +95,15 @@ export function AIHeroSection() {
               <a href="#contact">
                 <Button variant="primary" size="lg">Get In Touch</Button>
               </a>
-              <Button variant="secondary" size="lg" onClick={() => window.print()}>
-                Download Resume
-              </Button>
+              <a href="/DoanPhuong.pdf" download="DoanPhuong.pdf">
+                <Button variant="secondary" size="lg">Download Resume</Button>
+              </a>
             </m.div>
 
             {/* Stats */}
             <m.div variants={itemVariants} className="flex gap-6 pt-4">
-              <StatBadge icon={<span>💼</span>} value="5+" label="Years XP" />
-              <StatBadge icon={<span>⚡</span>} value="60%" label="Dev Velocity" />
+              <StatBadge icon={<span>💼</span>} value="6+" label="Years XP" />
+              <StatBadge icon={<span>🤖</span>} value="~100" label="Platform Users" />
             </m.div>
 
             {/* Social Links */}
@@ -134,30 +134,21 @@ function AIWorkflowCard() {
         <span className="text-3xl">🤖</span>
       </div>
       <div className="flex-1">
-        <Badge variant="green">AI Workflow</Badge>
+        <Badge variant="green">AI Platform</Badge>
         <h3 className="text-xl font-bold text-gray-800 mt-2">
-          Prompt-Driven Development
+          Internal AI Agent Platform
         </h3>
         <p className="text-gray-600 mt-1">
-          I leverage AI tools to decompose problems, generate production code,
-          verify quality, and iterate — shipping faster without sacrificing
-          reliability.
+          Core engineer on Axon Active&apos;s internal AI agent platform:
+          agents, tools, knowledge, and code search delivered to ~100
+          users&apos; IDEs via MCP.
         </p>
         <div className="flex flex-wrap gap-2 mt-4">
-          {["Claude Code", "TypeScript", "Next.js", "Swift"].map((tech) => (
+          {["MCP", "Python / FastAPI", "Java 21 / Quarkus", "Vertex AI"].map((tech) => (
             <span key={tech} className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg">
               {tech}
             </span>
           ))}
-        </div>
-        <div className="mt-6">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-500">AI-Assisted Output</span>
-            <span className="text-green-500 font-medium">60% faster</span>
-          </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div className="h-full bg-green-500 rounded-full" style={{ width: "60%" }} />
-          </div>
         </div>
         <a href="#ai-workflow" className="inline-block mt-6">
           <Button variant="primary">See My Workflow</Button>

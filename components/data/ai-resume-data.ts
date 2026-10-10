@@ -33,7 +33,8 @@ export interface AIProject {
   id: string;
   title: string;
   description: string;
-  githubUrl: string;
+  githubUrl?: string;
+  appStoreUrl?: string;
   techStack: string[];
   highlights: string[];
   stats?: { label: string; value: string }[];
@@ -64,12 +65,13 @@ export interface AIHeroData {
 
 export const aiSkillCategories: AISkillCategory[] = [
   {
-    id: "ai-tools",
-    title: "AI Tools",
+    id: "ai-platform",
+    title: "AI & Retrieval",
     skills: [
-      { name: "Claude Code", level: 95 },
-      { name: "Cursor", level: 85 },
-      { name: "Codex", level: 80 },
+      { name: "MCP", level: 90 },
+      { name: "Hybrid Search (SCIP + Zoekt)", level: 85 },
+      { name: "Google ADK", level: 75 },
+      { name: "Vertex AI", level: 75 },
     ],
   },
   {
@@ -77,44 +79,39 @@ export const aiSkillCategories: AISkillCategory[] = [
     title: "Languages",
     skills: [
       { name: "Swift", level: 95 },
+      { name: "Python", level: 85 },
+      { name: "Java 21", level: 75 },
       { name: "TypeScript", level: 75 },
-      { name: "Ruby", level: 60 },
     ],
   },
   {
     id: "backend",
     title: "Backend",
     skills: [
-      { name: "Node.js", level: 55 },
-      { name: "Firebase", level: 80 },
-      { name: "REST APIs", level: 85 },
+      { name: "FastAPI", level: 80 },
+      { name: "Quarkus", level: 75 },
+      { name: "Postgres / pgvector", level: 70 },
+      { name: "Deno / Hono", level: 65 },
     ],
   },
   {
-    id: "frontend",
-    title: "Frontend",
+    id: "cloud",
+    title: "Cloud & Delivery",
+    skills: [
+      { name: "GKE", level: 70 },
+      { name: "Cloud Build", level: 70 },
+      { name: "Fastlane", level: 85 },
+      { name: "Bitrise", level: 80 },
+    ],
+  },
+  {
+    id: "mobile",
+    title: "Mobile",
     skills: [
       { name: "SwiftUI", level: 95 },
-      { name: "React Native", level: 75 },
-      { name: "Next.js", level: 65 },
-    ],
-  },
-  {
-    id: "devops",
-    title: "DevOps",
-    skills: [
-      { name: "CI/CD", level: 85 },
-      { name: "Fastlane", level: 85 },
-      { name: "EAS Build", level: 70 },
-    ],
-  },
-  {
-    id: "architecture",
-    title: "Architecture",
-    skills: [
-      { name: "MVVM", level: 90 },
-      { name: "Clean Architecture", level: 80 },
-      { name: "SOLID", level: 85 },
+      { name: "UIKit", level: 95 },
+      { name: "RxSwift", level: 85 },
+      { name: "HealthKit / StoreKit", level: 75 },
     ],
   },
   {
@@ -122,10 +119,18 @@ export const aiSkillCategories: AISkillCategory[] = [
     title: "Security",
     skills: [
       { name: "OAuth 2.0 / PKCE", level: 80 },
-      { name: "AES Encryption", level: 75 },
       { name: "Keychain Services", level: 80 },
-      { name: "SQLCipher", level: 70 },
-      { name: "Zero-Knowledge", level: 70 },
+      { name: "KMS Envelope Encryption", level: 70 },
+      { name: "SSRF Allowlists", level: 70 },
+    ],
+  },
+  {
+    id: "quality",
+    title: "Quality",
+    skills: [
+      { name: "XCTest / RxTest", level: 85 },
+      { name: "ArchUnit", level: 70 },
+      { name: "Mutation Testing", level: 70 },
     ],
   },
 ];
@@ -137,17 +142,19 @@ export const aiSkillCategories: AISkillCategory[] = [
 export const aiExperiences: AIExperience[] = [
   {
     id: "axon-active",
-    title: "Software Engineer",
+    title: "Software Engineer (iOS → AI Platform)",
     company: "Axon Active",
     period: "07/2024 — Present",
-    location: "Ho Chi Minh",
+    location: "Ho Chi Minh City",
     locationType: "Hybrid",
-    aiImpact: "60% dev velocity increase with AI-assisted development",
+    aiImpact: "Internal AI agent platform serving ~100 users",
     highlights: [
-      "Built a design system library supporting 4 dynamic appearances with customizable brand colors",
-      "Leveraged AI tools (Claude, ChatGPT, Grok) to accelerate research and implementation",
-      "Architected a scalable component framework enabling theme switching and appearance customization",
-      "Applied MVVM architecture for clean separation of concerns",
+      "Since 2026-06, core engineer on the company's internal AI agent platform: agents, tools, knowledge, and code search delivered to ~100 users' IDEs via MCP",
+      "Built the code-intelligence service (SCIP + Zoekt, hybrid search, call/type hierarchy, blast radius) indexing 11 pilot repos (~30k symbols in the largest) on free OSS, avoiding a ~$2.2k/month vendor tool",
+      "Designed the tool admission gate every agent tool call passes through: fail-open catalog/governance, fail-closed enforcement, full audit trail; verified with ArchUnit contracts and mutation testing",
+      "Shipped per-user OAuth gateways for Jira/Confluence and Bitbucket (OAuth 2.0 3LO, KMS envelope encryption, SSRF allowlists), unblocking agents on company data",
+      "Replaced the MCP server's fixed tool list with discover / executeRead / executeWrite meta-tools and hardened session expiry, so IDE agents reach the full catalog reliably",
+      "Earlier: built a UIKit + SwiftUI design-system library adopted by 3+ teams, cutting UI development time ~40% on the ePost iOS app",
     ],
   },
   {
@@ -155,14 +162,11 @@ export const aiExperiences: AIExperience[] = [
     title: "Software Engineer (iOS)",
     company: "S3 Corp",
     period: "12/2023 — 06/2024",
-    location: "Ho Chi Minh",
+    location: "Ho Chi Minh City",
     locationType: "Remote",
-    aiImpact: "90% test coverage using AI-assisted test generation",
     highlights: [
-      "Followed MVVM architecture and SOLID principles for maintainable codebase",
-      "Wrote unit tests with XCTest, achieving 90% coverage at ViewModel layer",
-      "Integrated NWWebSocket for real-time push notification connections",
-      "Delivered API integration for user data and notification features",
+      "Delivered feature screens on Coordinator + MVVM with RxSwift, integrating REST, APNs push, and real-time WebSocket connections",
+      "Reached 90% unit-test coverage at the ViewModel layer with XCTest and RxTest",
     ],
   },
   {
@@ -170,30 +174,24 @@ export const aiExperiences: AIExperience[] = [
     title: "iOS Engineer",
     company: "ZILLEARN",
     period: "05/2022 — 12/2023",
-    location: "Ho Chi Minh",
+    location: "Ho Chi Minh City",
     locationType: "On-site",
-    aiImpact: "AI-accelerated CI/CD pipeline development and feature delivery",
     highlights: [
-      "Developed CI/CD pipelines for automated deployment, supporting QA testing",
-      "Led efforts to refactor and update the project architecture",
-      "Built tvOS UI/UX for course management and video playback with AVFoundation",
-      "Maintained and improved existing features across iOS and tvOS targets",
+      "Led the refactor to Coordinator + MVVM across iOS and tvOS, and built the tvOS course and video-playback experience with AVFoundation",
+      "Set up CI/CD with Fastlane and Bitrise for automated Firebase App Distribution and TestFlight releases",
     ],
   },
   {
     id: "windscribe",
-    title: "Software Engineer & Team Lead",
+    title: "Software Engineer (iOS), Team Lead",
     company: "Windscribe",
     period: "04/2020 — 03/2022",
-    location: "Canada Client",
+    location: "Canada",
     locationType: "Remote",
-    aiImpact: "Led remote team with AI-enhanced code review workflows",
     highlights: [
-      "Led a team of 2-3 members, developing task plans and conducting code reviews",
-      "Implemented OAuth 2.0 with PKCE and AES encryption with Keychain Services for secure auth",
-      "Applied zero-knowledge principles to VPN tunnel key management",
-      "Engaged in strategic discussions with CEO and CTO on feature planning",
-      "Implemented CI/CD pipelines for automated QA deployment using Bitrise",
+      "Led a team of 2–3 on the production VPN app, owning planning, code review, and feature strategy with the CEO and CTO",
+      "Implemented OAuth 2.0 with PKCE, AES credential encryption via Keychain, and zero-knowledge VPN tunnel key management",
+      "Built session-state and refresh-token handling, deep links, and a Notification Service Extension for rich push",
     ],
   },
 ];
@@ -204,59 +202,55 @@ export const aiExperiences: AIExperience[] = [
 
 export const aiProjects: AIProject[] = [
   {
-    id: "xcframework-cli",
-    title: "XCFramework CLI",
+    id: "jarvis",
+    title: "jarvis",
     description:
-      "Ruby CLI tool for automating XCFramework builds across iOS architectures. Streamlines multi-architecture compilation with YAML config.",
-    githubUrl: "https://github.com/phuongddx/xcframework-cli",
-    techStack: ["Ruby", "xcodebuild", "YAML"],
+      "Local-first code-intelligence MCP server, published on PyPI (jarvis-mcp) and the official MCP Registry.",
+    githubUrl: "https://github.com/jarvis-intelligence/jarvis",
+    techStack: ["Python", "LanceDB", "tree-sitter", "SCIP", "Zoekt"],
     highlights: [
-      "Automated multi-architecture builds",
-      "YAML-driven configuration",
-      "Production tooling for CI/CD integration",
+      "Hybrid retrieval fusing dense vectors, Zoekt lexical search, and SCIP symbols via reciprocal rank fusion, so NL questions and exact-symbol lookups share one index",
+      "AST-aware chunking with tree-sitter, model-pinned embeddings, and atomic index publishing (zero-downtime reindex)",
+      "Shipped as compiled wheels with one-command plugins for Claude Code, Cursor, and Codex",
     ],
   },
   {
-    id: "trending-movies",
-    title: "Trending Movies",
+    id: "stress-ai-coach",
+    title: "Stress AI Coach",
     description:
-      "iOS movie discovery app powered by TMDB API with hero carousel, search, and offline caching. Built with clean architecture.",
-    githubUrl: "https://github.com/phuongddx/trending-movie-ios",
-    techStack: ["SwiftUI", "MVVM", "Clean Architecture", "Moya"],
+      "iOS + watchOS app with a streaming AI coach, live on the App Store.",
+    appStoreUrl: "https://apps.apple.com/us/app/stress-ai-coach/id6778478266",
+    techStack: ["Swift", "HealthKit", "StoreKit", "Deno/Hono", "SSE", "OpenRouter", "Postgres"],
     highlights: [
-      "Hero carousel with async image loading",
-      "Offline cache with Core Data",
-      "Custom design system",
+      "Privacy-first stress scoring from HealthKit; raw health data never leaves the device, only derived scores reach the model",
+      "Self-owned backend: SSE proxy over a 4-model fallback chain, crash-safe credit metering, Firebase auth",
+      "Offline StoreKit receipt verification, Postgres on Dokploy",
     ],
   },
   {
-    id: "stress-monitor",
-    title: "StressMonitor",
+    id: "llm-gateway",
+    title: "LLM Gateway & Agent Observability",
     description:
-      "iOS + watchOS stress monitoring app with HRV analysis, health data tracking, and widgets. 22K+ lines of pure Swift with zero external dependencies.",
-    githubUrl: "https://github.com/NextGen-Limited/ios-stress-app",
-    techStack: ["SwiftUI", "HealthKit", "SwiftData", "SQLCipher", "CloudKit", "WidgetKit"],
+      "OpenAI-compatible gateway and agent-run control plane for picking models on cost and speed.",
+    githubUrl: "https://github.com/phuongddx/llm-gateway",
+    techStack: ["FastAPI", "React", "TypeScript", "SSE"],
     highlights: [
-      "22K LOC with zero external deps",
-      "Encrypted health data storage with SQLCipher and Keychain Services",
-      "Shared data between iOS and watchOS via App Groups",
-      "Custom HRV algorithm",
-      "watchOS complications",
-      "WidgetKit integration",
+      "Routes to 500+ models behind one key, capturing TTFT, latency, and token usage per request",
+      "DAG trace viewer and run comparison for agent runs",
+      "Per-model circuit-breaker states to surface degrading providers early",
     ],
   },
   {
-    id: "portfolio",
-    title: "This Portfolio",
+    id: "open-source",
+    title: "Open-source Contributions",
     description:
-      "Next.js portfolio with AI mode toggle — the site you're looking at. Showcases both iOS and AI-driven development workflows.",
-    githubUrl: "https://github.com/phuongddx/portfolio-next",
-    techStack: ["Next.js 14", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      "Upstream work on code intelligence, LLM routing, and Swift build tooling.",
+    githubUrl: "https://github.com/phuongddx",
+    techStack: ["Swift", "SourceKit-LSP", "SCIP", "SSE", "SPM"],
     highlights: [
-      "AI mode toggle with context switching",
-      "Interactive terminal mockup",
-      "Animated skill bars",
-      "PDF export",
+      "scip-swift: extended SCIP indexing to Swift via SourceKit-LSP; contributed a typeHierarchy fix upstream to scip-code/scip",
+      "OmniRoute: 2 merged PRs adding SSE streaming for GLM-5.3 effort tiers",
+      "spm-cache: SPM xcframework cache proxy with Homebrew tap and GitHub Action",
     ],
   },
 ];
@@ -297,9 +291,10 @@ export const terminalLines: TerminalLine[] = [
 // ---------------------------------------------------------------------------
 
 export const aiHeroData: AIHeroData = {
-  title: "AI-Driven Full-Stack Developer",
-  tagline: "I build production software with AI at the center of my workflow",
-  badges: ["Claude Code", "Cursor", "Codex", "Swift", "TypeScript"],
+  title: "Software Engineer — LLM, Retrieval & Agent Systems",
+  tagline:
+    "6+ years shipping production apps, now building the code-intelligence, tool-admission, and vendor-gateway services of an internal AI platform.",
+  badges: ["MCP", "Python", "Java / Quarkus", "Vertex AI", "Swift"],
   typingPhrases: ["Prompt \u2192 Verify \u2192 Ship \u2192 Repeat"],
 };
 

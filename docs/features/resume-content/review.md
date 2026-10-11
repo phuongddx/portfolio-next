@@ -72,7 +72,7 @@ Whole-change review (`f7d4237..7352324`), verdict **"With fixes"**:
 | 8 | Minor | Bugs | terminal replay | Plays on mount, not on scroll into view (pre-existing) | Deferred: animation is out of spec scope |
 | 9 | Minor | Compliance | `docs/engineering/conventions.md`, `AGENTS.md` | New `docs/features/` layout not mentioned | Promoted: owner accepted; line added to `docs/engineering/conventions.md` |
 
-Also folded into `54bf1ef`: "Gate:"/"fix" labels moved to data; `↗` is `aria-hidden`; links carry sr-only context ("for <title> (opens in new tab)").
+Also folded into `54bf1ef`: "Gate:"/"fix" labels moved to data; `↗` is `aria-hidden`; links carry sr-only context (`for {title} (opens in new tab)`).
 
 Fix-wave re-review: 6/6 addressed, no new breakage.
 

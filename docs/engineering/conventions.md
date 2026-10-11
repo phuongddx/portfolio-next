@@ -20,4 +20,5 @@ Full rules: `docs/code-standards.md`. This is the short version specs are checke
 ## Commits & PRs
 - Conventional commits: `type(scope): subject`, lowercase imperative. Observed types: `feat`, `docs`, `fix`, `chore`, `refactor`; scopes e.g. `ui`, `data`, `navbar`, `seo`, `hero`.
 - PR template: Not configured. Commit hooks / commitlint: Not configured.
-- Plans: `plans/MMDD-HHMM-<slug>/`; reports: `plans/reports/<role>-MMDD-HHMM-<topic>.md`.
+- Feature work (current): `docs/features/<slug>/` holds `spec.md`, `plan.md`, `review.md` (templates in `.agents/templates/`).
+- Legacy plans: `plans/MMDD-HHMM-<slug>/`; reports: `plans/reports/<role>-MMDD-HHMM-<topic>.md`.

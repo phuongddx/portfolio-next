@@ -1,6 +1,6 @@
 # Spec: resume-content — AI-Native SDLC workflow section
 
-Status: approved <!-- draft | approved | shipped | superseded -->
+Status: shipped <!-- draft | approved | shipped | superseded -->
 Date: 2026-10-10
 
 Scope note: the first resume-content round (CV sync, `f19d974..f7d4237`) ran

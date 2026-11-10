@@ -3,61 +3,57 @@
 import { m, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useMode } from "@/components/context/mode-context";
+import { SplitStage } from "@/components/layout/split-stage";
+import { iosFrames, aiFrames } from "@/components/sections/stage-frames";
 
 // iOS sections — static imports (always available)
 import { HeroSection } from "@/components/sections/hero-section";
 import { AboutSection } from "@/components/sections/about-section";
+import { ProjectsSection } from "@/components/sections/projects-section";
 import { ExperienceSection } from "@/components/sections/experience-section";
 import { SkillsSection } from "@/components/sections/skills-section";
-import { ProjectsSection } from "@/components/sections/projects-section";
 import { SideProjectsSection } from "@/components/sections/side-projects-section";
+import { CityBand } from "@/components/sections/city-band";
 import { ContactSection } from "@/components/sections/contact-section";
 
-// AI sections — dynamic imports with ssr: false (built in later phases)
+// AI sections — dynamic imports with ssr: false
 const AIHeroSection = dynamic(
-  () => import("@/components/sections/ai-hero-section").then((m) => m.AIHeroSection),
+  () => import("@/components/sections/ai-hero-section").then((mod) => mod.AIHeroSection),
+  { ssr: false, loading: () => <SectionSkeleton tall /> },
+);
+const AIProjectsSection = dynamic(
+  () => import("@/components/sections/ai-projects-section").then((mod) => mod.AIProjectsSection),
   { ssr: false, loading: () => <SectionSkeleton /> },
 );
 const AIWorkflowSection = dynamic(
-  () => import("@/components/sections/ai-workflow-section").then((m) => m.AIWorkflowSection),
+  () => import("@/components/sections/ai-workflow-section").then((mod) => mod.AIWorkflowSection),
+  { ssr: false, loading: () => <SectionSkeleton tall /> },
+);
+const AIExperienceSection = dynamic(
+  () => import("@/components/sections/ai-experience-section").then((mod) => mod.AIExperienceSection),
   { ssr: false, loading: () => <SectionSkeleton /> },
 );
 const AISkillsSection = dynamic(
-  () => import("@/components/sections/ai-skills-section").then((m) => m.AISkillsSection),
-  { ssr: false, loading: () => <SectionSkeleton /> },
-);
-const AIExperienceSection = dynamic(
-  () => import("@/components/sections/ai-experience-section").then((m) => m.AIExperienceSection),
-  { ssr: false, loading: () => <SectionSkeleton /> },
-);
-const AIProjectsSection = dynamic(
-  () => import("@/components/sections/ai-projects-section").then((m) => m.AIProjectsSection),
+  () => import("@/components/sections/ai-skills-section").then((mod) => mod.AISkillsSection),
   { ssr: false, loading: () => <SectionSkeleton /> },
 );
 
-function SectionSkeleton() {
-  return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-20">
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 bg-gray-200 rounded-lg w-1/3 mx-auto" />
-        <div className="h-4 bg-gray-100 rounded w-2/3 mx-auto" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className="h-40 bg-gray-100 rounded-xl" />
-          <div className="h-40 bg-gray-100 rounded-xl" />
-        </div>
-      </div>
-    </div>
-  );
+// Holds the space while a section's code loads, so the page does not jump.
+function SectionSkeleton({ tall = false }: { tall?: boolean }) {
+  return <div aria-hidden="true" className={tall ? "min-h-[calc(100svh-88px)]" : "min-h-[60svh]"} />;
 }
 
 function IOSContent() {
   return (
     <>
-      <HeroSection />
-      <AboutSection />
+      <SplitStage frames={iosFrames} label="Screens from apps I built">
+        <HeroSection />
+        <AboutSection />
+        <ProjectsSection />
+      </SplitStage>
+      <CityBand />
       <ExperienceSection />
       <SkillsSection />
-      <ProjectsSection />
       <SideProjectsSection />
     </>
   );
@@ -66,11 +62,15 @@ function IOSContent() {
 function AIContent() {
   return (
     <>
-      <AIHeroSection />
+      <SplitStage frames={aiFrames} label="Artifacts from the resume-content run on this site">
+        <AIHeroSection />
+        <AboutSection />
+        <AIProjectsSection />
+      </SplitStage>
       <AIWorkflowSection />
-      <AISkillsSection />
+      <CityBand />
       <AIExperienceSection />
-      <AIProjectsSection />
+      <AISkillsSection />
     </>
   );
 }
@@ -97,7 +97,7 @@ export function ModeRouter() {
 
   return (
     <>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         <m.div key={mode} {...fadeTransition}>
           {mode === "ios" ? <IOSContent /> : <AIContent />}
         </m.div>

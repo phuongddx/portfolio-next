@@ -2,7 +2,6 @@
 
 import { m } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
 import { useMode } from "@/components/context/mode-context";
 import { NAV_LINKS_BY_MODE } from "./nav-links";
 
@@ -38,49 +37,32 @@ export function MobileMenu({ onClose }: MobileMenuProps) {
 
   return (
     <m.div
+      id="mobile-menu"
       ref={menuRef}
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.2 }}
-      className={cn(
-        "fixed top-24 left-1/2 -translate-x-1/2 z-40 md:hidden",
-        "w-[95%] max-w-5xl",
-        "bg-white border-2 border-gray-800 rounded-[20px]",
-        "shadow-brutal overflow-hidden"
-      )}
+      className="absolute left-0 right-0 top-16 z-40 bg-paper px-[calc(var(--gutter)+var(--pad))] py-6 min-[1000px]:hidden"
     >
-      <ul className="flex flex-col gap-2 p-6">
-        {navLinks.map((link, index) => (
-          <m.li
-            key={link.href}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.05 }}
-          >
-            <a
-              href={link.href}
-              onClick={onClose}
-              className="block text-gray-800 hover:text-green-600 font-medium py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors border-2 border-transparent hover:border-gray-200"
-            >
+      <ul className="flex flex-col">
+        {navLinks.map((link) => (
+          <li key={link.href}>
+            <a href={link.href} onClick={onClose} className="block py-3 text-head no-underline">
               {link.label}
             </a>
-          </m.li>
+          </li>
         ))}
-        <m.li
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: navLinks.length * 0.05 }}
-          className="mt-4"
-        >
-          <a
-            href="#contact"
-            onClick={onClose}
-            className="block w-full text-center font-medium rounded-xl px-6 py-3 text-base bg-green-500 text-white hover:bg-green-600 transition-colors"
-          >
+        <li>
+          <a href="#contact" onClick={onClose} className="block py-3 text-head no-underline">
             Contact
           </a>
-        </m.li>
+        </li>
+        <li className="mt-4">
+          <a className="text-link" href="/DoanPhuong.pdf" download="DoanPhuong.pdf" onClick={onClose}>
+            Download CV
+          </a>
+        </li>
       </ul>
     </m.div>
   );

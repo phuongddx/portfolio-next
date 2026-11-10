@@ -1,136 +1,117 @@
 "use client";
 
-import { m } from "framer-motion";
+import { useEffect, useState, type FormEvent } from "react";
 import { ScrollReveal } from "@/components/effects/scroll-reveal";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  LinkedInIcon,
-  GitHubIcon,
-  EmailIcon,
-} from "@/components/ui/social-icons";
+import { CONTACT, contactCopy } from "@/components/data/contact-data";
 
-// Pastel colors for contact icons
-const pastelColors = ["bg-pink-200", "bg-blue-200", "bg-purple-200"];
+function useLocalTime() {
+  const [time, setTime] = useState<string | null>(null);
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: CONTACT.timeZone,
+    });
+    const tick = () => setTime(fmt.format(new Date()));
+    tick();
+    const id = window.setInterval(tick, 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+  return time;
+}
 
-const contactMethods = [
-  {
-    id: "email",
-    icon: <EmailIcon className="w-6 h-6 text-gray-700" />,
-    label: "Email",
-    value: "95doanphuong@gmail.com",
-    href: "mailto:95doanphuong@gmail.com",
-  },
-  {
-    id: "linkedin",
-    icon: <LinkedInIcon className="w-6 h-6 text-gray-700" />,
-    label: "LinkedIn",
-    value: "linkedin.com/in/phuongddx",
-    href: "https://linkedin.com/in/phuongddx/",
-  },
-  {
-    id: "github",
-    icon: <GitHubIcon className="w-6 h-6 text-gray-700" />,
-    label: "GitHub",
-    value: "github.com/phuongddx",
-    href: "https://github.com/phuongddx",
-  },
-];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      type: "spring" as const,
-      stiffness: 300,
-      damping: 20,
-    },
-  },
-};
-
+// One prompt, one field. Sending opens the visitor's email app with the message filled in.
 export function ContactSection() {
+  const [message, setMessage] = useState("");
+  const time = useLocalTime();
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams({ subject: contactCopy.subject, body: message });
+    window.location.href = `${CONTACT.mailto}?${params.toString().replace(/\+/g, "%20")}`;
+  };
+
   return (
-    <section id="contact" className="py-20 px-4 bg-[#f8f9fa]">
-      <div className="max-w-4xl mx-auto text-center">
+    <section
+      id="contact"
+      aria-labelledby="contact-title"
+      className="mx-[var(--gutter)] mt-section grid gap-x-12 gap-y-10 bg-paper px-[var(--pad)] py-[clamp(72px,9vw,136px)] md:grid-cols-12"
+    >
+      <div className="md:col-span-5">
         <ScrollReveal>
-          <h2 className="font-heading font-bold text-4xl md:text-5xl text-gray-800 mb-6 text-center">
-            Let&apos;s Work Together
+          <h2 id="contact-title" className="text-head">
+            {contactCopy.heading}
           </h2>
         </ScrollReveal>
+        <ScrollReveal as="p" delay={0.08} className="mt-6 max-w-measure">
+          {contactCopy.intro}
+        </ScrollReveal>
+      </div>
 
-        <ScrollReveal delay={0.1}>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Open to full-time roles and contract projects — remote or based in
-            Ho Chi Minh City, Vietnam. Drop me a message and I&apos;ll get back
-            to you within 24 hours.
-          </p>
+      <div className="md:col-span-7">
+        <ScrollReveal delay={0.12}>
+          <form action={CONTACT.mailto} method="get" onSubmit={onSubmit}>
+            <label htmlFor="contact-message" className="text-body font-semibold">
+              {contactCopy.fieldLabel}
+            </label>
+            <div className="relative mt-3">
+              <input
+                id="contact-message"
+                name="body"
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder={contactCopy.placeholder}
+                aria-describedby="contact-note"
+                className="h-16 w-full bg-ground pl-5 pr-[68px] text-body text-ink placeholder:text-soft focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+              />
+              <button
+                type="submit"
+                aria-label={contactCopy.submitLabel}
+                className="absolute right-2 top-2 flex h-12 w-12 cursor-pointer items-center justify-center bg-accent text-accent-ink transition-[transform,background-color] duration-150 hover:bg-ink active:scale-95"
+              >
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M3 10h13M11 4.5 16.5 10 11 15.5" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </button>
+            </div>
+            <p id="contact-note" className="mt-3 text-small text-soft">
+              {contactCopy.note}
+            </p>
+          </form>
         </ScrollReveal>
 
-        {/* Contact Cards */}
-        <m.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          className="grid sm:grid-cols-3 gap-6 mb-12"
-        >
-          {contactMethods.map((method, index) => (
-            <m.div key={method.id} variants={cardVariants}>
-              <a
-                href={method.href}
-                target={method.href.startsWith("mailto") ? undefined : "_blank"}
-                rel={
-                  method.href.startsWith("mailto")
-                    ? undefined
-                    : "noopener noreferrer"
-                }
-                className="block"
-              >
-                <Card
-                  hover={false}
-                  className="flex flex-col items-center text-center h-full"
-                >
-                  <div
-                    className={`w-14 h-14 rounded-xl ${pastelColors[index]} flex items-center justify-center mb-3`}
-                  >
-                    {method.icon}
-                  </div>
-                  <div className="font-heading font-medium text-gray-800 mb-1">
-                    {method.label}
-                  </div>
-                  <div className="text-gray-500 text-sm">{method.value}</div>
-                </Card>
+        <ScrollReveal delay={0.18} as="dl" className="mt-14 grid gap-x-8 gap-y-5 lg:grid-cols-2 [&_dd]:[overflow-wrap:anywhere]">
+          <div>
+            <dt className="text-small text-soft">Email</dt>
+            <dd>
+              <a className="text-link" href={CONTACT.mailto}>
+                {CONTACT.email}
               </a>
-            </m.div>
-          ))}
-        </m.div>
-
-        {/* CTA Buttons */}
-        <ScrollReveal delay={0.4}>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:95doanphuong@gmail.com">
-              <Button variant="primary" size="lg">
-                Send Me an Email
-              </Button>
-            </a>
-            <a href="/DoanPhuong.pdf" download="DoanPhuong.pdf">
-              <Button variant="secondary" size="lg">
-                Download Resume
-              </Button>
-            </a>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-small text-soft">LinkedIn</dt>
+            <dd>
+              <a className="text-link" href={CONTACT.linkedin.href} target="_blank" rel="noopener noreferrer">
+                {CONTACT.linkedin.label}
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-small text-soft">GitHub</dt>
+            <dd>
+              <a className="text-link" href={CONTACT.github.href} target="_blank" rel="noopener noreferrer">
+                {CONTACT.github.label}
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-small text-soft">Based in</dt>
+            <dd>
+              {CONTACT.city}
+              {time && <span className="tabular-nums">, {time} local time</span>}
+            </dd>
           </div>
         </ScrollReveal>
       </div>

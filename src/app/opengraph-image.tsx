@@ -1,98 +1,84 @@
 import { ImageResponse } from "next/og";
+import { careerTimeline } from "@/components/data/experience-data";
 
 export const runtime = "edge";
-export const alt = "Doan Duy Phuong — Software Engineer (iOS → AI Platform)";
+export const alt = "Doan Duy Phuong, software engineer (iOS → AI platform)";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const INK = "#1c1c1c";
+const PAPER = "#e3e2da";
+
+function months(ym: string) {
+  const [y, m] = ym.split("-").map(Number);
+  return y * 12 + m;
+}
+
 export default function OgImage() {
+  const start = months(careerTimeline[0].from);
+  const span = months(careerTimeline[careerTimeline.length - 1].to) + 1 - start;
+  const bars = ["#1c1c1c", "#38424a", "#1c1c1c", "#38424a", "#2c3620"];
+
   return new ImageResponse(
     (
-      <div
-        style={{
-          background: "#f8f9fa",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "80px",
-          fontFamily: "sans-serif",
-          position: "relative",
-        }}
-      >
-        {/* Green accent bar */}
+      <div style={{ width: "100%", height: "100%", display: "flex", background: "#a6b3bc", padding: 16, gap: 16 }}>
         <div
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "8px",
-            height: "100%",
-            background: "#22c55e",
-          }}
-        />
-
-        {/* Available badge */}
-        <div
-          style={{
+            flex: 1.25,
             display: "flex",
-            alignItems: "center",
-            background: "#a3e635",
-            borderRadius: "999px",
-            padding: "8px 20px",
-            alignSelf: "flex-start",
-            marginBottom: "32px",
-            fontSize: "20px",
-            fontWeight: 600,
-            color: "#1f2937",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            background: PAPER,
+            padding: "56px 48px 44px",
+            fontFamily: "serif",
+            color: INK,
           }}
         >
-          Available for Work · Remote-Friendly
-        </div>
-
-        {/* Name */}
-        <div
-          style={{
-            fontSize: "72px",
-            fontWeight: 800,
-            color: "#1f2937",
-            lineHeight: 1.1,
-            marginBottom: "16px",
-          }}
-        >
-          Doan Duy Phuong
-        </div>
-
-        {/* Role */}
-        <div
-          style={{
-            fontSize: "36px",
-            fontWeight: 600,
-            color: "#22c55e",
-            marginBottom: "40px",
-          }}
-        >
-          Software Engineer · iOS &amp; AI Platform
-        </div>
-
-        {/* Stats row */}
-        <div style={{ display: "flex", gap: "40px" }}>
-          {[
-            { value: "6+", label: "Years Experience" },
-            { value: "~100", label: "AI Platform Users" },
-            { value: "2 yrs", label: "As Team Lead" },
-          ].map((stat) => (
-            <div key={stat.label} style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: "40px", fontWeight: 800, color: "#1f2937" }}>
-                {stat.value}
-              </span>
-              <span style={{ fontSize: "18px", color: "#6b7280" }}>{stat.label}</span>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ fontSize: 56, lineHeight: 1.1, letterSpacing: "-0.02em" }}>Doan Duy Phuong,</div>
+            <div style={{ fontSize: 56, lineHeight: 1.1, letterSpacing: "-0.02em" }}>iOS → AI platform</div>
+            <div style={{ fontSize: 26, marginTop: 28, maxWidth: 560, lineHeight: 1.4 }}>
+              Six years shipping iOS apps from Ho Chi Minh City, now building an internal AI agent platform.
             </div>
-          ))}
+          </div>
+          <div style={{ display: "flex", position: "relative", height: 48, width: "100%" }}>
+            {careerTimeline.map((seg, i) => (
+              <div
+                key={seg.id}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  height: 48,
+                  left: `${((months(seg.from) - start) / span) * 100}%`,
+                  width: `${((months(seg.to) + 1 - months(seg.from)) / span) * 100}%`,
+                  background: bars[i % bars.length],
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            gap: 10,
+            background: "#b7c8be",
+            padding: "56px 48px",
+            fontFamily: "serif",
+            fontSize: 30,
+            color: INK,
+          }}
+        >
+          {["ePost design system", "Windscribe VPN", "tvOS learning platform", "jarvis, an MCP server", "LLM gateway"].map(
+            (name) => (
+              <div key={name}>{name}</div>
+            ),
+          )}
         </div>
       </div>
     ),
-    size
+    size,
   );
 }

@@ -35,6 +35,7 @@ export interface AIProject {
   description: string;
   githubUrl?: string;
   appStoreUrl?: string;
+  kind: string;
   techStack: string[];
   highlights: string[];
   stats?: { label: string; value: string }[];
@@ -49,9 +50,12 @@ export interface TerminalLine {
 export interface WorkflowStep {
   num: number;
   label: string;
+  clause: string;
   desc: string;
   artifact: string;
   gate: string;
+  /** What the stage left behind, shown in the fragment. "catches" shows the review catches. */
+  output: string;
   evidence: { label: string; href: string };
 }
 
@@ -222,6 +226,7 @@ export const aiExperiences: AIExperience[] = [
 export const aiProjects: AIProject[] = [
   {
     id: "jarvis",
+    kind: "MCP server",
     title: "jarvis",
     description:
       "Local-first code-intelligence MCP server, published on PyPI (jarvis-mcp) and the official MCP Registry.",
@@ -235,6 +240,7 @@ export const aiProjects: AIProject[] = [
   },
   {
     id: "stress-ai-coach",
+    kind: "iOS + watchOS app",
     title: "Stress AI Coach",
     description:
       "iOS + watchOS app with a streaming AI coach, live on the App Store.",
@@ -248,6 +254,7 @@ export const aiProjects: AIProject[] = [
   },
   {
     id: "llm-gateway",
+    kind: "Model gateway",
     title: "LLM Gateway & Agent Observability",
     description:
       "OpenAI-compatible gateway and agent-run control plane for picking models on cost and speed.",
@@ -261,6 +268,7 @@ export const aiProjects: AIProject[] = [
   },
   {
     id: "open-source",
+    kind: "Upstream work",
     title: "Open-source Contributions",
     description:
       "Upstream work on code intelligence, LLM routing, and Swift build tooling.",
@@ -303,9 +311,9 @@ export const terminalLines: TerminalLine[] = [
 // ---------------------------------------------------------------------------
 
 export const aiHeroData: AIHeroData = {
-  title: "Software Engineer — LLM, Retrieval & Agent Systems",
+  title: "AI platform engineer",
   tagline:
-    "6+ years shipping production apps, now building the code-intelligence, tool-admission, and vendor-gateway services of an internal AI platform.",
+    "Core engineer on Axon Active's internal AI agent platform: agents, tools, knowledge and code search delivered to ~100 users' IDEs through MCP.",
   badges: ["MCP", "Python", "Java / Quarkus", "Vertex AI", "Swift"],
   typingPhrases: ["Context \u2192 Spec \u2192 Plan \u2192 Build \u2192 Review \u2192 Ship"],
 };
@@ -317,7 +325,7 @@ export const aiHeroData: AIHeroData = {
 const REPO_URL = "https://github.com/phuongddx/portfolio-next";
 
 export const workflowSectionCopy: WorkflowSectionCopy = {
-  heading: "My AI-Native SDLC",
+  heading: "How the resume update shipped",
   subtitle:
     "How the resume-content update shipped: 6 planned tasks, 7 commits, 4 Important issues caught in review.",
   terminalTitle: "resume-content \u00b7 session replay",
@@ -335,49 +343,61 @@ export const workflowSteps: WorkflowStep[] = [
   {
     num: 1,
     label: "Context",
+    clause: "First, the agent reads the repo",
     desc: "Agents map the repo before touching it, so every change starts from written conventions.",
     artifact: "AGENTS.md \u00b7 ARCHITECTURE.md \u00b7 docs/engineering/",
-    gate: "Read-only \u2014 no gate",
+    gate: "Read-only, no gate",
+    output: "$ ls\nAGENTS.md\nARCHITECTURE.md\ndocs/engineering/\n  conventions.md\n  infrastructure.md\n  tech-stack.md",
     evidence: { label: "docs/engineering", href: `${REPO_URL}/tree/main/docs/engineering` },
   },
   {
     num: 2,
     label: "Intent & Spec",
+    clause: "Then I correct what it understood",
     desc: "I state the outcome; the agent writes its understanding back, I correct it, and the design becomes a spec.",
     artifact: "spec.md",
     gate: "I correct the understanding and approve the spec",
-    evidence: { label: "spec.md \u2014 this section's spec", href: `${REPO_URL}/blob/main/docs/features/resume-content/spec.md` },
+    output: "docs/features/resume-content/spec.md\n\nok owner confirmed: both modes, iOS default",
+    evidence: { label: "spec.md, this section's spec", href: `${REPO_URL}/blob/main/docs/features/resume-content/spec.md` },
   },
   {
     num: 3,
     label: "Plan",
+    clause: "The spec becomes small tasks",
     desc: "The spec becomes bite-sized tasks, each with exact files, values, and a check to run.",
-    artifact: "plan.md \u2014 bite-sized tasks with exact checks",
+    artifact: "plan.md: bite-sized tasks with exact checks",
     gate: "I approve and pick the execution mode",
+    output: "docs/features/resume-content/plan.md\n\nok 6 tasks, each with an exact check",
     evidence: { label: "plan.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/plan.md` },
   },
   {
     num: 4,
     label: "Build",
+    clause: "A fresh agent for every task",
     desc: "A fresh agent implements each task and commits it; nothing carries over between tasks.",
     artifact: "One commit per task, each by a fresh agent",
     gate: "Lint, type check, and build must pass",
+    output: "commits",
     evidence: { label: "5 build commits", href: `${REPO_URL}/compare/f19d974...7a41c1c` },
   },
   {
     num: 5,
     label: "Review",
+    clause: "Review on a stronger model",
     desc: "Each task gets a spec-and-quality review; then a stronger model reviews the whole change.",
-    artifact: "review.md \u2014 per-task review, then whole-change review on a stronger model",
+    artifact: "review.md: per-task review, then whole-change review on a stronger model",
     gate: "Reviewer verdict, then one fix wave",
+    output: "catches",
     evidence: { label: "review.md", href: `${REPO_URL}/blob/main/docs/features/resume-content/review.md` },
   },
   {
     num: 6,
     label: "Ship",
+    clause: "I make the integration call",
     desc: "Gates re-run on the final tree, and I decide how it integrates.",
     artifact: "Pushed commit range",
     gate: "I make the integration call",
+    output: "$ ship\nok build · pushed f19d974..f7d4237",
     evidence: { label: "f19d974\u2026f7d4237", href: `${REPO_URL}/compare/f19d974...f7d4237` },
   },
 ];
@@ -408,3 +428,51 @@ export const reviewCatches: ReviewCatch[] = [
     href: `${REPO_URL}/commit/4881249`,
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Fixed stage in the AI reading — real artifacts of this page's own build
+// ---------------------------------------------------------------------------
+
+export interface BuildCommit {
+  hash: string;
+  subject: string;
+  /** Part of the Build stage (f19d974...7a41c1c). */
+  build: boolean;
+}
+
+// git log f19d974..f7d4237, oldest first
+export const buildCommits: BuildCommit[] = [
+  { hash: "6b2059a", subject: "chore: replace resume pdf with rendercv version", build: true },
+  { hash: "c01cf7e", subject: "feat(seo): align identity and canonical domain with new cv", build: true },
+  { hash: "637f285", subject: "feat(data): align ios-mode hero, about, and experience with new cv", build: true },
+  { hash: "3aa2638", subject: "feat(data): align ios-mode projects, side projects, and skills with new cv", build: true },
+  { hash: "7a41c1c", subject: "feat(ai-workflow): rebuild ai-mode resume from new cv", build: true },
+  { hash: "4881249", subject: "fix(ui): address final review — featured card copy, skill maps, og image", build: false },
+  { hash: "f7d4237", subject: "docs(resume-content): close out plan, review, and promote domain fact", build: false },
+];
+
+export const jarvisSnippet = {
+  title: "jarvis · install",
+  command: "pip install jarvis-mcp",
+  notes: [
+    "Local-first code-intelligence MCP server",
+    "Dense vectors + Zoekt + SCIP, fused by reciprocal rank fusion",
+    "On PyPI and the official MCP Registry",
+  ],
+  href: "https://github.com/jarvis-intelligence/jarvis",
+};
+
+export interface AIStageFrame {
+  key: string;
+  projectId?: string;
+  caption: string;
+}
+
+export const aiStageFrames: AIStageFrame[] = [
+  { key: "replay", caption: "Session replay of the resume-content run on this site, f19d974..f7d4237." },
+  { key: "commits", caption: "The seven commits the resume-content run pushed." },
+  { key: "review", caption: "What the whole-change review caught, fixed in 4881249." },
+  { key: "jarvis", projectId: "jarvis", caption: "jarvis, my code-intelligence MCP server, on PyPI." },
+];
+
+export const aiSkillsLead = "Retrieval, backend and delivery for the AI platform, with the six iOS years still in hand.";

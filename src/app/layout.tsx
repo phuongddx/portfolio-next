@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, DM_Sans } from "next/font/google";
+import { STIX_Two_Text } from "next/font/google";
 import { MotionProvider } from "@/components/effects/motion-provider";
 import { ModeProvider } from "@/components/context/mode-context";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { RevealObserver } from "@/components/effects/reveal-observer";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const stix = STIX_Two_Text({
   subsets: ["latin"],
-  variable: "--font-heading",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-body",
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-text",
+  display: "swap",
 });
 
 const siteUrl = "https://www.phuongddx.cc";
@@ -99,28 +98,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={stix.variable} suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
       </head>
-      <body
-        className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}
-      >
+      <body className="antialiased">
         <MotionProvider>
           <ModeProvider>
-          {/* Skip to content link for accessibility */}
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-cta focus:text-white focus:rounded-lg"
-          >
-            Skip to main content
-          </a>
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <Footer />
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-ink"
+            >
+              Skip to main content
+            </a>
+            <Navbar />
+            <main id="main-content">{children}</main>
+            <Footer />
+            <RevealObserver />
           </ModeProvider>
         </MotionProvider>
       </body>

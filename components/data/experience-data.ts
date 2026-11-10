@@ -65,3 +65,37 @@ export const experiences: Experience[] = [
     ],
   },
 ];
+
+// The career stripe in the hero card. Months are inclusive; "asOf" closes the open-ended role.
+export interface TimelineSegment {
+  id: string;
+  label: string;
+  from: string; // YYYY-MM
+  to: string; // YYYY-MM
+  track: "ios" | "ai";
+}
+
+export const careerTimelineAsOf = "2026-11";
+
+export const careerTimeline: TimelineSegment[] = [
+  { id: "windscribe", label: "Windscribe", from: "2020-04", to: "2022-03", track: "ios" },
+  { id: "zillearn", label: "ZILLEARN", from: "2022-05", to: "2023-12", track: "ios" },
+  { id: "s3-corp", label: "S3", from: "2023-12", to: "2024-06", track: "ios" },
+  { id: "axon-ios", label: "Axon Active", from: "2024-07", to: "2026-05", track: "ios" },
+  { id: "axon-ai", label: "AI", from: "2026-06", to: careerTimelineAsOf, track: "ai" },
+];
+
+export const iosHeroData = {
+  title: "iOS engineer",
+  tagline:
+    "Six years shipping production iOS apps from Ho Chi Minh City: a design system adopted by 3+ teams, a VPN app I led, and a tvOS learning platform.",
+};
+
+export const aboutParagraphs = {
+  career:
+    "I'm a software engineer with 6+ years shipping production apps, including 2 years as a team lead.",
+  ios: "Most of that time was native iOS: Swift, SwiftUI, UIKit, RxSwift, and Coordinator + MVVM.",
+  platform:
+    "Since June 2026 I've been a core engineer on Axon Active's internal AI agent platform, owning the code-intelligence, tool-admission, and vendor-gateway services used by ~100 people across engineering, marketing, product, and leadership.",
+  side: "Outside work I maintain jarvis, a local-first code-intelligence MCP server on PyPI and the official MCP Registry, and ship Stress AI Coach, an iOS + watchOS app on the App Store.",
+};

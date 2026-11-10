@@ -1,35 +1,18 @@
-"use client";
-
-import { m, useInView } from "framer-motion";
-import { useRef, ReactNode } from "react";
+import type { CSSProperties, ElementType, ReactNode } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
+  /** Delay in seconds, used to stagger the parts of a section. */
   delay?: number;
   className?: string;
+  as?: ElementType;
 }
 
-export function ScrollReveal({
-  children,
-  delay = 0,
-  className = "",
-}: ScrollRevealProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-
+// Marks a block for RevealObserver. Content stays visible without script and under reduced motion.
+export function ScrollReveal({ children, delay = 0, className, as: Tag = "div" }: ScrollRevealProps) {
   return (
-    <m.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{
-        duration: 0.6,
-        delay,
-        ease: [0.25, 0.1, 0.25, 1],
-      }}
-      className={className}
-    >
+    <Tag data-reveal="" className={className} style={{ "--d": Math.round(delay * 1000) } as CSSProperties}>
       {children}
-    </m.div>
+    </Tag>
   );
 }

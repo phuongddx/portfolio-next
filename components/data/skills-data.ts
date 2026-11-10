@@ -81,3 +81,5 @@ export const skillCategories: SkillCategory[] = [
     ],
   },
 ];
+
+export const skillsLead = "Six years of native iOS, plus the Python and Java I now use on the AI platform.";

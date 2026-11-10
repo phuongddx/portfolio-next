@@ -1,22 +1,28 @@
 "use client";
 
-import { m } from "framer-motion";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, type KeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 import { useMode, type Mode } from "@/components/context/mode-context";
 
-const SEGMENTS: { value: Mode; label: string }[] = [
-  { value: "ios", label: "iOS" },
-  { value: "ai", label: "AI" },
+const SEGMENTS: { value: Mode; label: string; short: string }[] = [
+  { value: "ios", label: "iOS engineer", short: "iOS" },
+  { value: "ai", label: "AI platform", short: "AI" },
 ];
 
-const COOLDOWN_MS = 500;
+const COOLDOWN_MS = 400;
 
-export function ModeToggle() {
+interface ModeToggleProps {
+  /** "compact" shows iOS / AI in the bar; "full" shows the long labels in the hero card. */
+  variant?: "compact" | "full";
+  className?: string;
+}
+
+export function ModeToggle({ variant = "compact", className }: ModeToggleProps) {
   const { mode, setMode } = useMode();
   const lastToggle = useRef(0);
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const handleToggle = useCallback(
+  const choose = useCallback(
     (next: Mode) => {
       if (next === mode) return;
       const now = Date.now();
@@ -27,35 +33,44 @@ export function ModeToggle() {
     [mode, setMode],
   );
 
+  const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+    e.preventDefault();
+    const next = (i + 1) % SEGMENTS.length;
+    refs.current[next]?.focus();
+    choose(SEGMENTS[next].value);
+  };
+
   return (
     <div
       role="radiogroup"
-      aria-label="Portfolio mode"
-      className="relative flex items-center bg-gray-100 rounded-full p-1 border-2 border-gray-200"
+      aria-label="Read this resume as"
+      className={cn("inline-flex bg-surface p-1", className)}
     >
-      {SEGMENTS.map((seg) => (
-        <button
-          key={seg.value}
-          role="radio"
-          aria-checked={mode === seg.value}
-          onClick={() => handleToggle(seg.value)}
-          className={cn(
-            "relative z-10 px-3 py-1 text-sm font-medium rounded-full transition-colors duration-200 cursor-pointer",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-1",
-            mode === seg.value ? "text-white" : "text-gray-500 hover:text-gray-700",
-          )}
-        >
-          {/* Active indicator slides between segments */}
-          {mode === seg.value && (
-            <m.div
-              layoutId="mode-toggle-indicator"
-              className="absolute inset-0 bg-green-500 rounded-full"
-              transition={{ type: "spring", stiffness: 500, damping: 35 }}
-            />
-          )}
-          <span className="relative z-10">{seg.label}</span>
-        </button>
-      ))}
+      {SEGMENTS.map((seg, i) => {
+        const on = mode === seg.value;
+        return (
+          <button
+            key={seg.value}
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            type="button"
+            role="radio"
+            aria-checked={on}
+            tabIndex={on ? 0 : -1}
+            onClick={() => choose(seg.value)}
+            onKeyDown={(e) => onKeyDown(e, i)}
+            className={cn(
+              "cursor-pointer transition-[background-color,color,transform] duration-200 active:scale-[0.97]",
+              variant === "full" ? "min-h-[48px] px-5 text-body" : "min-h-[40px] px-3 text-small",
+              on ? "bg-ink text-paper" : "text-ink hover:bg-paper",
+            )}
+          >
+            {variant === "full" ? seg.label : seg.short}
+          </button>
+        );
+      })}
     </div>
   );
 }
